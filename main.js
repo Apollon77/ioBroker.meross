@@ -10,8 +10,7 @@ const utils   = require(__dirname + '/lib/utils'); // Get common adapter utils
 
 const adapter = new utils.Adapter('meross');
 const objectHelper = require(__dirname + '/lib/objectHelper'); // Get common adapter utils
-const mapper = require(__dirname + '/lib/mapper'); // Get common adapter utils
-const MerossCloud = require('../index.js');
+const MerossCloud = require('meross-cloud');
 let meross;
 
 const knownDevices = {};
@@ -133,7 +132,7 @@ function defineRole(obj) {
 }
 
 function initDeviceObjects(deviceId, channels, digest) {
-    const objs = {};
+    const objs = [];
     const values = {};
     if (digest.togglex) {
         if (!Array.isArray(digest.togglex)) {
@@ -215,10 +214,24 @@ function initDevice(deviceId, deviceDef, device, callback) {
 
     device.getSystemAbilities((err, deviceAbilities) => {
         adapter.log.debug('Abilities: ' + JSON.stringify(deviceAbilities));
+        if (err || !deviceAbilities) {
+            adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err);
+            objectHelper.processObjectQueue(() => {
+                callback && callback();
+            });
+            return;
+        }
         knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
         device.getSystemAllData((err, deviceAllData) => {
             adapter.log.debug('All-Data: ' + JSON.stringify(deviceAllData));
+            if (err || !deviceAllData) {
+                adapter.log.warn('Can not get Data for Device ' + deviceId + ': ' + err);
+                objectHelper.processObjectQueue(() => {
+                    callback && callback();
+                });
+                return;
+            }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
             if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
@@ -244,7 +257,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
 }
 
 function initDone() {
-    adapter.log.info('Existing devices initialized');
+    adapter.log.info('Devices initialized');
     adapter.subscribeStates('*');
 }
 
@@ -269,32 +282,36 @@ function main() {
     const options = {
         'email': adapter.config.user,
         'password': adapter.config.password,
-        'logger': console.log
+        'logger': adapter.log.debug
     };
 
     meross = new MerossCloud(options);
+    let connectedDevices = 0;
 
     let deviceCount = 0;
     meross.on('deviceInitialized', (deviceId, deviceDef, device) => {
         adapter.log.info('Device ' + deviceId + ' initialized: ' + JSON.stringify(deviceDef));
         let connectionCount = 0;
 
-        initDevice(deviceId, deviceDef, device, () => {
-            if (!--deviceCount) initDone();
-        });
-
         device.on('connected', () => {
             console.log('Device: ' + deviceId + ' connected');
-            if (connectionCount++) {
-                device.getOnlineStatus((res) => {
-                    adapter.setState(deviceId + '.online', !!res.online.status, true);
+            initDevice(deviceId, deviceDef, device, () => {
+                device.getOnlineStatus((err, res) => {
+                    adapter.log.debug('Online: ' + JSON.stringify(res));
+                    if (err || !res) return;
+                    adapter.setState(deviceId + '.online', (res.online.status === 1), true);
                 });
-            }
+
+                if (!--deviceCount) initDone();
+            });
+            connectedDevices++;
+            setConnected(true);
         });
 
         device.on('close', (error) => {
             adapter.log.info('Device: ' + deviceId + ' closed: ' + error);
             adapter.setState(deviceId + '.online', false, true);
+            setConnected((--connectedDevices > 0));
         });
 
         device.on('error', (error) => {
@@ -312,7 +329,7 @@ function main() {
                     setValuesToggleX(deviceId, payload);
                     break;
                 case 'Appliance.System.Online':
-                    adapter.setState(deviceId + '.online', !!payload.online.status, true);
+                    adapter.setState(deviceId + '.online', (payload.online.status === 1), true);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
