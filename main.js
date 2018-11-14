@@ -353,7 +353,7 @@ function main() {
 
     meross.connect((error, count) => {
         if (error) {
-            adapter.log.error('Meross COnnection Error: ' + error);
+            adapter.log.error('Meross Connection Error: ' + error);
             return;
         }
         deviceCount += count;
