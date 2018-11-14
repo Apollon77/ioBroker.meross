@@ -3,16 +3,16 @@
 'use strict';
 
 systemDictionary = {
-    "Host": {
-        "en": "homee-ID / Hostname / IP",
-        "de": "home-ID / Hostname / IP",
-        "ru": "homee-ID / имя хоста / IP-",
-        "pt": "homee-ID / Hostname / IP",
-        "nl": "homee-ID / hostnaam / IP",
-        "fr": "homee-ID / Nom d'hôte / IP",
-        "it": "homee-ID / Nome host / IP",
-        "es": "homee-ID / Nombre de host / IP",
-        "pl": "homee-ID / nazwa hosta / adres IP"
+    "MerossInfo": {
+        "en": "This adapter connects to the Meross Cloud to control your devices. Please enter the Login credentials to your Meross Cloud Account.",
+        "de": "Dieser Adapter stellt eine Verbindung zur Meross Cloud her, um Ihre Geräte zu steuern. Bitte geben Sie die Anmeldeinformationen für Ihr Meross Cloud-Konto ein.",
+        "ru": "Этот адаптер подключается к Meross Cloud для управления вашими устройствами. Введите учетные данные входа в свою учетную запись Meross Cloud.",
+        "pt": "Este adaptador se conecta ao Meross Cloud para controlar seus dispositivos. Por favor insira as credenciais de Login na sua conta Meross Cloud.",
+        "nl": "Deze adapter maakt verbinding met de Meross Cloud om uw apparaten te bedienen. Voer alstublieft de inloggegevens in op uw Meross Cloud Account.",
+        "fr": "Cet adaptateur se connecte au nuage Meross pour contrôler vos appareils. Veuillez saisir les informations de connexion à votre compte Meross Cloud.",
+        "it": "Questo adattatore si collega al Meross Cloud per controllare i tuoi dispositivi. Inserisci le credenziali di accesso al tuo account Meross Cloud.",
+        "es": "Este adaptador se conecta a la nube de Meross para controlar sus dispositivos. Introduzca las credenciales de inicio de sesión en su cuenta Meross Cloud.",
+        "pl": "Ten adapter łączy się z chmurą Meross, aby sterować urządzeniami. Wprowadź dane logowania na swoje konto Meross Cloud."
     },
     "User": {
         "en": "Username",

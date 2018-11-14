@@ -221,6 +221,14 @@ function initDevice(deviceId, deviceDef, device, callback) {
             });
             return;
         }
+        if (!deviceAbilities.ability['Appliance.Control.ToggleX']) {
+            adapter.log.info('Ability ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
+            adapter.log.info(JSON.stringify(deviceAbilities));
+            objectHelper.processObjectQueue(() => {
+                callback && callback();
+            });
+            return;
+        }
         knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
         device.getSystemAllData((err, deviceAllData) => {
