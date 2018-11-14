@@ -298,11 +298,12 @@ function main() {
 
     let deviceCount = 0;
     meross.on('deviceInitialized', (deviceId, deviceDef, device) => {
-        adapter.log.info('Device ' + deviceId + ' initialized: ' + JSON.stringify(deviceDef));
+        adapter.log.info('Device ' + deviceId + ' initialized');
+        adapter.log.debug(JSON.stringify(deviceDef));
         let connectionCount = 0;
 
         device.on('connected', () => {
-            console.log('Device: ' + deviceId + ' connected');
+            adapter.log.info('Device: ' + deviceId + ' connected');
             initDevice(deviceId, deviceDef, device, () => {
                 device.getOnlineStatus((err, res) => {
                     adapter.log.debug('Online: ' + JSON.stringify(res));
@@ -331,7 +332,7 @@ function main() {
         });
 
         device.on('data', (namespace, payload) => {
-            adapter.log.info('Device: ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
+            adapter.log.debug('Device: ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
             switch(namespace) {
                 case 'Appliance.Control.ToggleX':
                     setValuesToggleX(deviceId, payload);
