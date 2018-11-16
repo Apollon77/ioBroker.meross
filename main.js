@@ -135,7 +135,7 @@ function initDeviceObjects(deviceId, channels, digest) {
     const objs = [];
     const values = {};
 
-    if (digest.toggle) {
+    if (digest && digest.toggle) {
         const val = digest.toggle;
         const common = {};
         if (val.onoff !== undefined) {
@@ -153,7 +153,7 @@ function initDeviceObjects(deviceId, channels, digest) {
         }
         objs.push(common);
     }
-    else if (digest.togglex) {
+    else if (digest && digest.togglex) {
         if (!Array.isArray(digest.togglex)) {
             digest.togglex = [digest.togglex];
         }

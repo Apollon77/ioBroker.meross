@@ -3,7 +3,11 @@
 =================
 
 ## Description
+This adapter allows to control Meross devices by connecting to the Meross cloud servers.
 
+## Known working devices
+* mss425e
+* mss310
 
 ## Changelog
 
