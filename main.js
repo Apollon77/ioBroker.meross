@@ -134,7 +134,26 @@ function defineRole(obj) {
 function initDeviceObjects(deviceId, channels, digest) {
     const objs = [];
     const values = {};
-    if (digest.togglex) {
+
+    if (digest.toggle) {
+        const val = digest.toggle;
+        const common = {};
+        if (val.onoff !== undefined) {
+            common.type = 'boolean';
+            common.read = true;
+            common.write = true;
+            common.name = 'Switch';
+            common.role = defineRole(common);
+            common.id = 'switch';
+            values['switch'] = !!val.onoff;
+        }
+        else {
+            adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+            return;
+        }
+        objs.push(common);
+    }
+    else if (digest.togglex) {
         if (!Array.isArray(digest.togglex)) {
             digest.togglex = [digest.togglex];
         }
@@ -213,17 +232,9 @@ function initDevice(deviceId, deviceDef, device, callback) {
     }, false);
 
     device.getSystemAbilities((err, deviceAbilities) => {
-        adapter.log.debug('Abilities: ' + JSON.stringify(deviceAbilities));
+        adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
         if (err || !deviceAbilities) {
             adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err);
-            objectHelper.processObjectQueue(() => {
-                callback && callback();
-            });
-            return;
-        }
-        if (!deviceAbilities.ability['Appliance.Control.ToggleX']) {
-            adapter.log.info('Ability ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
-            adapter.log.info(JSON.stringify(deviceAbilities));
             objectHelper.processObjectQueue(() => {
                 callback && callback();
             });
@@ -232,7 +243,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
         knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
         device.getSystemAllData((err, deviceAllData) => {
-            adapter.log.debug('All-Data: ' + JSON.stringify(deviceAllData));
+            adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
             if (err || !deviceAllData) {
                 adapter.log.warn('Can not get Data for Device ' + deviceId + ': ' + err);
                 objectHelper.processObjectQueue(() => {
@@ -241,6 +252,15 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 return;
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
+
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle']) {
+                adapter.log.info('Ability Toggle/ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
+                adapter.log.info(JSON.stringify(deviceAbilities));
+                objectHelper.processObjectQueue(() => {
+                    callback && callback();
+                });
+                return;
+            }
 
             if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
                 objectHelper.setOrUpdateObject(deviceId + '.ip', {
@@ -260,6 +280,24 @@ function initDevice(deviceId, deviceDef, device, callback) {
             objectHelper.processObjectQueue(() => {
                 callback && callback();
             });
+
+            if (deviceAbilities.ability['Appliance.Control.Electricity']) {
+                device.getControlElectricity((err, res) => {
+                    adapter.log.info(deviceId + ' Electricity: ' + JSON.stringify(res));
+
+                    if (deviceAbilities.ability['Appliance.Control.ConsumptionX']) {
+                        device.getControlPowerConsumptionX((err, res) => {
+                            adapter.log.info(deviceId + ' ConsumptionX: ' + JSON.stringify(res));
+
+                            if (deviceAbilities.ability['Appliance.Control.Consumption']) {
+                                device.getControlPowerConsumption((err, res) => {
+                                    adapter.log.info(deviceId + ' Consumption: ' + JSON.stringify(res));
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         });
     });
 }
@@ -279,6 +317,13 @@ function setValuesToggleX(deviceId, payload) {
         payload.togglex.forEach((val) => {
             adapter.setState(deviceId + '.' + val.channel, !!val.onoff, true);
         });
+    }
+}
+
+function setValuesToggle(deviceId, payload) {
+    // {"toggle":{"onoff":1,"lmTime":1542311107}}
+    if (payload && payload.toggle) {
+        adapter.setState(deviceId + '.switch', !!payload.toggle.onoff, true);
     }
 }
 
@@ -336,6 +381,9 @@ function main() {
             switch(namespace) {
                 case 'Appliance.Control.ToggleX':
                     setValuesToggleX(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Toggle':
+                    setValuesToggle(deviceId, payload);
                     break;
                 case 'Appliance.System.Online':
                     adapter.setState(deviceId + '.online', (payload.online.status === 1), true);

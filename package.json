@@ -1,5 +1,5 @@
 {
-    "version": "0.1.0",
+    "version": "0.3.0",
     "name": "iobroker.meross",
     "author": {
         "name": "Apollon77",
@@ -15,7 +15,7 @@
         }
     ],
     "dependencies": {
-        "meross-cloud": "^0.2.0"
+        "meross-cloud": "^0.3.0"
     },
     "description": "meross cloud adapter for ioBroker",
     "devDependencies": {

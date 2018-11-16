@@ -3,34 +3,15 @@
 =================
 
 ## Description
-This adapter connects ioBroker to homee and provides the following features:
-* allows connection via IP or homee-ID and username/password
-* read all devices(nodes) and states (attributes) and show their values including updates in ioBroker
-* allow changing values in ioBroker and send them back to homee to control devices
-* acts as a ioBroker History provider for all states devices where history is enabled in homee. This means you can use the history values stored in homee to display in ioBroker using flot, Admin or also JavaScript including all aggregations on data level as known from e.g. History adapter
-
-This adapter is based on the outstanding work of [stfnhmplr](http://twitter.com/stfnhmplr) and his [homee-api](https://github.com/stfnhmplr/homee-api).
-
-## Known issues
-* On js-controller <1.5.0 it can have strange effects when enabling other history providers on some of the roles (e.g. "switch")
-* nodejs 10 NOT WORKING because of too old Websocket Library in Homee-API-Library
 
 
 ## Changelog
 
-### 0.3.2 (2018.08.07)
-* (Apollon77) corrected automatic role determination and added playing state for homeegrams
+### 0.3.0 (2018.11.16)
+* (Apollon77) add support fro mss310 devices
 
-### 0.3.1 (2018.07.27)
-* (Apollon77) Special handling for RGB values (delete objects and restart adapter)
-* (Apollon77) Also allow enabling/disabling of Homeegrams (best delete objects unter Homee-0.Homeegrams!)
-* (Apollon77) Optimize some roles, more Role feedback via Github issues please!
-
-### 0.2.0 (2018.07.04)
-* (Apollon77) Fix History logic (try) and add Homeegram support
-
-### 0.1.1 (2018.07.04)
-* (Apollon77) initial version
+### 0.1.0 (2018.11.14)
+* (Apollon77) First release to support ToggleX devices
 
 ## License
 The MIT License (MIT)
