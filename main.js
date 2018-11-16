@@ -17,6 +17,12 @@ const knownDevices = {};
 let connected = null;
 let connectedCount = 0;
 
+const scaleValues = {
+    'power': -3,
+    'current': -3,
+    'voltage': -2
+};
+
 function decrypt(key, value) {
     let result = '';
     for (let i = 0; i < value.length; ++i) {
@@ -131,12 +137,12 @@ function defineRole(obj) {
     return role;
 }
 
-function initDeviceObjects(deviceId, channels, digest) {
+function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
     const values = {};
 
-    if (digest && digest.toggle) {
-        const val = digest.toggle;
+    if (data && data.toggle) {
+        const val = data.toggle;
         const common = {};
         if (val.onoff !== undefined) {
             common.type = 'boolean';
@@ -144,8 +150,8 @@ function initDeviceObjects(deviceId, channels, digest) {
             common.write = true;
             common.name = 'Switch';
             common.role = defineRole(common);
-            common.id = 'switch';
-            values['switch'] = !!val.onoff;
+            common.id = '0-switch';
+            values['0-switch'] = !!val.onoff;
         }
         else {
             adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
@@ -153,11 +159,11 @@ function initDeviceObjects(deviceId, channels, digest) {
         }
         objs.push(common);
     }
-    else if (digest && digest.togglex) {
-        if (!Array.isArray(digest.togglex)) {
-            digest.togglex = [digest.togglex];
+    else if (data && data.togglex) {
+        if (!Array.isArray(data.togglex)) {
+            data.togglex = [data.togglex];
         }
-        digest.togglex.forEach((val) => {
+        data.togglex.forEach((val) => {
             const common = {};
             if (val.onoff !== undefined) {
                 common.type = 'boolean';
@@ -180,6 +186,27 @@ function initDeviceObjects(deviceId, channels, digest) {
             }
             objs.push(common);
         });
+    }
+    else if (data && data.electricity) {
+        if (data.electricity.channel === undefined || data.electricity.channel !==0) {
+            adapter.log.info('Unsupported type for electricity val ' + JSON.stringify(data));
+            return;
+        }
+        const channel = data.electricity.channel;
+        for (let key in data.electricity) {
+            if (!data.electricity.hasOwnProperty(key)) continue;
+            if (key === 'channel') continue;
+            const common = {};
+            common.type = 'number';
+            common.read = true;
+            common.write = false;
+            common.name = key;
+            common.role = defineRole(common);
+            common.id = channel + '-' + key;
+            values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (scaleValues[key] || 0)) * 100) / 100;
+
+            objs.push(common);
+        }
     }
 
     objs.forEach((obj) => {
@@ -275,7 +302,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest);
+            initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
 
             objectHelper.processObjectQueue(() => {
                 callback && callback();
@@ -283,20 +310,11 @@ function initDevice(deviceId, deviceDef, device, callback) {
 
             if (deviceAbilities.ability['Appliance.Control.Electricity']) {
                 device.getControlElectricity((err, res) => {
-                    adapter.log.info(deviceId + ' Electricity: ' + JSON.stringify(res));
-
-                    if (deviceAbilities.ability['Appliance.Control.ConsumptionX']) {
-                        device.getControlPowerConsumptionX((err, res) => {
-                            adapter.log.info(deviceId + ' ConsumptionX: ' + JSON.stringify(res));
-
-                            if (deviceAbilities.ability['Appliance.Control.Consumption']) {
-                                device.getControlPowerConsumption((err, res) => {
-                                    adapter.log.info(deviceId + ' Consumption: ' + JSON.stringify(res));
-                                });
-                            }
-                        });
-                    }
+                    //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+                    adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
+                    initDeviceObjects(deviceId, deviceDef.channels, res);
                 });
+                pollElectricity(deviceId);
             }
         });
     });
@@ -305,6 +323,25 @@ function initDevice(deviceId, deviceDef, device, callback) {
 function initDone() {
     adapter.log.info('Devices initialized');
     adapter.subscribeStates('*');
+}
+
+function pollElectricity(deviceId, delay) {
+    if (!delay) delay = 60000;
+    if (knownDevices[deviceId].electricityPollTimeout) {
+        clearTimeout(knownDevices[deviceId].electricityPollTimeout);
+        knownDevices[deviceId].electricityPollTimeout = null;
+    }
+    knownDevices[deviceId].electricityPollTimeout = setTimeout(() => {
+        knownDevices[deviceId].electricityPollTimeout = null;
+        knownDevices[deviceId].device.getControlElectricity((err, res) => {
+            if (!err) {
+                //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+                adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
+                setValuesElectricity(deviceId, res);
+            }
+            pollElectricity(deviceId);
+        });
+    });
 }
 
 function setValuesToggleX(deviceId, payload) {
@@ -323,7 +360,20 @@ function setValuesToggleX(deviceId, payload) {
 function setValuesToggle(deviceId, payload) {
     // {"toggle":{"onoff":1,"lmTime":1542311107}}
     if (payload && payload.toggle) {
-        adapter.setState(deviceId + '.switch', !!payload.toggle.onoff, true);
+        adapter.setState(deviceId + '.0-switch', !!payload.toggle.onoff, true);
+    }
+}
+
+function setValuesElectricity(deviceId, payload) {
+    // {"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+    if (payload && payload.electricity) {
+        const channel = payload.electricity.channel;
+        for (let key in payload.electricity) {
+            if (!payload.electricity.hasOwnProperty(key)) continue;
+            if (key === 'channel') continue;
+
+            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (scaleValues[key] || 0)) * 100) / 100, true);
+        }
     }
 }
 
@@ -366,6 +416,10 @@ function main() {
             adapter.log.info('Device: ' + deviceId + ' closed: ' + error);
             adapter.setState(deviceId + '.online', false, true);
             setConnected((--connectedDevices > 0));
+            if (knownDevices[deviceId].electricityPollTimeout) {
+                clearTimeout(knownDevices[deviceId].electricityPollTimeout);
+                knownDevices[deviceId].electricityPollTimeout = null;
+            }
         });
 
         device.on('error', (error) => {
