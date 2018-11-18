@@ -152,6 +152,18 @@ function initDeviceObjects(deviceId, channels, data) {
             common.role = defineRole(common);
             common.id = '0-switch';
             values['0-switch'] = !!val.onoff;
+
+            common.onChange = (value) => {
+                if (!knownDevices[deviceId].device) {
+                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    return;
+                }
+
+                knownDevices[deviceId].device.controlToggle((value ? 1 : 0), (err, res) => {
+                    adapter.log.debug('Toggle Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                    adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+                });
+            };
         }
         else {
             adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
@@ -179,6 +191,18 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = defineRole(common);
                 common.id = val.channel;
                 values[val.channel] = !!val.onoff;
+
+                common.onChange = (value) => {
+                    if (!knownDevices[deviceId].device) {
+                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        return;
+                    }
+
+                    knownDevices[deviceId].device.controlToggleX(common.id, (value ? 1 : 0), (err, res) => {
+                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+                    });
+                };
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
@@ -212,20 +236,8 @@ function initDeviceObjects(deviceId, channels, data) {
     objs.forEach((obj) => {
         const id = obj.id;
         delete obj.id;
-        let onChange;
-        if (obj.write) {
-            onChange = (value) => {
-                if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                    return;
-                }
-
-                knownDevices[deviceId].device.controlToggleX(id, (value ? 1 : 0), (err, res) => {
-                    adapter.log.debug('Toggle Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + '.' + id + ': set value ' + value);
-                });
-            };
-        }
+        const onChange = obj.onChange;
+        delete obj.onChange;
         objectHelper.setOrUpdateObject(deviceId + '.' + id, {
             type: 'state',
             common: obj
@@ -326,7 +338,7 @@ function initDone() {
 }
 
 function pollElectricity(deviceId, delay) {
-    if (!delay) delay = 60000;
+    if (!delay) delay = 20000;
     if (knownDevices[deviceId].electricityPollTimeout) {
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
         knownDevices[deviceId].electricityPollTimeout = null;
