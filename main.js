@@ -162,6 +162,10 @@ function initDeviceObjects(deviceId, channels, data) {
                 knownDevices[deviceId].device.controlToggle((value ? 1 : 0), (err, res) => {
                     adapter.log.debug('Toggle Response: err: ' + err + ', res: ' + JSON.stringify(res));
                     adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+
+                    if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
+                        pollElectricity(deviceId, 2000);
+                    }
                 });
             };
         }
@@ -201,6 +205,10 @@ function initDeviceObjects(deviceId, channels, data) {
                     knownDevices[deviceId].device.controlToggleX(common.id, (value ? 1 : 0), (err, res) => {
                         adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
                         adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+
+                        if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
+                            pollElectricity(deviceId, 2000);
+                        }
                     });
                 };
             }
