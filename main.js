@@ -341,7 +341,7 @@ function pollElectricity(deviceId, delay) {
             }
             pollElectricity(deviceId);
         });
-    });
+    }, delay);
 }
 
 function setValuesToggleX(deviceId, payload) {
