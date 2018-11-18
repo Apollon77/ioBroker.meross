@@ -20,7 +20,7 @@ let connectedCount = 0;
 const scaleValues = {
     'power': -3,
     'current': -3,
-    'voltage': -2
+    'voltage': -1
 };
 
 function decrypt(key, value) {
@@ -161,7 +161,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 knownDevices[deviceId].device.controlToggle((value ? 1 : 0), (err, res) => {
                     adapter.log.debug('Toggle Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+                    adapter.log.debug(deviceId + '.0: set value ' + value);
 
                     if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
                         pollElectricity(deviceId, 2000);
@@ -472,6 +472,10 @@ function main() {
             }
         });
 
+    });
+
+    meross.on('data', (deviceId, namespace, payload) => {
+        adapter.log.debug('Device(2): ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
     });
 
     meross.connect((error, count) => {
