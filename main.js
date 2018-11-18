@@ -324,10 +324,6 @@ function initDevice(deviceId, deviceDef, device, callback) {
 
             initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
 
-            objectHelper.processObjectQueue(() => {
-                callback && callback();
-            });
-
             if (deviceAbilities.ability['Appliance.Control.Electricity']) {
                 device.getControlElectricity((err, res) => {
                     //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
@@ -335,6 +331,16 @@ function initDevice(deviceId, deviceDef, device, callback) {
                     initDeviceObjects(deviceId, deviceDef.channels, res);
                 });
                 pollElectricity(deviceId);
+
+                objectHelper.processObjectQueue(() => {
+                    callback && callback();
+                });
+
+            }
+            else {
+                objectHelper.processObjectQueue(() => {
+                    callback && callback();
+                });
             }
         });
     });
