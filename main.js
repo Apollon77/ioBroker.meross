@@ -471,6 +471,9 @@ function main() {
                     adapter.log.info('Please send full line from logfile on disk to developer');
             }
         });
+        device.on('rawData', (message) => {
+            adapter.log.debug('Device Raw: ' + deviceId + ' - data: ' + JSON.stringify(message));
+        });
 
     });
 

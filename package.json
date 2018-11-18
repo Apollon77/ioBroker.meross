@@ -15,7 +15,7 @@
         }
     ],
     "dependencies": {
-        "meross-cloud": "^0.3.0"
+        "meross-cloud": "^0.3.1"
     },
     "description": "meross cloud adapter for ioBroker",
     "devDependencies": {
