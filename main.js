@@ -329,13 +329,12 @@ function initDevice(deviceId, deviceDef, device, callback) {
                     //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
                     adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
                     initDeviceObjects(deviceId, deviceDef.channels, res);
+
+                    objectHelper.processObjectQueue(() => {
+                        callback && callback();
+                    });
                 });
                 pollElectricity(deviceId);
-
-                objectHelper.processObjectQueue(() => {
-                    callback && callback();
-                });
-
             }
             else {
                 objectHelper.processObjectQueue(() => {
