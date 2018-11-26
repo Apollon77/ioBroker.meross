@@ -191,9 +191,9 @@ function initDeviceObjects(deviceId, channels, data) {
                         return;
                     }
 
-                    knownDevices[deviceId].device.controlToggleX(common.id, (value ? 1 : 0), (err, res) => {
+                    knownDevices[deviceId].device.controlToggleX(val.channel, (value ? 1 : 0), (err, res) => {
                         adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + common.id + ': set value ' + value);
+                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
 
                         if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
                             pollElectricity(deviceId, 2000);
@@ -340,6 +340,7 @@ function initDone() {
 }
 
 function pollElectricity(deviceId, delay) {
+    if (!knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
     if (!delay) delay = adapter.config.electricityPollingInterval || 20;
     if (knownDevices[deviceId].electricityPollTimeout) {
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
