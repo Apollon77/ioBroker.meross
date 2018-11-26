@@ -368,6 +368,7 @@ function setValuesToggleX(deviceId, payload) {
         payload.togglex.forEach((val) => {
             adapter.setState(deviceId + '.' + val.channel, !!val.onoff, true);
         });
+        pollElectricity(deviceId, 2000);
     }
 }
 
@@ -375,6 +376,7 @@ function setValuesToggle(deviceId, payload) {
     // {"toggle":{"onoff":1,"lmTime":1542311107}}
     if (payload && payload.toggle) {
         adapter.setState(deviceId + '.0-switch', !!payload.toggle.onoff, true);
+        pollElectricity(deviceId, 2000);
     }
 }
 
