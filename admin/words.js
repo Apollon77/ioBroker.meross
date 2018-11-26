@@ -35,5 +35,16 @@ systemDictionary = {
         "it": "Parola d'ordine",
         "es": "Contraseña",
         "pl": "Hasło"
+    },
+    "electricityPollingInterval": {
+        "en": "Polling interval for electricity values",
+        "de": "Abfrageintervall für Stromwerte",
+        "ru": "Интервал опроса для значений электроэнергии",
+        "pt": "Intervalo de pesquisa para valores de eletricidade",
+        "nl": "Polling-interval voor elektriciteitswaarden",
+        "fr": "Intervalle d'interrogation pour les valeurs d'électricité",
+        "it": "Intervallo di polling per i valori di elettricità",
+        "es": "Intervalo de sondeo para valores de electricidad.",
+        "pl": "Interwał odpytywania dla wartości energii elektrycznej"
     }
 };

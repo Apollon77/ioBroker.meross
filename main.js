@@ -15,7 +15,6 @@ let meross;
 
 const knownDevices = {};
 let connected = null;
-let connectedCount = 0;
 
 const scaleValues = {
     'power': -3,
@@ -76,16 +75,6 @@ adapter.on('stateChange', function(id, state) {
     objectHelper.handleStateChange(id, state);
 });
 
-function setConnected(isConnected) {
-    if (connected !== isConnected) {
-        connected = isConnected;
-        adapter.setState('info.connection', connected, true, (err) => {
-            // analyse if the state could be set (because of permissions)
-            if (err) adapter.log.error('Can not update connected state: ' + err);
-            else adapter.log.debug('connected set to ' + connected);
-        });
-    }
-}
 
 adapter.on('ready', () => {
     adapter.getForeignObject('system.config', (err, obj) => {
@@ -189,7 +178,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 if (channels[val.channel] && channels[val.channel].devName) {
                     common.name = channels[val.channel].devName;
                 }
-                if (!common.name.length && val.channel == '0') {
+                if (!common.name.length && val.channel == 0) {
                     common.name = 'All';
                 }
                 common.role = defineRole(common);
@@ -351,7 +340,7 @@ function initDone() {
 }
 
 function pollElectricity(deviceId, delay) {
-    if (!delay) delay = 20000;
+    if (!delay) delay = adapter.config.electricityPollingInterval || 20;
     if (knownDevices[deviceId].electricityPollTimeout) {
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
         knownDevices[deviceId].electricityPollTimeout = null;
@@ -407,6 +396,11 @@ function main() {
     setConnected(false);
     objectHelper.init(adapter);
 
+    // Maximum password length supported by cloud is 15 characters
+    if (adapter.config.password.length > 15) {
+        adapter.config.password = adapter.config.password.substring(0, 15);
+    }
+
     const options = {
         'email': adapter.config.user,
         'password': adapter.config.password,
@@ -420,7 +414,6 @@ function main() {
     meross.on('deviceInitialized', (deviceId, deviceDef, device) => {
         adapter.log.info('Device ' + deviceId + ' initialized');
         adapter.log.debug(JSON.stringify(deviceDef));
-        let connectionCount = 0;
 
         device.on('connected', () => {
             adapter.log.info('Device: ' + deviceId + ' connected');

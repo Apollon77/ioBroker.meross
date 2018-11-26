@@ -51,6 +51,7 @@
     function loadHelper(settings, onChange) {
         // example: select elements with id=key and class=value and insert value
         if (!settings) return;
+        if (settings.electricityPollingInterval === undefined) settings.electricityPollingInterval = 20;
 
         $('.value').each(function () {
             var $key = $(this);
@@ -128,13 +129,20 @@
                 <div class="row">
                     <div class="input-field col s6">
                         <input class="value" id="user" type="text">
-                        <label for="homeeIp">User</label>
+                        <label for="user">User</label>
                         <span class="translate">User</span>
                     </div>
                     <div class="input-field col s6">
-                        <input class="value" id="password" type="password">
+                        <input class="value" id="password" type="password" maxlength="15">
                         <label for="password">Password</label>
                         <span class="translate">Password</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input class="value" id="electricityPollingInterval" type="number"> s
+                        <label for="electricityPollingInterval">electricityPollingInterval</label>
+                        <span class="translate">electricityPollingInterval</span>
                     </div>
                 </div>
             </div>

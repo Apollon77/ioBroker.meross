@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "meross",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "news": {
+            "0.4.0": {
+                "en": "Added mss310 devices and electricity value handling including polling interval",
+                "de": "Mss310-Geräte und Stromwertverarbeitung einschließlich Abfrageintervall hinzugefügt",
+                "ru": "Добавлены устройства mss310 и обработка стоимости электроэнергии, включая интервал опроса",
+                "pt": "Adicionado dispositivos mss310 e manipulação de valor de eletricidade, incluindo intervalo de pesquisa",
+                "nl": "Mss310-apparaten en afhandeling van elektriciteitswaarde toegevoegd, inclusief polling-interval",
+                "fr": "Ajout de périphériques mss310 et de la gestion de la valeur électrique, y compris l'intervalle d'interrogation",
+                "it": "Aggiunti dispositivi mss310 e gestione del valore dell'elettricità compreso l'intervallo di polling",
+                "es": "Se agregaron dispositivos mss310 y manejo del valor de la electricidad, incluido el intervalo de sondeo",
+                "pl": "Dodano urządzenia mss310 i obsługę wartości elektrycznej, w tym interwał sondowania"
+            },
             "0.1.0": {
                 "en": "Initial release",
                 "de": "Erstveröffentlichung",
@@ -53,7 +64,8 @@
     },
     "native": {
         "user": "",
-        "password": ""
+        "password": "",
+        "electricityPollingInterval": 20
     },
     "objects": [
 
