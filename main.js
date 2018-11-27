@@ -356,7 +356,7 @@ function pollElectricity(deviceId, delay) {
             }
             pollElectricity(deviceId);
         });
-    }, delay);
+    }, delay * 1000);
 }
 
 function setValuesToggleX(deviceId, payload) {

@@ -26,7 +26,7 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 
 ## Changelog
 
-### 0.4.0 (2018.11.26)
+### 0.4.1 (2018.11.26)
 * (Apollon77) finalize version and allow electricity polling interval to be configured
 
 ### 0.3.0 (2018.11.16)
