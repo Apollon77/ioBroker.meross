@@ -153,7 +153,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     adapter.log.debug(deviceId + '.0: set value ' + value);
 
                     if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
-                        pollElectricity(deviceId, 2000);
+                        pollElectricity(deviceId, 2);
                     }
                 });
             };
@@ -196,7 +196,7 @@ function initDeviceObjects(deviceId, channels, data) {
                         adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
 
                         if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
-                            pollElectricity(deviceId, 2000);
+                            pollElectricity(deviceId, 2);
                         }
                     });
                 };
@@ -369,7 +369,7 @@ function setValuesToggleX(deviceId, payload) {
         payload.togglex.forEach((val) => {
             adapter.setState(deviceId + '.' + val.channel, !!val.onoff, true);
         });
-        pollElectricity(deviceId, 2000);
+        pollElectricity(deviceId, 2);
     }
 }
 
@@ -377,7 +377,7 @@ function setValuesToggle(deviceId, payload) {
     // {"toggle":{"onoff":1,"lmTime":1542311107}}
     if (payload && payload.toggle) {
         adapter.setState(deviceId + '.0-switch', !!payload.toggle.onoff, true);
-        pollElectricity(deviceId, 2000);
+        pollElectricity(deviceId, 2);
     }
 }
 
