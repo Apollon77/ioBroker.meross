@@ -343,11 +343,14 @@ function pollElectricity(deviceId, delay) {
     if (!knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
     if (!delay) delay = adapter.config.electricityPollingInterval || 20;
     if (knownDevices[deviceId].electricityPollTimeout) {
+        adapter.log.debug(deviceId + ' Electricity schedule cleared');
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
         knownDevices[deviceId].electricityPollTimeout = null;
     }
+    adapter.log.debug(deviceId + ' Electricity scheduled in : ' + delay + 's');
     knownDevices[deviceId].electricityPollTimeout = setTimeout(() => {
         knownDevices[deviceId].electricityPollTimeout = null;
+        adapter.log.debug(deviceId + ' Electricity query executed now');
         knownDevices[deviceId].device.getControlElectricity((err, res) => {
             if (!err) {
                 //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
