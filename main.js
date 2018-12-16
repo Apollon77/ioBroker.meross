@@ -468,6 +468,7 @@ function main() {
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
+                case 'Appliance.Control.ConsumptionX':
                     break;
 
                 default:
