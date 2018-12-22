@@ -15,7 +15,8 @@
         }
     ],
     "dependencies": {
-        "meross-cloud": "^1.0.0"
+        "meross-cloud": "^1.0.0",
+        "@apollon/iobroker-tools": "^0.1.0"
     },
     "description": "meross cloud adapter for ioBroker",
     "devDependencies": {

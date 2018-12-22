@@ -9,7 +9,7 @@
 const utils   = require(__dirname + '/lib/utils'); // Get common adapter utils
 
 const adapter = new utils.Adapter('meross');
-const objectHelper = require(__dirname + '/lib/objectHelper'); // Get common adapter utils
+const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const MerossCloud = require('meross-cloud');
 let meross;
 
