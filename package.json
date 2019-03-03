@@ -1,46 +1,47 @@
 {
-    "version": "1.0.0",
-    "name": "iobroker.meross",
-    "author": {
-        "name": "Apollon77",
-        "email": "ingo@fischer-ka.de"
-    },
-    "bugs": {
-        "url": "https://github.com/Apollon77/ioBroker.meross/issues"
-    },
-    "contributors": [
-        {
-            "name": "Apollon77",
-            "email": "ingo@fischer-ka.de"
-        }
-    ],
-    "dependencies": {
-        "meross-cloud": "^1.0.0",
-        "@apollon/iobroker-tools": "^0.1.0",
-        "@iobroker/adapter-core": "^1.0.1"
-    },
-    "description": "meross cloud adapter for ioBroker",
-    "devDependencies": {
-        "chai": "^4.1.2",
-        "gulp": "^4.0.0",
-        "mocha": "^5.2.0"
-    },
-    "optionalDependencies": {},
-    "homepage": "https://github.com/Apollon77/ioBroker.meross",
-    "keywords": [
-        "ioBroker",
-        "Homee",
-        "Smart Home",
-        "home automation"
-    ],
-    "license": "MIT",
-    "main": "main.js",
-    "readmeFilename": "README.md",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Apollon77/ioBroker.meross.git"
-    },
-    "scripts": {
-        "test": "node node_modules/mocha/bin/mocha --exit"
+  "version": "1.0.0",
+  "name": "iobroker.meross",
+  "author": {
+    "name": "Apollon77",
+    "email": "ingo@fischer-ka.de"
+  },
+  "bugs": {
+    "url": "https://github.com/Apollon77/ioBroker.meross/issues"
+  },
+  "contributors": [
+    {
+      "name": "Apollon77",
+      "email": "ingo@fischer-ka.de"
     }
+  ],
+  "dependencies": {
+    "meross-cloud": "^1.0.0",
+    "@apollon/iobroker-tools": "^0.1.0",
+    "@iobroker/adapter-core": "^1.0.1"
+  },
+  "description": "meross cloud adapter for ioBroker",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "gulp": "^4.0.0",
+    "mocha": "^6.0.2",
+    "@iobroker/adapter-core": "^1.0.3"
+  },
+  "optionalDependencies": {},
+  "homepage": "https://github.com/Apollon77/ioBroker.meross",
+  "keywords": [
+    "ioBroker",
+    "Homee",
+    "Smart Home",
+    "home automation"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apollon77/ioBroker.meross.git"
+  },
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha --exit"
+  }
 }
