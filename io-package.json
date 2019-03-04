@@ -51,6 +51,7 @@
         "authors": [
             "Apollon77 <ingo@fischer-ka.de"
         ],
+        "license": "MIT",
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "meross.png",
