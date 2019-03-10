@@ -2,7 +2,7 @@
 # ioBroker.meross
 [![Greenkeeper badge](https://badges.greenkeeper.io/Apollon77/ioBroker.meross.svg)](https://greenkeeper.io/)
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.meross.svg)](https://www.npmjs.com/package/iobroker.meross)
+![Number of Installations](http://iobroker.live/badges/meross-installed.svg) ![Number of Installations](http://iobroker.live/badges/meross-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.meross.svg)](https://www.npmjs.com/package/iobroker.meross)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.meross.svg)](https://www.npmjs.com/package/iobroker.meross)
 
 **Tests:** Linux/Mac/Windows: [![Travis-CI](http://img.shields.io/travis/Apollon77/ioBroker.meross/master.svg)](https://travis-ci.org/Apollon77/ioBroker.meross)
