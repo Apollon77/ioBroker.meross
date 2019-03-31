@@ -49,7 +49,7 @@
             "pl": "obsługa urządzeń Wi-Fi firmy Meross"
         },
         "authors": [
-            "Apollon77 <ingo@fischer-ka.de"
+            "Apollon77 <ingo@fischer-ka.de>"
         ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
