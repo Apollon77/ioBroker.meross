@@ -15,6 +15,7 @@ let meross;
 
 const knownDevices = {};
 let connected = null;
+let stopped = false;
 
 const scaleValues = {
     'power': -3,
@@ -43,6 +44,7 @@ function setConnected(isConnected) {
 
 // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function(callback) {
+    stopped = true;
     try {
         setConnected(false);
         stopAll();
@@ -90,6 +92,7 @@ adapter.on('ready', () => {
 });
 
 function stopAll() {
+    stopped = true;
     if (meross) {
         meross.disconnectAll(true);
     }
@@ -229,6 +232,29 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         }
     }
+    else if (data && data.garageDoor) {
+        if (!Array.isArray(data.garageDoor)) {
+            adapter.log.info('Unsupported type for garageDoor val ' + JSON.stringify(data));
+            return;
+        }
+        data.garageDoor.forEach((val) => {
+            const common = {};
+            if (val.open !== undefined) {
+                common.type = 'boolean';
+                common.read = true;
+                common.write = false;
+                common.name = 'garageDoor-' + val.channel;
+                common.role = defineRole(common);
+                common.id = common.name
+                values[common.name] = !!val.open;
+            }
+            else {
+                adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+                return;
+            }
+            objs.push(common);
+        });
+    }
 
     objs.forEach((obj) => {
         const id = obj.id;
@@ -289,7 +315,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State']) {
                 adapter.log.info('Ability Toggle/ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -324,12 +350,14 @@ function initDevice(deviceId, deviceDef, device, callback) {
                     });
                 });
                 pollElectricity(deviceId);
+                return;
             }
-            else {
-                objectHelper.processObjectQueue(() => {
-                    callback && callback();
-                });
+            if (deviceAbilities.ability['Appliance.GarageDoor.State']) {
+                initDeviceObjects(deviceId, {garageDoor: deviceDef.garageDoor}, deviceDef.garageDoor);
             }
+            objectHelper.processObjectQueue(() => {
+                callback && callback();
+            });
         });
     });
 }
@@ -373,6 +401,19 @@ function setValuesToggleX(deviceId, payload) {
             adapter.setState(deviceId + '.' + val.channel, !!val.onoff, true);
         });
         pollElectricity(deviceId, 2);
+    }
+}
+
+function setValuesGarageDoor(deviceId, payload) {
+    // {"state":[{"channel":0,"open":1,"lmTime":1559850976}],"reason":{"bootup":{"timestamp":1559851565}}} OR
+    // {"state":[{"channel":0,"open":1,"lmTime":1559851588}]}
+    if (payload && payload.state) {
+        if (!Array.isArray(payload.togglex)) {
+            payload.state = [payload.state];
+        }
+        payload.state.forEach((val) => {
+            adapter.setState(deviceId + '.garageDoor-' + val.channel, !!val.open, true);
+        });
     }
 }
 
@@ -423,6 +464,9 @@ function main() {
 
         device.on('connected', () => {
             adapter.log.info('Device: ' + deviceId + ' connected');
+            if (knownDevices[deviceId].reconnectTimeout) {
+                clearTimeout(knownDevices[deviceId].reconnectTimeout);
+            }
             initDevice(deviceId, deviceDef, device, () => {
                 device.getOnlineStatus((err, res) => {
                     adapter.log.debug('Online: ' + JSON.stringify(res));
@@ -444,14 +488,33 @@ function main() {
                 clearTimeout(knownDevices[deviceId].electricityPollTimeout);
                 knownDevices[deviceId].electricityPollTimeout = null;
             }
+            if (knownDevices[deviceId].reconnectTimeout) {
+                clearTimeout(knownDevices[deviceId].reconnectTimeout);
+            }
+            if (!stopped)  {
+                knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                    device.connect();
+                }, 10000);
+            }
         });
 
         device.on('error', (error) => {
             adapter.log.info('Device: ' + deviceId + ' error: ' + error);
+            if (knownDevices[deviceId].reconnectTimeout) {
+                clearTimeout(knownDevices[deviceId].reconnectTimeout);
+            }
+            if (!stopped) {
+                knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                    device.connect();
+                }, 10000);
+            }
         });
 
         device.on('reconnect', () => {
             adapter.log.info('Device: ' + deviceId + ' reconnected');
+            if (knownDevices[deviceId].reconnectTimeout) {
+                clearTimeout(knownDevices[deviceId].reconnectTimeout);
+            }
         });
 
         device.on('data', (namespace, payload) => {
@@ -465,6 +528,9 @@ function main() {
                     break;
                 case 'Appliance.System.Online':
                     adapter.setState(deviceId + '.online', (payload.online.status === 1), true);
+                    break;
+                case 'Appliance.GarageDoor.State':
+                    setValuesGarageDoor(deviceId, payload);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
@@ -493,26 +559,4 @@ function main() {
         }
         deviceCount += count;
     });
-
-
-/*
-    adapter.getDevices((err, devices) => {
-        let deviceCnt = 0;
-        if (devices && devices.length) {
-            adapter.log.debug('init ' + devices.length + ' known devices');
-            devices.forEach((device) => {
-                if (device._id && device.native) {
-                    const id = device._id.substr(adapter.namespace.length + 1);
-                    deviceCnt++;
-                    initDevice(id, device.native.productKey, device.native, () => {
-                        if (!--deviceCnt) initDone();
-                    });
-                }
-            });
-        }
-        if (!deviceCnt) {
-            initDone();
-        }
-    });
-    */
 }
