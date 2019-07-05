@@ -30,6 +30,8 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 ### 1.1.0 (2019.07.05)
 * (Apollon77) Add msg100 with Garage Door Reed contact
 * (Apollon77) Add reconnection handling
+* (Apollon77) Add light support (e.g. MSL120 RGB bulb)
+* (Apollon77) Add units and roles for electricity
 
 ### 1.0.0 (2018.12.16)
 * (Apollon77) finalize and move to 1.0.0

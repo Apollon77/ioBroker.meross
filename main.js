@@ -17,10 +17,15 @@ const knownDevices = {};
 let connected = null;
 let stopped = false;
 
-const scaleValues = {
-    'power': -3,
-    'current': -3,
-    'voltage': -1
+const roleValues = {
+    'power': {scale: -3, unit: 'W', role: 'value.power'},
+    'current': {scale: -3, unit: 'A', role: 'value.current'},
+    'voltage': {scale: -1, unit: 'V', role: 'value.voltage'},
+    'capacity': {unit: ''},
+    'rgb': {unit: '', role: 'level.color.rgb'},
+    'temperature': {unit: 'K', role: 'level.color.temperature'},
+    'luminance': {unit: 'V', role: 'level.color.luminance'},
+
 };
 
 function decrypt(key, value) {
@@ -129,6 +134,10 @@ function defineRole(obj) {
     return role;
 }
 
+function convertNumberToHex(number) {
+    return "#"+ ('000000' + ((number)>>>0).toString(16)).slice(-6);
+}
+
 function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
     const values = {};
@@ -225,9 +234,10 @@ function initDeviceObjects(deviceId, channels, data) {
             common.read = true;
             common.write = false;
             common.name = key;
-            common.role = defineRole(common);
+            common.role = roleValues[key].role || defineRole(common);
             common.id = channel + '-' + key;
-            values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (scaleValues[key] || 0)) * 100) / 100;
+            values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (roleValues[key].scale || 0)) * 100) / 100;
+            common.unit = roleValues[key].unit;
 
             objs.push(common);
         }
@@ -243,7 +253,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.type = 'boolean';
                 common.read = true;
                 common.write = false;
-                common.name = 'garageDoor-' + val.channel;
+                common.name = val.channel + '-garageDoor';
                 common.role = defineRole(common);
                 common.id = common.name
                 values[common.name] = !!val.open;
@@ -254,6 +264,23 @@ function initDeviceObjects(deviceId, channels, data) {
             }
             objs.push(common);
         });
+    }
+    else if (data && data.light) {
+        for (let key in data.light) {
+            if (!data.electricity.hasOwnProperty(key)) continue;
+            if (key === 'channel') continue;
+            const common = {};
+            common.type = (key === 'rgb') ? 'string' : 'number';
+            common.read = true;
+            common.write = false;
+            common.name = val.channel + '-' + key;
+            common.role = roleValues[key].role || defineRole(common);
+            common.id = common.name;
+            values[common.id] = (key === 'rgb') ? convertNumberToHex(data.light[key]) : data.light[key];
+            common.unit = roleValues[key].unit || common.unit;
+
+            objs.push(common);
+        }
     }
 
     objs.forEach((obj) => {
@@ -315,7 +342,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light']) {
                 adapter.log.info('Ability Toggle/ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -337,7 +364,9 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle']) {
+                initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
+            }
 
             if (deviceAbilities.ability['Appliance.Control.Electricity']) {
                 device.getControlElectricity((err, res) => {
@@ -353,7 +382,10 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 return;
             }
             if (deviceAbilities.ability['Appliance.GarageDoor.State']) {
-                initDeviceObjects(deviceId, {garageDoor: deviceDef.garageDoor}, deviceDef.garageDoor);
+                initDeviceObjects(deviceId, {garageDoor: deviceAllData.garageDoor}, deviceAllData.garageDoor);
+            }
+            if (deviceAbilities.ability['Appliance.Control.Light']) {
+                initDeviceObjects(deviceId, {light: deviceAllData.light}, deviceAllData.light);
             }
             objectHelper.processObjectQueue(() => {
                 callback && callback();
@@ -368,7 +400,7 @@ function initDone() {
 }
 
 function pollElectricity(deviceId, delay) {
-    if (!knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
+    if (!knownDevices[deviceId].deviceAbilities || !knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
     if (!delay) delay = adapter.config.electricityPollingInterval || 20;
     if (knownDevices[deviceId].electricityPollTimeout) {
         adapter.log.debug(deviceId + ' Electricity schedule cleared');
@@ -404,6 +436,18 @@ function setValuesToggleX(deviceId, payload) {
     }
 }
 
+function setValuesLight(deviceId, payload) {
+    // {"light":{"capacity":6,"channel":0,"rgb":127,"temperature":80,"luminance":100}}
+    if (payload && payload.light) {
+        for (let key in payload.light) {
+            if (!payload.light.hasOwnProperty(key)) continue;
+            if (key === 'channel') continue;
+            if (key === 'rgb') payload.light[key] = convertNumberToHex(payload.light[key]);
+            adapter.setState(deviceId + '.' + channel + '-' + key, payload.light[key], true);
+        }
+    }
+}
+
 function setValuesGarageDoor(deviceId, payload) {
     // {"state":[{"channel":0,"open":1,"lmTime":1559850976}],"reason":{"bootup":{"timestamp":1559851565}}} OR
     // {"state":[{"channel":0,"open":1,"lmTime":1559851588}]}
@@ -433,7 +477,7 @@ function setValuesElectricity(deviceId, payload) {
             if (!payload.electricity.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
 
-            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (scaleValues[key] || 0)) * 100) / 100, true);
+            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (roleValues[key].scale || 0)) * 100) / 100, true);
         }
     }
 }
@@ -464,7 +508,7 @@ function main() {
 
         device.on('connected', () => {
             adapter.log.info('Device: ' + deviceId + ' connected');
-            if (knownDevices[deviceId].reconnectTimeout) {
+            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             initDevice(deviceId, deviceDef, device, () => {
@@ -484,11 +528,11 @@ function main() {
             adapter.log.info('Device: ' + deviceId + ' closed: ' + error);
             adapter.setState(deviceId + '.online', false, true);
             setConnected((--connectedDevices > 0));
-            if (knownDevices[deviceId].electricityPollTimeout) {
+            if (knownDevices[deviceId] && knownDevices[deviceId].electricityPollTimeout) {
                 clearTimeout(knownDevices[deviceId].electricityPollTimeout);
                 knownDevices[deviceId].electricityPollTimeout = null;
             }
-            if (knownDevices[deviceId].reconnectTimeout) {
+            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             if (!stopped)  {
@@ -500,7 +544,7 @@ function main() {
 
         device.on('error', (error) => {
             adapter.log.info('Device: ' + deviceId + ' error: ' + error);
-            if (knownDevices[deviceId].reconnectTimeout) {
+            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             if (!stopped) {
@@ -512,7 +556,7 @@ function main() {
 
         device.on('reconnect', () => {
             adapter.log.info('Device: ' + deviceId + ' reconnected');
-            if (knownDevices[deviceId].reconnectTimeout) {
+            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
         });
@@ -531,6 +575,9 @@ function main() {
                     break;
                 case 'Appliance.GarageDoor.State':
                     setValuesGarageDoor(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Light':
+                    setValuesLight(deviceId, payload);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
