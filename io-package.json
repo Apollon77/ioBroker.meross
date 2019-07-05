@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "news": {
-            "1.0.0": {
+            "1.0.1": {
                 "en": "Added mss310 devices and electricity value handling including polling interval",
                 "de": "Mss310-Geräte und Stromwertverarbeitung einschließlich Abfrageintervall hinzugefügt",
                 "ru": "Добавлены устройства mss310 и обработка стоимости электроэнергии, включая интервал опроса",
