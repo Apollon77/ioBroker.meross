@@ -221,7 +221,8 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         });
     }
-    else if (data && data.electricity) {
+
+    if (data && data.electricity) {
         if (data.electricity.channel === undefined || data.electricity.channel !==0) {
             adapter.log.info('Unsupported type for electricity val ' + JSON.stringify(data));
             return;
@@ -243,7 +244,7 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         }
     }
-    else if (data && data.garageDoor) {
+    if (data && data.garageDoor) {
         if (!Array.isArray(data.garageDoor)) {
             adapter.log.info('Unsupported type for garageDoor val ' + JSON.stringify(data));
             return;
@@ -266,7 +267,8 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         });
     }
-    else if (data && data.light) {
+
+    if (data && data.light) {
         for (let key in data.light) {
             if (!data.electricity.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
@@ -365,7 +367,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle']) {
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light']) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
@@ -382,12 +384,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 pollElectricity(deviceId);
                 return;
             }
-            if (deviceAbilities.ability['Appliance.GarageDoor.State']) {
-                initDeviceObjects(deviceId, {garageDoor: deviceAllData.garageDoor}, deviceAllData.garageDoor);
-            }
-            if (deviceAbilities.ability['Appliance.Control.Light']) {
-                initDeviceObjects(deviceId, {light: deviceAllData.light}, deviceAllData.light);
-            }
+
             objectHelper.processObjectQueue(() => {
                 callback && callback();
             });
