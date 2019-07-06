@@ -142,6 +142,7 @@ function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
     const values = {};
 
+    adapter.log.debug(deviceId + 'initDeviceObjects with channels = ' + JSON.stringify(channels) + ' and data = ' + JSON.stringify(data));
     if (data && data.toggle) {
         const val = data.toggle;
         const common = {};
