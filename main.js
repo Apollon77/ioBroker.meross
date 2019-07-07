@@ -142,7 +142,7 @@ function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
     const values = {};
 
-    adapter.log.debug(deviceId + 'initDeviceObjects with channels = ' + JSON.stringify(channels) + ' and data = ' + JSON.stringify(data));
+    adapter.log.debug(deviceId + ': initDeviceObjects with channels = ' + JSON.stringify(channels) + ' and data = ' + JSON.stringify(data));
     if (data && data.toggle) {
         const val = data.toggle;
         const common = {};
@@ -208,7 +208,7 @@ function initDeviceObjects(deviceId, channels, data) {
                         adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
                         adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
 
-                        if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
+                        if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
                             pollElectricity(deviceId, 2);
                         }
                     });
