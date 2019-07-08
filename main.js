@@ -489,11 +489,11 @@ function setValuesGarageDoor(deviceId, payload) {
     // {"state":[{"channel":0,"open":1,"lmTime":1559850976}],"reason":{"bootup":{"timestamp":1559851565}}} OR
     // {"state":[{"channel":0,"open":1,"lmTime":1559851588}]}
     if (payload && payload.state) {
-        if (!Array.isArray(payload.togglex)) {
+        if (!Array.isArray(payload.state)) {
             payload.state = [payload.state];
         }
         payload.state.forEach((val) => {
-            adapter.setState(deviceId + '.garageDoor-' + val.channel, !!val.open, true);
+            adapter.setState(deviceId + '.' + val.channel + '-garageDoor', !!val.open, true);
         });
     }
 }
