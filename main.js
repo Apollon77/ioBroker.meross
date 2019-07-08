@@ -177,7 +177,7 @@ function initDeviceObjects(deviceId, channels, data) {
         }
         objs.push(common);
     }
-    else if (data && data.togglex) {
+    else if (data && data.togglex && !data.garageDoor) {
         if (!Array.isArray(data.togglex)) {
             data.togglex = [data.togglex];
         }
@@ -259,6 +259,45 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = defineRole(common);
                 common.id = common.name
                 values[common.name] = !!val.open;
+            }
+            else {
+                adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+                return;
+            }
+            objs.push(common);
+        });
+        // Special Toggle handling
+        if (!Array.isArray(data.togglex)) {
+            data.togglex = [data.togglex];
+        }
+        data.togglex.forEach((val) => {
+            const common = {};
+            if (val.onoff !== undefined) {
+                common.type = 'boolean';
+                common.read = true;
+                common.write = true;
+                common.name = '';
+                if (channels[val.channel] && channels[val.channel].devName) {
+                    common.name = channels[val.channel].devName;
+                }
+                if (!common.name.length && val.channel == 0) {
+                    common.name = 'All';
+                }
+                common.role = defineRole(common);
+                common.id = val.channel;
+                values[val.channel] = !!val.onoff;
+
+                common.onChange = (value) => {
+                    if (!knownDevices[deviceId].device) {
+                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        return;
+                    }
+
+                    knownDevices[deviceId].device.controlGarageDoor(val.channel, (value ? 1 : 0), (err, res) => {
+                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
+                    });
+                };
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
