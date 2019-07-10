@@ -629,12 +629,15 @@ function main() {
         device.on('rawData', (message) => {
             adapter.log.debug('Device Raw: ' + deviceId + ' - data: ' + JSON.stringify(message));
         });
+        device.on('rawSendData', (message) => {
+            adapter.log.debug('Device Send Raw: ' + deviceId + ' - data: ' + JSON.stringify(message));
+        });
 
     });
 
-    meross.on('data', (deviceId, namespace, payload) => {
+    /*meross.on('data', (deviceId, namespace, payload) => {
         adapter.log.debug('Device(2): ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
-    });
+    });*/
 
     meross.connect((error, count) => {
         if (error) {
