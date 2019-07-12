@@ -191,7 +191,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 if (channels[val.channel] && channels[val.channel].devName) {
                     common.name = channels[val.channel].devName;
                 }
-                if (!common.name.length && val.channel == 0) {
+                if (!common.name.length && val.channel === 0) {
                     common.name = 'All';
                 }
                 common.role = defineRole(common);
@@ -257,7 +257,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.write = true;
                 common.name = val.channel + '-garageDoor';
                 common.role = defineRole(common);
-                common.id = common.name
+                common.id = common.name;
                 values[common.name] = !!val.open;
 
                 common.onChange = (value) => {
@@ -269,20 +269,33 @@ function initDeviceObjects(deviceId, channels, data) {
                     knownDevices[deviceId].device.controlGarageDoor(val.channel, (value ? 1 : 0), (err, res) => {
                         adapter.log.debug('GarageDoor Response: err: ' + err + ', res: ' + JSON.stringify(res));
                         adapter.log.debug(deviceId + '.' + val.channel + '-garageDoor: set value ' + value);
+                        if (res && res.state) {
+                            adapter.setState(val.channel + '-garageDoorWorking', !!res.state.execute, true);
+                        }
                     });
                 };
+                objs.push(common);
+
+                const common = {};
+                common.type = 'boolean';
+                common.read = true;
+                common.write = false;
+                common.name = val.channel + '-garageDoorWorking';
+                common.role = defineRole(common);
+                common.id = common.name;
+                values[common.name] = false;
+
+                objs.push(common);
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
-                return;
             }
-            objs.push(common);
         });
     }
 
     if (data && data.light) {
         for (let key in data.light) {
-            if (!data.electricity.hasOwnProperty(key)) continue;
+            if (!data.light.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
             const common = {};
             common.type = (key === 'rgb') ? 'string' : 'number';
@@ -467,6 +480,7 @@ function setValuesGarageDoor(deviceId, payload) {
         }
         payload.state.forEach((val) => {
             adapter.setState(deviceId + '.' + val.channel + '-garageDoor', !!val.open, true);
+            adapter.setState(deviceId + '.' + val.channel + '-garageDoorWorking', !!val.execute, true);
         });
     }
 }
