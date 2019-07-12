@@ -479,7 +479,9 @@ function setValuesGarageDoor(deviceId, payload) {
             payload.state = [payload.state];
         }
         payload.state.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-garageDoor', !!val.open, true);
+            if (val.execute !== 1) {
+                adapter.setState(deviceId + '.' + val.channel + '-garageDoor', !!val.open, true);
+            }
             adapter.setState(deviceId + '.' + val.channel + '-garageDoorWorking', !!val.execute, true);
         });
     }
