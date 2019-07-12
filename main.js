@@ -254,38 +254,11 @@ function initDeviceObjects(deviceId, channels, data) {
             if (val.open !== undefined) {
                 common.type = 'boolean';
                 common.read = true;
-                common.write = false;
+                common.write = true;
                 common.name = val.channel + '-garageDoor';
                 common.role = defineRole(common);
                 common.id = common.name
                 values[common.name] = !!val.open;
-            }
-            else {
-                adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
-                return;
-            }
-            objs.push(common);
-        });
-        // Special Toggle handling
-        if (!Array.isArray(data.togglex)) {
-            data.togglex = [data.togglex];
-        }
-        data.togglex.forEach((val) => {
-            const common = {};
-            if (val.onoff !== undefined) {
-                common.type = 'boolean';
-                common.read = true;
-                common.write = true;
-                common.name = '';
-                if (channels[val.channel] && channels[val.channel].devName) {
-                    common.name = channels[val.channel].devName;
-                }
-                if (!common.name.length && val.channel == 0) {
-                    common.name = 'All';
-                }
-                common.role = defineRole(common);
-                common.id = val.channel;
-                values[val.channel] = !!val.onoff;
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
@@ -294,8 +267,8 @@ function initDeviceObjects(deviceId, channels, data) {
                     }
 
                     knownDevices[deviceId].device.controlGarageDoor(val.channel, (value ? 1 : 0), (err, res) => {
-                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
+                        adapter.log.debug('GarageDoor Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + val.channel + '-garageDoor: set value ' + value);
                     });
                 };
             }
