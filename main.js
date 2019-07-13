@@ -250,8 +250,8 @@ function initDeviceObjects(deviceId, channels, data) {
             return;
         }
         data.garageDoor.forEach((val) => {
-            const common = {};
             if (val.open !== undefined) {
+                const common = {};
                 common.type = 'boolean';
                 common.read = true;
                 common.write = true;
@@ -276,16 +276,16 @@ function initDeviceObjects(deviceId, channels, data) {
                 };
                 objs.push(common);
 
-                const common = {};
-                common.type = 'boolean';
-                common.read = true;
-                common.write = false;
-                common.name = val.channel + '-garageDoorWorking';
-                common.role = defineRole(common);
-                common.id = common.name;
-                values[common.name] = false;
+                const common2 = {};
+                common2.type = 'boolean';
+                common2.read = true;
+                common2.write = false;
+                common2.name = val.channel + '-garageDoorWorking';
+                common2.role = defineRole(common2);
+                common2.id = common2.name;
+                values[common2.name] = false;
 
-                objs.push(common);
+                objs.push(common2);
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
