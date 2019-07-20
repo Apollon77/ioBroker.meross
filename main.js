@@ -236,7 +236,7 @@ function initDeviceObjects(deviceId, channels, data) {
             common.read = true;
             common.write = false;
             common.name = key;
-            common.role = roleValues[key].role || defineRole(common);
+            common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
             common.id = channel + '-' + key;
             values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (roleValues[key].scale || 0)) * 100) / 100;
             common.unit = roleValues[key].unit;
