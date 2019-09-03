@@ -24,8 +24,9 @@ const roleValues = {
     'capacity': {unit: ''},
     'rgb': {unit: '', role: 'level.color.rgb'},
     'temperature': {unit: 'K', role: 'level.color.temperature'},
-    'luminance': {unit: 'V', role: 'level.color.luminance'},
-
+    'luminance': {unit: '', role: 'level.color.luminance'},
+    'gradual': {unit: ''},
+    'transform': {unit: ''}
 };
 
 function decrypt(key, value) {
@@ -170,12 +171,12 @@ function initDeviceObjects(deviceId, channels, data) {
                     }
                 });
             };
+            objs.push(common);
         }
         else {
             adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
             return;
         }
-        objs.push(common);
     }
     else if (data && data.togglex && !data.garageDoor) {
         if (!Array.isArray(data.togglex)) {
@@ -213,12 +214,12 @@ function initDeviceObjects(deviceId, channels, data) {
                         }
                     });
                 };
+                objs.push(common);
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
                 return;
             }
-            objs.push(common);
         });
     }
 
@@ -238,12 +239,13 @@ function initDeviceObjects(deviceId, channels, data) {
             common.name = key;
             common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
             common.id = channel + '-' + key;
-            values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (roleValues[key].scale || 0)) * 100) / 100;
-            common.unit = roleValues[key].unit;
+            values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (roleValues[key] ? roleValues[key].scale || 0 : 0)) * 100) / 100;
+            if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
             objs.push(common);
         }
     }
+
     if (data && data.garageDoor) {
         if (!Array.isArray(data.garageDoor)) {
             adapter.log.info('Unsupported type for garageDoor val ' + JSON.stringify(data));
@@ -293,6 +295,46 @@ function initDeviceObjects(deviceId, channels, data) {
         });
     }
 
+    if (data && data.spray) {
+        if (!Array.isArray(data.spray)) {
+            data.spray = [data.spray];
+        }
+        data.spray.forEach((val) => {
+            const common = {};
+            if (val.mode !== undefined) {
+                common.type = 'number';
+                common.read = true;
+                common.write = true;
+                common.name = val.channel + '-mode';
+                common.role = defineRole(common);
+                common.id = common.name;
+                values[val.channel + '-mode'] = val.mode;
+
+                common.onChange = (value) => {
+                    if (!knownDevices[deviceId].device) {
+                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        return;
+                    }
+
+                    /*knownDevices[deviceId].device.controlToggleX(val.channel, (value ? 1 : 0), (err, res) => {
+                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
+
+                        if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
+                            pollElectricity(deviceId, 2);
+                        }
+                    });*/
+                    // TODO
+                };
+                objs.push(common);
+            }
+            else {
+                adapter.log.info('Unsupported type for spray digest val ' + JSON.stringify(val));
+                return;
+            }
+        });
+    }
+
     if (data && data.light) {
         for (let key in data.light) {
             if (!data.light.hasOwnProperty(key)) continue;
@@ -301,14 +343,270 @@ function initDeviceObjects(deviceId, channels, data) {
             common.type = (key === 'rgb') ? 'string' : 'number';
             common.read = true;
             common.write = false;
-            common.name = val.channel + '-' + key;
-            common.role = roleValues[key].role || defineRole(common);
+            common.name = data.light.channel + '-' + key;
+            common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
             common.id = common.name;
             values[common.id] = (key === 'rgb') ? convertNumberToHex(data.light[key]) : data.light[key];
-            common.unit = roleValues[key].unit || common.unit;
+            if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
             objs.push(common);
         }
+    }
+
+    if (data && data.hub) {
+        let common = {};
+        common.type = 'number';
+        common.read = true;
+        common.write = false;
+        common.name = 'mode';
+        common.role = defineRole(common);
+        common.id = common.name;
+        values[common.id] = data.hub.mode;
+
+        objs.push(common);
+
+        data.hub.subdevice.forEach(sub => {
+            objectHelper.setOrUpdateObject(deviceId, {
+                type: 'channel',
+                common: {
+                    name: 'Hub Device' + (sub.mts100 ? ' MTS100' : '')
+                },
+                native: sub
+            });
+
+
+            let common = {};
+            common.type = 'boolean';
+            common.read = true;
+            common.write = false;
+            common.name = 'online';
+            common.role = defineRole(common);
+            common.id = sub.id + '.' + common.name;
+            values[common.id] = !!sub.status;
+
+            objs.push(common);
+
+
+            common = {};
+            common.type = 'boolean';
+            common.read = true;
+            common.write = true;
+            common.name = 'switch';
+            common.role = defineRole(common);
+            common.id = sub.id + '.' + common.name;
+            values[common.id] = !!sub.onoff;
+
+            common.onChange = (value) => {
+                if (!knownDevices[deviceId].device) {
+                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    return;
+                }
+
+                knownDevices[deviceId].device.controlHubToggleX(sub.id, (value ? 1 : 0), (err, res) => {
+                    adapter.log.debug('Hub-ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                    adapter.log.debug(deviceId + '.' + sub.id + '.switch: set value ' + value);
+
+                    knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
+                        if (res && res.all && res.all[0] && res.all[0].togglex) {
+                            res.all[0].togglex.id = sub.id;
+                            setValuesHubToggleX(deviceId, res.all[0]);
+                        }
+                    });
+                });
+            };
+
+            objs.push(common);
+
+            if (sub.mts100) {
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = true;
+                common.name = 'mode';
+                common.role = defineRole(common);
+                common.id = sub.id + '.' + common.name;
+                values[common.id] = sub.mts100.mode;
+                common.min = 0;
+                common.max = 3;
+                common.states = {0: 'MODE_0', 1: 'MODE_1', 2: 'MODE_2', 3: 'MODE_3'};
+                // Schedule mode 'klötze' 3
+                // Comfort Mode 1
+                // Economy Mode 2
+                // Manual ?? 0
+
+                common.onChange = (value) => {
+                    if (!knownDevices[deviceId].device) {
+                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        return;
+                    }
+
+                    knownDevices[deviceId].device.controlHubMts100Mode(sub.id, value, (err, res) => {
+                        adapter.log.debug('Hub-Mode Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + sub.id + '.mode: set value ' + value);
+
+                        knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
+                            if (res && res.all && res.all[0] && res.all[0].mode) {
+                                res.all[0].mode.id = sub.id;
+                                setValuesHubMts100Mode(deviceId, res.all[0]);
+                            }
+                        });
+                    });
+                };
+
+                objs.push(common);
+
+                if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Battery']) {
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'battery';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+
+                    objs.push(common);
+
+                    knownDevices[deviceId].device.getHubBattery((err, res) => {
+                        setValuesHubBattery(deviceId, res);
+                    });
+                }
+
+                if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Mts100.Temperature']) {
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = true;
+                    common.name = 'custom';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+                    common.unit = '°C';
+                    common.min = 5;
+                    common.max = 35;
+
+                    common.onChange = (value) => {
+                        if (!knownDevices[deviceId].device) {
+                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            return;
+                        }
+
+                        knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {custom: value * 10}, (err, res) => {
+                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            adapter.log.debug(deviceId + '.' + sub.id + '.custom: set value ' + value);
+                            setValuesHubMts100Temperature(deviceId, res);
+                        });
+                    };
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = true;
+                    common.name = 'currentSet';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+                    common.unit = '°C';
+                    common.min = 5;
+                    common.max = 35;
+
+                    common.onChange = (value) => {
+                        if (!knownDevices[deviceId].device) {
+                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            return;
+                        }
+
+                        knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {currentSet: value * 10}, (err, res) => {
+                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            adapter.log.debug(deviceId + '.' + sub.id + '.currentSet: set value ' + value);
+                            setValuesHubMts100Temperature(deviceId, res);
+                        });
+                    };
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = true;
+                    common.name = 'comfort';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+                    common.unit = '°C';
+                    common.min = 5;
+                    common.max = 35;
+
+                    common.onChange = (value) => {
+                        if (!knownDevices[deviceId].device) {
+                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            return;
+                        }
+
+                        knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {comfort: value * 10}, (err, res) => {
+                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            adapter.log.debug(deviceId + '.' + sub.id + '.comfort: set value ' + value);
+                            setValuesHubMts100Temperature(deviceId, res);
+                        });
+                    };
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = true;
+                    common.name = 'economy';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+                    common.unit = '°C';
+                    common.min = 5;
+                    common.max = 35;
+
+                    common.onChange = (value) => {
+                        if (!knownDevices[deviceId].device) {
+                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            return;
+                        }
+
+                        knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {economy: value * 10}, (err, res) => {
+                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            adapter.log.debug(deviceId + '.' + sub.id + '.economy: set value ' + value);
+                            setValuesHubMts100Temperature(deviceId, res);
+                        });
+                    };
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'room';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+                    common.unit = '°C';
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'boolean';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'heating';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+
+                    objs.push(common);
+
+                    knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
+                        if (res && res.all && res.all[0] && res.all[0].temperature) {
+                            res.all[0].temperature.id = sub.id;
+                            setValuesHubMts100Temperature(deviceId, res.all[0]);
+                        }
+                    });
+                }
+            }
+
+        });
     }
 
     objs.forEach((obj) => {
@@ -316,6 +614,7 @@ function initDeviceObjects(deviceId, channels, data) {
         delete obj.id;
         const onChange = obj.onChange;
         delete obj.onChange;
+        //console.log('Create: ' + deviceId + '.' + id);
         objectHelper.setOrUpdateObject(deviceId + '.' + id, {
             type: 'state',
             common: obj
@@ -352,6 +651,9 @@ function initDevice(deviceId, deviceDef, device, callback) {
         adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
         if (err || !deviceAbilities) {
             adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err);
+            setTimeout(() => {
+                initDevice(deviceId, deviceDef, device);
+            }, 60000);
             objectHelper.processObjectQueue(() => {
                 callback && callback();
             });
@@ -363,6 +665,9 @@ function initDevice(deviceId, deviceDef, device, callback) {
             adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
             if (err || !deviceAllData) {
                 adapter.log.warn('Can not get Data for Device ' + deviceId + ': ' + err);
+                setTimeout(() => {
+                    initDevice(deviceId, deviceDef, device);
+                }, 60000);
                 objectHelper.processObjectQueue(() => {
                     callback && callback();
                 });
@@ -370,8 +675,8 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light']) {
-                adapter.log.info('Ability Toggle/ToggleX not supported by Device ' + deviceId + ': send next line from disk to developer');
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray']) {
+                adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
                     callback && callback();
@@ -392,7 +697,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light']) {
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray']) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
@@ -459,14 +764,103 @@ function setValuesToggleX(deviceId, payload) {
     }
 }
 
+function setValuesHubToggleX(deviceId, payload) {
+    // {"togglex":[{"id":"000013CD","onoff":1}]}
+    if (payload && payload.togglex) {
+        if (!Array.isArray(payload.togglex)) {
+            payload.togglex = [payload.togglex];
+        }
+        payload.togglex.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.id + '-switch', !!val.onoff, true);
+        });
+    }
+}
+
+function setValuesSpray(deviceId, payload) {
+    // {"spray":[{"channel":0,"mode":1,"lmTime":1567450159,"lastMode":0,"onoffTime":1567450159}]}
+    if (payload && payload.spray) {
+        if (!Array.isArray(payload.spray)) {
+            payload.spray = [payload.spray];
+        }
+        payload.spray.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.channel + '-mode', val.mode, true);
+        });
+    }
+}
+
+function setValuesHubBattery(deviceId, payload) {
+    // {"battery":[{"id":"000013CD","value":1}]}
+    if (payload && payload.battery) {
+        if (!Array.isArray(payload.battery)) {
+            payload.battery = [payload.battery];
+        }
+        payload.battery.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.id + '-battery', val.value, true);
+        });
+    }
+}
+
+function setValuesHubMts100Temperature(deviceId, payload) {
+    // {"temperature":[{"id":"000013CD","currentSet":350,"custom":350,"comfort":260,"economy":155}]}
+    // temperature": [{
+    // 			"id": "000013CD",
+    // 			"room": 240,
+    // 			"currentSet": 215,
+    // 			"custom": 50,
+    // 			"comfort": 215,
+    // 			"economy": 200,
+    // 			"max": 350,
+    // 			"min": 50,
+    // 			"heating": 0
+    // 		}]
+    if (payload && payload.temperature) {
+        if (!Array.isArray(payload.temperature)) {
+            payload.temperature = [payload.temperature];
+        }
+        payload.temperature.forEach((val) => {
+            if (val.room !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-room', val.room / 10, true);
+            }
+            if (val.custom !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-custom', val.custom / 10, true);
+            }
+            if (val.currentSet !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-currentSet', val.currentSet / 10, true);
+            }
+            if (val.comfort !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-comfort', val.comfort / 10, true);
+            }
+            if (val.economy !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-economy', val.economy / 10, true);
+            }
+            if (val.heating !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-heating', !!val.heating, true);
+            }
+        });
+    }
+}
+
+function setValuesHubMts100Mode(deviceId, payload) {
+    // {"mode":[{"id":"000013CD","state":0}]}
+    if (payload && payload.mode) {
+        if (!Array.isArray(payload.mode)) {
+            payload.mode = [payload.mode];
+        }
+        payload.mode.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.id + '-mode', val.state, true);
+        });
+    }
+}
+
 function setValuesLight(deviceId, payload) {
     // {"light":{"capacity":6,"channel":0,"rgb":127,"temperature":80,"luminance":100}}
+    // {"light":{"capacity":5,"channel":0,"rgb":6947071,"temperature":70,"luminance":99,"gradual":0,"transform":-1}}
     if (payload && payload.light) {
         for (let key in payload.light) {
             if (!payload.light.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
             if (key === 'rgb') payload.light[key] = convertNumberToHex(payload.light[key]);
-            adapter.setState(deviceId + '.' + channel + '-' + key, payload.light[key], true);
+            adapter.setState(deviceId + '.' + payload.light.channel + '-' + key, payload.light[key], true);
         }
     }
 }
@@ -503,7 +897,7 @@ function setValuesElectricity(deviceId, payload) {
             if (!payload.electricity.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
 
-            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (roleValues[key].scale || 0)) * 100) / 100, true);
+            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (roleValues[key] ? roleValues[key].scale || 0 : 0)) * 100) / 100, true);
         }
     }
 }
@@ -604,6 +998,21 @@ function main() {
                     break;
                 case 'Appliance.Control.Light':
                     setValuesLight(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Spray':
+                    setValuesSpray(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.ToggleX':
+                    setValuesHubToggleX(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.Battery':
+                    setValuesHubBattery(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.Mts100.Temperature':
+                    setValuesHubMts100Temperature(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.Mts100.Mode':
+                    setValuesHubMts100Mode(deviceId, payload);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
