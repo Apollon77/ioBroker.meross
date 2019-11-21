@@ -32,9 +32,10 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 * (Apollon77) Add reconnection handling
 * (Apollon77) Add light support (e.g. MSL120 RGB bulb)
 * (Apollon77) Add units and roles for electricity
-* (Apollon77) Add support for MSXH0
+* (Apollon77) Add support for MSXH0 (Air Purifyer)
 * (Apollon77) Add support for Hub and Thermostates
 * (Apollon77) Allow to control DND mode (LED) - be aware then if controlled via meross app it my get out of sync!
+* (Apollon77) Integrate sentry.io for automated error/exception reporting
 
 ### 1.0.0 (2018.12.16)
 * (Apollon77) finalize and move to 1.0.0
