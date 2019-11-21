@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.2.1",
+        "version": "1.2.2",
         "news": {
             "1.0.1": {
                 "en": "Added mss310 devices and electricity value handling including polling interval",
@@ -62,7 +62,8 @@
         "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
         "loglevel": "info",
         "type": "iot-systems",
-        "stopTimeout": 5000
+        "stopTimeout": 5000,
+        "compact": true
     },
     "native": {
         "user": "",

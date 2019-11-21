@@ -6,9 +6,9 @@
 'use strict';
 
 // you have to require the utils module and call adapter function
-const utils   = require('@iobroker/adapter-core'); // Get common adapter utils
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
+let adapter;
 
-const adapter = new utils.Adapter('meross');
 const Sentry = require('@sentry/node');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const MerossCloud = require('meross-cloud');
@@ -41,26 +41,84 @@ function decrypt(key, value) {
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
-        adapter.setState('info.connection', connected, true, (err) => {
+        adapter && adapter.setState('info.connection', connected, true, (err) => {
             // analyse if the state could be set (because of permissions)
-            if (err) adapter.log.error('Can not update connected state: ' + err);
-            else adapter.log.debug('connected set to ' + connected);
+            if (err && adapter && adapter.log) adapter.log.error('Can not update connected state: ' + err);
+                else if (adapter && adapter.log) adapter.log.debug('connected set to ' + connected);
         });
     }
 }
 
-// is called when adapter shuts down - callback has to be called under any circumstances!
-adapter.on('unload', function(callback) {
-    stopped = true;
-    try {
-        setConnected(false);
-        stopAll();
-        // adapter.log.info('cleaned everything up...');
-        setTimeout(callback, 3000);
-    } catch (e) {
-        callback();
-    }
-});
+function startAdapter(options) {
+    options = options || {};
+    Object.assign(options, {
+        name: 'meross'
+    });
+    adapter = new utils.Adapter(options);
+
+    // is called when adapter shuts down - callback has to be called under any circumstances!
+    adapter.on('unload', function(callback) {
+        stopped = true;
+        try {
+            setConnected(false);
+            stopAll();
+            // adapter.log.info('cleaned everything up...');
+            setTimeout(callback, 3000);
+        } catch (e) {
+            callback();
+        }
+    });
+
+    // is called if a subscribed state changes
+    adapter.on('stateChange', function(id, state) {
+        // Warning, state can be null if it was deleted
+        adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+        objectHelper.handleStateChange(id, state);
+    });
+
+    adapter.on('ready', () => {
+        Sentry.init({
+            dsn: 'https://a374963afbec4e8789f8efde2c937479@sentry.io/1812993'
+        });
+        Sentry.configureScope(scope => {
+            scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
+            if (adapter.common.installedFrom) {
+                scope.setTag('installedFrom', adapter.common.installedFrom);
+            }
+            else {
+                scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
+            }
+        });
+
+        adapter.getForeignObject('system.config', (err, obj) => {
+            if (obj && obj.native && obj.native.secret) {
+                //noinspection JSUnresolvedVariable
+                adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
+            } else {
+                //noinspection JSUnresolvedVariable
+                adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
+            }
+            if (obj && obj.common && obj.common.diag) {
+                adapter.getForeignObject('system.meta.uuid', (err, obj) => {
+                    // create uuid
+                    if (!err  && obj) {
+                        Sentry.configureScope(scope => {
+                            scope.setUser({
+                                id: obj.native.uuid
+                            });
+                        });
+                    }
+                    main();
+                });
+            }
+            else {
+                main();
+            }
+        });
+    });
+
+    return adapter;
+}
 
 process.on('SIGINT', function() {
     stopAll();
@@ -69,61 +127,10 @@ process.on('SIGINT', function() {
 
 process.on('uncaughtException', function(err) {
     console.log('Exception: ' + err + '/' + err.toString());
-    if (adapter && adapter.log) {
-        adapter.log.warn('Exception: ' + err);
-    }
+    adapter && adapter.log && adapter.log.warn('Exception: ' + err);
+
     stopAll();
     setConnected(false);
-});
-
-
-// is called if a subscribed state changes
-adapter.on('stateChange', function(id, state) {
-    // Warning, state can be null if it was deleted
-    adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
-    objectHelper.handleStateChange(id, state);
-});
-
-
-adapter.on('ready', () => {
-    Sentry.init({
-        dsn: 'https://a374963afbec4e8789f8efde2c937479@sentry.io/1812993'
-    });
-    Sentry.configureScope(scope => {
-        scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
-        if (adapter.common.installedFrom) {
-            scope.setTag('installedFrom', adapter.common.installedFrom);
-        }
-        else {
-            scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
-        }
-    });
-
-    adapter.getForeignObject('system.config', (err, obj) => {
-        if (obj && obj.native && obj.native.secret) {
-            //noinspection JSUnresolvedVariable
-            adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
-        } else {
-            //noinspection JSUnresolvedVariable
-            adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
-        }
-        if (obj && obj.common && obj.common.diag) {
-            adapter.getForeignObject('system.meta.uuid', (err, obj) => {
-                // create uuid
-                if (!err  && obj) {
-                    Sentry.configureScope(scope => {
-                        scope.setUser({
-                            id: obj.native.uuid
-                        });
-                    });
-                }
-                main();
-            });
-        }
-        else {
-            main();
-        }
-    });
 });
 
 function stopAll() {
@@ -424,10 +431,16 @@ function initDeviceObjects(deviceId, channels, data) {
         objs.push(common);
 
         data.hub.subdevice.forEach(sub => {
+            let name = 'Hub Device';
+            if (sub.mts100) {
+                name += ' MTS100';
+            } else if (sub.mts100v3) {
+                name += ' MTS100v3';
+            }
             objectHelper.setOrUpdateObject(deviceId, {
                 type: 'channel',
                 common: {
-                    name: 'Hub Device' + (sub.mts100 ? ' MTS100' : '')
+                    name: name
                 },
                 native: sub
             });
@@ -475,7 +488,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             objs.push(common);
 
-            if (sub.mts100) {
+            if (sub.mts100 || sub.mts100v3) {
                 common = {};
                 common.type = 'number';
                 common.read = true;
@@ -483,7 +496,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'mode';
                 common.role = defineRole(common);
                 common.id = sub.id + '.' + common.name;
-                values[common.id] = sub.mts100.mode;
+                values[common.id] = sub.mts100 ? sub.mts100.mode : sub.mts100v3.mode;
                 common.min = 0;
                 common.max = 3;
                 common.states = {0: 'MODE_0', 1: 'MODE_1', 2: 'MODE_2', 3: 'MODE_3'};
@@ -1141,4 +1154,12 @@ function main() {
         }
         deviceCount += count;
     });
+}
+
+// If started as allInOne/compact mode => return function to create instance
+if (module && module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }
