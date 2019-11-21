@@ -35,10 +35,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Perform a type check
-        run: npm run check:ts
-        env:
-          CI: true
+#      - name: Perform a type check
+#        run: npm run check:ts
+#        env:
+#          CI: true
       # - name: Lint TypeScript code
       #   run: npm run lint
       - name: Test package files
@@ -70,10 +70,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run local tests
-        run: npm test
-#      - name: Run unit tests
-#        run: npm run test:unit
+#      - name: Run local tests
+#        run: npm test
+      - name: Run unit tests
+        run: npm run test:unit
       - name: Run integration tests # (linux/osx)
         if: startsWith(runner.OS, 'windows') == false
         run: DEBUG=testing:* npm run test:integration
