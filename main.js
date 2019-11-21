@@ -9,6 +9,7 @@
 const utils   = require('@iobroker/adapter-core'); // Get common adapter utils
 
 const adapter = new utils.Adapter('meross');
+const Sentry = require('@sentry/node');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const MerossCloud = require('meross-cloud');
 let meross;
@@ -85,6 +86,19 @@ adapter.on('stateChange', function(id, state) {
 
 
 adapter.on('ready', () => {
+    Sentry.init({
+        dsn: 'https://a374963afbec4e8789f8efde2c937479@sentry.io/1812993'
+    });
+    Sentry.configureScope(scope => {
+        scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
+        if (adapter.common.installedFrom) {
+            scope.setTag('installedFrom', adapter.common.installedFrom);
+        }
+        else {
+            scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
+        }
+    });
+
     adapter.getForeignObject('system.config', (err, obj) => {
         if (obj && obj.native && obj.native.secret) {
             //noinspection JSUnresolvedVariable
@@ -93,7 +107,22 @@ adapter.on('ready', () => {
             //noinspection JSUnresolvedVariable
             adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
         }
-        main();
+        if (obj && obj.common && obj.common.diag) {
+            adapter.getForeignObject('system.meta.uuid', (err, obj) => {
+                // create uuid
+                if (!err  && obj) {
+                    Sentry.configureScope(scope => {
+                        scope.setUser({
+                            id: obj.native.uuid
+                        });
+                    });
+                }
+                main();
+            });
+        }
+        else {
+            main();
+        }
     });
 });
 
@@ -307,6 +336,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.write = true;
                 common.name = val.channel + '-mode';
                 common.role = defineRole(common);
+                common.states = {0: 'Off', 1: 'Continuous', 2: 'Intermittent'};
                 common.id = common.name;
                 values[val.channel + '-mode'] = val.mode;
 
@@ -316,15 +346,10 @@ function initDeviceObjects(deviceId, channels, data) {
                         return;
                     }
 
-                    /*knownDevices[deviceId].device.controlToggleX(val.channel, (value ? 1 : 0), (err, res) => {
-                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
-
-                        if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
-                            pollElectricity(deviceId, 2);
-                        }
-                    });*/
-                    // TODO
+                    knownDevices[deviceId].device.controlSpray(val.channel, value, (err, res) => {
+                        adapter.log.debug('Spray Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                        adapter.log.debug(deviceId + '.' + val.channel + ': set spray value ' + value);
+                    });
                 };
                 objs.push(common);
             }
@@ -351,6 +376,39 @@ function initDeviceObjects(deviceId, channels, data) {
 
             objs.push(common);
         }
+    }
+
+    if (data && data.DNDMode) {
+        const common = {};
+        common.type = 'boolean';
+        common.read = true;
+        common.write = true;
+        common.name = 'dnd';
+        common.role = defineRole(common);
+        common.id = common.name;
+        values[common.id] = !!data.DNDMode.mode;
+
+        common.onChange = (value) => {
+            if (!knownDevices[deviceId].device) {
+                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                return;
+            }
+
+            knownDevices[deviceId].device.setSystemDNDMode(!!value, (err, res) => {
+                adapter.log.debug('DNDMode Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                adapter.log.debug(deviceId + ': set DNDMode value ' + value);
+
+                knownDevices[deviceId].device.getSystemDNDMode((err, res) => {
+                    adapter.log.debug('DNDMode Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                    adapter.log.debug(deviceId + ': get DNDMode value ' + value);
+                    if (res && res.DNDMode) {
+                        adapter.setState(deviceId + '.dnd', !!res.DNDMode.mode, true);
+                    }
+                });
+            });
+        };
+
+        objs.push(common);
     }
 
     if (data && data.hub) {
@@ -597,6 +655,16 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     objs.push(common);
 
+                    common = {};
+                    common.type = 'boolean';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'openWindow';
+                    common.role = defineRole(common);
+                    common.id = sub.id + '.' + common.name;
+
+                    objs.push(common);
+
                     knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
                         if (res && res.all && res.all[0] && res.all[0].temperature) {
                             res.all[0].temperature.id = sub.id;
@@ -701,23 +769,45 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
+            let objAsyncCount = 0;
+
             if (deviceAbilities.ability['Appliance.Control.Electricity']) {
+                objAsyncCount++;
                 device.getControlElectricity((err, res) => {
                     //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
                     adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
                     initDeviceObjects(deviceId, deviceDef.channels, res);
 
-                    objectHelper.processObjectQueue(() => {
-                        callback && callback();
-                    });
+                    pollElectricity(deviceId);
+
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                        });
+                    }
                 });
-                pollElectricity(deviceId);
-                return;
             }
 
-            objectHelper.processObjectQueue(() => {
-                callback && callback();
-            });
+            if (deviceAbilities.ability['Appliance.System.DNDMode']) {
+                objAsyncCount++;
+                device.getSystemDNDMode((err, res) => {
+                    //{"DNDMode":{"mode":1}}
+                    adapter.log.debug(deviceId + ' DND-Mode: ' + JSON.stringify(res));
+                    initDeviceObjects(deviceId, deviceDef.channels, res);
+
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                        });
+                    }
+                });
+            }
+
+            if (!objAsyncCount) {
+                objectHelper.processObjectQueue(() => {
+                    callback && callback();
+                });
+            }
         });
     });
 }
@@ -811,7 +901,8 @@ function setValuesHubMts100Temperature(deviceId, payload) {
     // 			"economy": 200,
     // 			"max": 350,
     // 			"min": 50,
-    // 			"heating": 0
+    // 			"heating": 0,
+    //          "openWindow": 1
     // 		}]
     if (payload && payload.temperature) {
         if (!Array.isArray(payload.temperature)) {
@@ -835,6 +926,9 @@ function setValuesHubMts100Temperature(deviceId, payload) {
             }
             if (val.heating !== undefined) {
                 adapter.setState(deviceId + '.' + val.id + '-heating', !!val.heating, true);
+            }
+            if (val.openWindow !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '-openWindow', !!val.openWindow, true);
             }
         });
     }
@@ -995,6 +1089,9 @@ function main() {
                     break;
                 case 'Appliance.GarageDoor.State':
                     setValuesGarageDoor(deviceId, payload);
+                    break;
+                case 'Appliance.System.DNDMode':
+                    adapter.setState(deviceId + '.dnd', !!payload.DNDMode.mode, true);
                     break;
                 case 'Appliance.Control.Light':
                     setValuesLight(deviceId, payload);
