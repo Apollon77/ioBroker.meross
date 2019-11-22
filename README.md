@@ -38,6 +38,7 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 * (Apollon77) Integrate sentry.io for automated error/exception reporting
 * (Apollon77) Add support for mts100v3
 * (Apollon77) add Compact mode
+* (Apollon77) add control option for (rgb) lights
 
 ### 1.0.0 (2018.12.16)
 * (Apollon77) finalize and move to 1.0.0

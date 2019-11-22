@@ -174,6 +174,12 @@ function defineRole(obj) {
 function convertNumberToHex(number) {
     return "#"+ ('000000' + ((number)>>>0).toString(16)).slice(-6);
 }
+function convertHexToNumber(hex) {
+    if (hex && hex[0]=== '#') {
+        hex = hex.substring(1);
+    }
+    return hex.parseInt(16);
+}
 
 function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
@@ -381,6 +387,21 @@ function initDeviceObjects(deviceId, channels, data) {
             values[common.id] = (key === 'rgb') ? convertNumberToHex(data.light[key]) : data.light[key];
             if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
+            common.onChange = (value) => {
+                if (!knownDevices[deviceId].device) {
+                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    return;
+                }
+
+                const controlData = {
+                    channel: data.light.channel
+                };
+                controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
+                knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
+                    adapter.log.debug('Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                    adapter.log.debug(deviceId + '.' + data.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
+                });
+            };
             objs.push(common);
         }
     }
