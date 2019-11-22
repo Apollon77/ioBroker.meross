@@ -11,6 +11,7 @@ Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/Apollon
 
 [![NPM](https://nodei.co/npm/iobroker.meross.png?downloads=true)](https://nodei.co/npm/iobroker.meross/)
 
+**This adapter uses the service [Sentry.io](https://sentry.io) to automatically report exceptions and code errors to me as the developer.**
 
 ## Description
 This adapter allows to control Meross devices by connecting to the Meross cloud servers.
