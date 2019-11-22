@@ -668,6 +668,34 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     objs.push(common);
 
+                    if (sub.mts100v3) {
+                        common = {};
+                        common.type = 'number';
+                        common.read = true;
+                        common.write = true;
+                        common.name = 'away';
+                        common.role = defineRole(common);
+                        common.id = sub.id + '.' + common.name;
+                        common.unit = '°C';
+                        common.min = 5;
+                        common.max = 35;
+
+                        common.onChange = (value) => {
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {away: value * 10}, (err, res) => {
+                                adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(deviceId + '.' + sub.id + '.economy: set value ' + value);
+                                setValuesHubMts100Temperature(deviceId, res);
+                            });
+                        };
+
+                        objs.push(common);
+                    }
+
                     common = {};
                     common.type = 'number';
                     common.read = true;
@@ -919,7 +947,7 @@ function setValuesHubBattery(deviceId, payload) {
             payload.battery = [payload.battery];
         }
         payload.battery.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '-battery', val.value, true);
+            adapter.setState(deviceId + '.' + val.id + '.battery', val.value, true);
         });
     }
 }
@@ -944,25 +972,28 @@ function setValuesHubMts100Temperature(deviceId, payload) {
         }
         payload.temperature.forEach((val) => {
             if (val.room !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-room', val.room / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.room', val.room / 10, true);
             }
             if (val.custom !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-custom', val.custom / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.custom', val.custom / 10, true);
             }
             if (val.currentSet !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-currentSet', val.currentSet / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.currentSet', val.currentSet / 10, true);
             }
             if (val.comfort !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-comfort', val.comfort / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.comfort', val.comfort / 10, true);
             }
             if (val.economy !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-economy', val.economy / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.economy', val.economy / 10, true);
+            }
+            if (val.away !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '.away', val.away / 10, true);
             }
             if (val.heating !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-heating', !!val.heating, true);
+                adapter.setState(deviceId + '.' + val.id + '.heating', !!val.heating, true);
             }
             if (val.openWindow !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '-openWindow', !!val.openWindow, true);
+                adapter.setState(deviceId + '.' + val.id + '.openWindow', !!val.openWindow, true);
             }
         });
     }
@@ -975,7 +1006,7 @@ function setValuesHubMts100Mode(deviceId, payload) {
             payload.mode = [payload.mode];
         }
         payload.mode.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '-mode', val.state, true);
+            adapter.setState(deviceId + '.' + val.id + '.mode', val.state, true);
         });
     }
 }
