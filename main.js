@@ -380,7 +380,7 @@ function initDeviceObjects(deviceId, channels, data) {
             const common = {};
             common.type = (key === 'rgb') ? 'string' : 'number';
             common.read = true;
-            common.write = false;
+            common.write = true;
             common.name = data.light.channel + '-' + key;
             common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
             common.id = common.name;
@@ -555,6 +555,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.name = 'battery';
                     common.role = defineRole(common);
                     common.id = sub.id + '.' + common.name;
+                    common.unit = '%';
 
                     objs.push(common);
 
