@@ -175,10 +175,13 @@ function convertNumberToHex(number) {
     return "#"+ ('000000' + ((number)>>>0).toString(16)).slice(-6);
 }
 function convertHexToNumber(hex) {
+    if (typeof hex !== 'string') {
+        hex = hex.toString();
+    }
     if (hex && hex[0]=== '#') {
         hex = hex.substring(1);
     }
-    return hex.parseInt(16);
+    return parseInt(hex, 16);
 }
 
 function initDeviceObjects(deviceId, channels, data) {
