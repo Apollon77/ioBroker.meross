@@ -24,8 +24,8 @@ const roleValues = {
     'voltage': {scale: -1, unit: 'V', role: 'value.voltage'},
     'capacity': {unit: ''},
     'rgb': {unit: '', role: 'level.color.rgb'},
-    'temperature': {unit: 'K', role: 'level.color.temperature'},
-    'luminance': {unit: '', role: 'level.color.luminance'},
+    'temperature': {unit: 'K', role: 'level.color.temperature', min: 1, max: 100},
+    'luminance': {unit: '', role: 'level.color.luminance', min: 1, max: 100},
     'gradual': {unit: ''},
     'transform': {unit: ''}
 };
@@ -172,6 +172,9 @@ function defineRole(obj) {
 }
 
 function convertNumberToHex(number) {
+    if (typeof number === 'string' && number[0] === '#') {
+        return number;
+    }
     return "#"+ ('000000' + ((number)>>>0).toString(16)).slice(-6);
 }
 function convertHexToNumber(hex) {
@@ -399,7 +402,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 const controlData = {
                     channel: data.light.channel
                 };
-                controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
+                controlData[key] = /*(key === 'rgb') ? convertHxToNumber(value) :*/ value;
                 knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
                     adapter.log.debug('Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
                     adapter.log.debug(deviceId + '.' + data.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
