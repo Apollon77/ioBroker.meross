@@ -400,7 +400,8 @@ function initDeviceObjects(deviceId, channels, data) {
                 }
 
                 const controlData = {
-                    channel: data.light.channel
+                    channel: data.light.channel,
+                    gradual: 0
                 };
                 controlData[key] = /*(key === 'rgb') ? convertHxToNumber(value) :*/ value;
                 knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
