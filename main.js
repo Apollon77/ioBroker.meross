@@ -404,6 +404,24 @@ function initDeviceObjects(deviceId, channels, data) {
                     gradual: 0
                 };
                 controlData[key] = /*(key === 'rgb') ? convertHxToNumber(value) :*/ value;
+                switch (key) {
+                    case 'rgb':
+                        controlData.capacity = 1;
+                        break;
+                    case 'temperature':
+                        controlData.capacity = 2;
+                        break;
+                    case 'luminance':
+                        controlData.capacity = 4;
+                        break;
+/*
+                    MODE_LUMINANCE = 4
+                    MODE_TEMPERATURE = 2
+                    MODE_RGB = 1
+                    MODE_RGB_LUMINANCE = 5
+                    MODE_TEMPERATURE_LUMINANCE = 6
+                    */
+                }
                 knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
                     adapter.log.debug('Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
                     adapter.log.debug(deviceId + '.' + data.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
