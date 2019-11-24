@@ -403,7 +403,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     channel: data.light.channel,
                     gradual: 0
                 };
-                controlData[key] = /*(key === 'rgb') ? convertHxToNumber(value) :*/ value;
+                controlData[key] = (key === 'rgb') ? convertHxToNumber(value) : value;
                 switch (key) {
                     case 'rgb':
                         controlData.capacity = 1;
