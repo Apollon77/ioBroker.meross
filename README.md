@@ -28,6 +28,9 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 
 ## Changelog
 
+### 1.3.1 (2019.11.25)
+* (Apollon77) Add names to hub sub devices
+
 ### 1.3.0 (2019.11.25)
 * (Apollon77) Add msg100 with Garage Door Reed contact
 * (Apollon77) Add reconnection handling

@@ -475,14 +475,24 @@ function initDeviceObjects(deviceId, channels, data) {
 
         objs.push(common);
 
+        const subDeviceInfo = {};
+        if (knownDevices[deviceId].device.subDeviceList) {
+            knownDevices[deviceId].device.subDeviceList.forEach(sub => {
+                subDeviceInfo[sub.subDeviceId] = sub;
+            });
+        }
+
         data.hub.subdevice.forEach(sub => {
             let name = 'Hub Device';
+            if (subDeviceInfo[sub.id] && subDeviceInfo[sub.id].subDeviceName) {
+                name = subDeviceInfo[sub.id].subDeviceName;
+            }
             if (sub.mts100) {
                 name += ' MTS100';
             } else if (sub.mts100v3) {
                 name += ' MTS100v3';
             }
-            objectHelper.setOrUpdateObject(deviceId, {
+            objectHelper.setOrUpdateObject(deviceId + '.' + sub.id, {
                 type: 'channel',
                 common: {
                     name: name
