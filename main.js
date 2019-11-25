@@ -10,6 +10,7 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 let adapter;
 
 const Sentry = require('@sentry/node');
+const SentryIntegrations = require('@sentry/integrations');
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const MerossCloud = require('meross-cloud');
 let meross;
@@ -77,7 +78,10 @@ function startAdapter(options) {
 
     adapter.on('ready', () => {
         Sentry.init({
-            dsn: 'https://a374963afbec4e8789f8efde2c937479@sentry.io/1812993'
+            dsn: 'https://a374963afbec4e8789f8efde2c937479@sentry.io/1812993',
+            integrations: [
+                new SentryIntegrations.Dedupe()
+            ]
         });
         Sentry.configureScope(scope => {
             scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
