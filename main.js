@@ -22,7 +22,6 @@ const roleValues = {
     'power': {scale: -3, unit: 'W', role: 'value.power'},
     'current': {scale: -3, unit: 'A', role: 'value.current'},
     'voltage': {scale: -1, unit: 'V', role: 'value.voltage'},
-    'capacity': {unit: ''},
     'rgb': {unit: '', role: 'level.color.rgb'},
     'temperature': {unit: 'K', role: 'level.color.temperature', min: 1, max: 100},
     'luminance': {unit: '', role: 'level.color.luminance', min: 1, max: 100},
@@ -382,7 +381,7 @@ function initDeviceObjects(deviceId, channels, data) {
     if (data && data.light) {
         for (let key in data.light) {
             if (!data.light.hasOwnProperty(key)) continue;
-            if (key === 'channel') continue;
+            if (key === 'channel' || key === 'capacity') continue;
             const common = {};
             common.type = (key === 'rgb') ? 'string' : 'number';
             common.read = true;
@@ -405,6 +404,13 @@ function initDeviceObjects(deviceId, channels, data) {
                 };
                 controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
                 switch (key) {
+                    /*
+                        MODE_LUMINANCE = 4
+                        MODE_TEMPERATURE = 2
+                        MODE_RGB = 1
+                        MODE_RGB_LUMINANCE = 5
+                        MODE_TEMPERATURE_LUMINANCE = 6
+                    */
                     case 'rgb':
                         controlData.capacity = 1;
                         break;
@@ -414,13 +420,6 @@ function initDeviceObjects(deviceId, channels, data) {
                     case 'luminance':
                         controlData.capacity = 4;
                         break;
-/*
-                    MODE_LUMINANCE = 4
-                    MODE_TEMPERATURE = 2
-                    MODE_RGB = 1
-                    MODE_RGB_LUMINANCE = 5
-                    MODE_TEMPERATURE_LUMINANCE = 6
-                    */
                 }
                 knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
                     adapter.log.debug('Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
@@ -1043,7 +1042,7 @@ function setValuesLight(deviceId, payload) {
     if (payload && payload.light) {
         for (let key in payload.light) {
             if (!payload.light.hasOwnProperty(key)) continue;
-            if (key === 'channel') continue;
+            if (key === 'channel' || key === 'capacity') continue;
             if (key === 'rgb') payload.light[key] = convertNumberToHex(payload.light[key]);
             adapter.setState(deviceId + '.' + payload.light.channel + '-' + key, payload.light[key], true);
         }

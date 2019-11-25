@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.2.8",
+        "version": "1.3.0",
         "news": {
+            "1.3.0": {
+                "en": "New devices and compact mode added, see README.md for details",
+                "de": "Neue Geräte und Kompaktmodus hinzugefügt. Weitere Informationen finden Sie in README.md",
+                "ru": "Добавлены новые устройства и компактный режим, подробнее см. README.md",
+                "pt": "Novos dispositivos e modo compacto adicionados, consulte README.md para obter detalhes",
+                "nl": "Nieuwe apparaten en compacte modus toegevoegd, zie README.md voor details",
+                "fr": "Nouveaux appareils et mode compact ajouté, voir README.md pour plus de détails",
+                "it": "Nuovi dispositivi e modalità compatta aggiunti, vedere README.md per i dettagli",
+                "es": "Nuevos dispositivos y modo compacto agregados, vea README.md para más detalles",
+                "pl": "Dodano nowe urządzenia i tryb kompaktowy, zobacz README.md, aby uzyskać szczegółowe informacje",
+                "zh-cn": "添加了新设备和紧凑模式，有关详细信息，请参见README.md"
+            },
             "1.0.1": {
                 "en": "Added mss310 devices and electricity value handling including polling interval",
                 "de": "Mss310-Geräte und Stromwertverarbeitung einschließlich Abfrageintervall hinzugefügt",
