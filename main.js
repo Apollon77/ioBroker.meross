@@ -265,7 +265,6 @@ function initDeviceObjects(deviceId, channels, data) {
             }
             else {
                 adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
-                return;
             }
         });
     }
@@ -373,7 +372,6 @@ function initDeviceObjects(deviceId, channels, data) {
             }
             else {
                 adapter.log.info('Unsupported type for spray digest val ' + JSON.stringify(val));
-                return;
             }
         });
     }
@@ -769,6 +767,43 @@ function initDeviceObjects(deviceId, channels, data) {
                         }
                     });
                 }
+                if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Sensor.TempHum'] && sub.ms100) {
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'latestTemperature';
+                    common.role = 'value.temperature';
+                    common.unit = '°C';
+                    common.id = sub.id + '.' + common.name;
+                    values[common.id] = sub.ms100.latestTemperature;
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'latestHumidity';
+                    common.role = 'value.humidity';
+                    common.unit = '%';
+                    common.id = sub.id + '.' + common.name;
+                    values[common.id] = sub.ms100.latestHumidity;
+
+                    objs.push(common);
+
+                    common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = 'voltage';
+                    common.role = defineRole(common);
+                    common.unit = 'V';
+                    common.id = sub.id + '.' + common.name;
+                    values[common.id] = sub.ms100.voltage;
+
+                    objs.push(common);
+                }
             }
 
         });
@@ -1034,6 +1069,26 @@ function setValuesHubMts100Temperature(deviceId, payload) {
     }
 }
 
+function setValuesHubMts100TempHum(deviceId, payload) {
+    // {"latestTime":1574713737,"latestTemperature":224,"latestHumidity":520,"voltage":2922}
+    if (payload && payload.tempHum) {
+        if (!Array.isArray(payload.tempHum)) {
+            payload.tempHum = [payload.tempHum];
+        }
+        payload.tempHum.forEach((val) => {
+            if (val.latestTemperature !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '.latestTemperature', val.latestTemperature / 10, true);
+            }
+            if (val.latestHumidity !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '.latestHumidity', val.latestHumidity / 10, true);
+            }
+            if (val.voltage !== undefined) {
+                adapter.setState(deviceId + '.' + val.id + '.voltage', val.voltage / 1000, true);
+            }
+        });
+    }
+}
+
 function setValuesHubMts100Mode(deviceId, payload) {
     // {"mode":[{"id":"000013CD","state":0}]}
     if (payload && payload.mode) {
@@ -1210,6 +1265,9 @@ function main() {
                     break;
                 case 'Appliance.Hub.Mts100.Mode':
                     setValuesHubMts100Mode(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.Sensor.TempHum':
+                    setValuesHubMts100TempHum(deviceId, payload);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
