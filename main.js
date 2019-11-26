@@ -493,6 +493,8 @@ function initDeviceObjects(deviceId, channels, data) {
                 name += ' MTS100';
             } else if (sub.mts100v3) {
                 name += ' MTS100v3';
+            } else if (sub.ms100) {
+                name += ' MS100';
             }
             objectHelper.setOrUpdateObject(deviceId + '.' + sub.id, {
                 type: 'channel',
@@ -513,7 +515,6 @@ function initDeviceObjects(deviceId, channels, data) {
             values[common.id] = !!sub.status;
 
             objs.push(common);
-
 
             common = {};
             common.type = 'boolean';
@@ -771,45 +772,44 @@ function initDeviceObjects(deviceId, channels, data) {
                         }
                     });
                 }
-                if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Sensor.TempHum'] && sub.ms100) {
-                    common = {};
-                    common.type = 'number';
-                    common.read = true;
-                    common.write = false;
-                    common.name = 'latestTemperature';
-                    common.role = 'value.temperature';
-                    common.unit = '°C';
-                    common.id = sub.id + '.' + common.name;
-                    values[common.id] = sub.ms100.latestTemperature;
-
-                    objs.push(common);
-
-                    common = {};
-                    common.type = 'number';
-                    common.read = true;
-                    common.write = false;
-                    common.name = 'latestHumidity';
-                    common.role = 'value.humidity';
-                    common.unit = '%';
-                    common.id = sub.id + '.' + common.name;
-                    values[common.id] = sub.ms100.latestHumidity;
-
-                    objs.push(common);
-
-                    common = {};
-                    common.type = 'number';
-                    common.read = true;
-                    common.write = false;
-                    common.name = 'voltage';
-                    common.role = defineRole(common);
-                    common.unit = 'V';
-                    common.id = sub.id + '.' + common.name;
-                    values[common.id] = sub.ms100.voltage;
-
-                    objs.push(common);
-                }
             }
+            else if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Sensor.TempHum'] && sub.ms100) {
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = false;
+                common.name = 'latestTemperature';
+                common.role = 'value.temperature';
+                common.unit = '°C';
+                common.id = sub.id + '.' + common.name;
+                values[common.id] = sub.ms100.latestTemperature;
 
+                objs.push(common);
+
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = false;
+                common.name = 'latestHumidity';
+                common.role = 'value.humidity';
+                common.unit = '%';
+                common.id = sub.id + '.' + common.name;
+                values[common.id] = sub.ms100.latestHumidity;
+
+                objs.push(common);
+
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = false;
+                common.name = 'voltage';
+                common.role = defineRole(common);
+                common.unit = 'V';
+                common.id = sub.id + '.' + common.name;
+                values[common.id] = sub.ms100.voltage;
+
+                objs.push(common);
+            }
         });
     }
 
@@ -1081,13 +1081,22 @@ function setValuesHubMts100TempHum(deviceId, payload) {
         }
         payload.tempHum.forEach((val) => {
             if (val.latestTemperature !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.latestTemperature', val.latestTemperature / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.latestTemperature', {
+                    val: val.latestTemperature / 10,
+                    ts: val.latestTime * 1000
+                }, true);
             }
             if (val.latestHumidity !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.latestHumidity', val.latestHumidity / 10, true);
+                adapter.setState(deviceId + '.' + val.id + '.latestHumidity', {
+                    val: val.latestHumidity / 10
+                    ts: val.latestTime * 1000
+                }, true);
             }
             if (val.voltage !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.voltage', val.voltage / 1000, true);
+                adapter.setState(deviceId + '.' + val.id + '.voltage', {
+                    val: val.voltage / 1000,
+                    ts: val.latestTime * 1000
+                }, true);
             }
         });
     }
