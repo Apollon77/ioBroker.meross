@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.3.3",
+        "version": "1.3.4",
         "news": {
             "1.3.1": {
                 "en": "names for hub sub devices added",

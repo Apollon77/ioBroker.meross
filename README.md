@@ -30,7 +30,7 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 
 ## Changelog
 
-### 1.3.3 (2019.11.25)
+### 1.3.4 (2019.11.26)
 * (Apollon77) Add Temperature/Humidity support for MTS100
 
 ### 1.3.1 (2019.11.25)
