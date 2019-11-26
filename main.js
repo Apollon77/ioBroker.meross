@@ -1088,7 +1088,7 @@ function setValuesHubMts100TempHum(deviceId, payload) {
             }
             if (val.latestHumidity !== undefined) {
                 adapter.setState(deviceId + '.' + val.id + '.latestHumidity', {
-                    val: val.latestHumidity / 10
+                    val: val.latestHumidity / 10,
                     ts: val.latestTime * 1000
                 }, true);
             }
