@@ -3,7 +3,7 @@
         "name": "meross",
         "version": "1.3.6",
         "news": {
-c            "1.3.6": {
+            "1.3.6": {
                 "en": "some error cases are handled better",
                 "de": "Einige Fehlerfälle werden besser behandelt",
                 "ru": "некоторые ошибки обрабатываются лучше",
