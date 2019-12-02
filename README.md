@@ -30,6 +30,9 @@ If more devices work (or also not) please report them by opening a GitHub issue.
 
 ## Changelog
 
+### 1.3.7 (2019.12.01)
+* (Apollon77) Prevent some error cases on disconnects
+
 ### 1.3.6 (2019.11.28)
 * (Apollon77) Prevent some error cases on disconnects
 

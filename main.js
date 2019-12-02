@@ -1229,7 +1229,8 @@ function main() {
 
         device.on('error', (error) => {
             adapter.log.info('Device: ' + deviceId + ' error: ' + error);
-            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
+            knownDevices[deviceId] = knownDevices[deviceId] || {};
+            if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             if (!stopped) {
