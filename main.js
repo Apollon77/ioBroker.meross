@@ -1213,11 +1213,12 @@ function main() {
             adapter.log.info('Device: ' + deviceId + ' closed: ' + error);
             adapter.setState(deviceId + '.online', false, true);
             setConnected((--connectedDevices > 0));
-            if (knownDevices[deviceId] && knownDevices[deviceId].electricityPollTimeout) {
+            knownDevices[deviceId] = knownDevices[deviceId] || {};
+            if (knownDevices[deviceId].electricityPollTimeout) {
                 clearTimeout(knownDevices[deviceId].electricityPollTimeout);
                 knownDevices[deviceId].electricityPollTimeout = null;
             }
-            if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
+            if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             if (!stopped)  {
