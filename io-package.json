@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.3.9",
+        "version": "1.3.10",
         "news": {
+            "1.3.10": {
+                "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
+                "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
+                "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
+                "pt": "correções e otimizações. Mudou para a instância Sentry do iobroker para relatar falhas",
+                "nl": "fixes en optimalisaties. Overgeschakeld naar iobroker eigen Sentry-instantie voor het melden van crashes",
+                "fr": "corrections et optimisations. Passé à l'instance Sentry d'iobroker pour le signalement des plantages",
+                "it": "correzioni e ottimizzazioni. Passato alla propria istanza Sentry di iobroker per la segnalazione di arresti anomali",
+                "es": "correcciones y optimizaciones. Se cambió a la instancia de Sentry propia de iobroker para informar sobre bloqueos",
+                "pl": "poprawki i optymalizacje. Przełączono na własną instancję Sentry iobroker w celu zgłaszania awarii",
+                "zh-cn": "修复和优化。切换到iobroker自己的Sentry实例以报告崩溃"
+            },
             "1.3.9": {
                 "en": "some error cases are handled better",
                 "de": "Einige Fehlerfälle werden besser behandelt",
@@ -147,8 +159,14 @@
         "loglevel": "info",
         "type": "iot-systems",
         "stopTimeout": 5000,
-        "compact": true
-    },
+        "compact": true,
+        "plugins": {
+            "sentry": {
+                "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
+                "pathWhitelist": ["@apollon", "meross-cloud"],
+                "errorBlacklist": ["SyntaxError"]
+            }
+        }    },
     "native": {
         "user": "",
         "password": "",
