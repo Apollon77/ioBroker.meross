@@ -186,11 +186,11 @@ function startAdapter(options) {
             });
         }
 
-        if (adapter.supportsFeature && !adapter.supportsFeature('PLUGINS')) {
-            initSentry(prepareMain);
+        if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
+            prepareMain();
         }
         else {
-            prepareMain();
+            initSentry(prepareMain);
         }
     });
 

@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.3.10",
+        "version": "1.3.11",
         "news": {
-            "1.3.10": {
+            "1.3.11": {
                 "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
                 "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
                 "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
