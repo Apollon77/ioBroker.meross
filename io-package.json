@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.3.12",
+        "version": "1.3.13",
         "news": {
+            "1.3.13": {
+                "en": "compatibility for js-controller 3.0 added, dependencies updated and optimizations/fixes",
+                "de": "Kompatibilität für js-controller 3.0 hinzugefügt, Abhängigkeiten aktualisiert und Optimierungen / Korrekturen",
+                "ru": "добавлена совместимость для js-controller 3.0, обновлены зависимости и оптимизированы / исправлены",
+                "pt": "compatibilidade com o js-controller 3.0 adicionada, dependências atualizadas e otimizações / correções",
+                "nl": "compatibiliteit voor js-controller 3.0 toegevoegd, afhankelijkheden bijgewerkt en optimalisaties / fixes",
+                "fr": "compatibilité pour js-controller 3.0 ajoutée, dépendances mises à jour et optimisations / correctifs",
+                "it": "compatibilità per js-controller 3.0 aggiunta, dipendenze aggiornate e ottimizzazioni / correzioni",
+                "es": "compatibilidad para js-controller 3.0 agregado, dependencias actualizadas y optimizaciones / arreglos",
+                "pl": "dodano kompatybilność dla js-kontrolera 3.0, zaktualizowano zależności i optymalizacje / poprawki",
+                "zh-cn": "添加了与js-controller 3.0的兼容性，更新了依赖项以及优化/修复"
+            },
             "1.3.12": {
                 "en": "update dependecies",
                 "de": "Abhängigkeiten aktualisiert",
@@ -172,20 +184,27 @@
         "type": "iot-systems",
         "stopTimeout": 5000,
         "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
         "plugins": {
             "sentry": {
                 "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
-                "pathWhitelist": ["@apollon", "meross-cloud"],
-                "errorBlacklist": ["SyntaxError"]
+                "pathWhitelist": ["@apollon", "meross-cloud"]
             }
-        }    },
+        }
+    },
+    "encryptedNative": [
+        "password"
+    ],
+    "protectedNative": [
+        "password"
+    ],
     "native": {
         "user": "",
         "password": "",
         "electricityPollingInterval": 20
     },
     "objects": [
-
     ],
     "instanceObjects": [
         {

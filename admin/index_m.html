@@ -56,7 +56,7 @@
         $('.value').each(function () {
             var $key = $(this);
             var id = $key.attr('id');
-            if (id === 'password') {
+            if (id === 'password' && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
                 settings[id] = decrypt(secret, settings[id]);
             }
 
@@ -100,7 +100,7 @@
                 obj[id] = $this.prop('checked');
             } else {
                 var value = $this.val();
-                if (id === 'password') {
+                if (id === 'password' && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
                     value = encrypt(secret, value);
                 }
                 obj[id] = value;
