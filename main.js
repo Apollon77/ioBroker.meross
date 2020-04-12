@@ -190,10 +190,6 @@ function startAdapter(options) {
                         adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
                     }
                 }
-                if (/[\x00-\x08\x0E-\x1F\x80-\xFF]/.test(adapter.config.password)) {
-                    adapter.log.error('Password error: Please re rnter the password in Admin. Stopping');
-                    return;
-                }
                 main();
             });
         }
