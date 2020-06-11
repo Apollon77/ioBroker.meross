@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.3.13",
+        "version": "1.4.0",
         "news": {
+            "1.4.0": {
+                "en": "Fix Admin\nRemove the automatic cutting of passwords to 15 characters, but log info message",
+                "de": "Fix Admin\nEntfernen Sie das automatische Schneiden von Passwörtern auf 15 Zeichen, protokollieren Sie jedoch die Infomeldung",
+                "ru": "Исправить админ\nУбрать автоматическую обрезку паролей до 15 символов, но записать в лог сообщение",
+                "pt": "Fix Admin\nRemova o corte automático de senhas para 15 caracteres, mas registre a mensagem informativa",
+                "nl": "Beheerder repareren\nVerwijder het automatisch knippen van wachtwoorden tot 15 tekens, maar log infobericht",
+                "fr": "Fix Admin\nSupprimez la découpe automatique des mots de passe à 15 caractères, mais enregistrez le message d'information",
+                "it": "Fix Admin\nRimuovi il taglio automatico delle password a 15 caratteri, ma registra il messaggio informativo",
+                "es": "Fix Admin\nElimine el corte automático de contraseñas a 15 caracteres, pero registre el mensaje de información",
+                "pl": "Napraw administratora\nUsuń automatyczne przycinanie haseł do 15 znaków, ale wiadomość z logami",
+                "zh-cn": "修复管理员\n删除自动切成15个字符的密码，但记录信息消息"
+            },
             "1.3.13": {
                 "en": "compatibility for js-controller 3.0 added, dependencies updated and optimizations/fixes",
                 "de": "Kompatibilität für js-controller 3.0 hinzugefügt, Abhängigkeiten aktualisiert und Optimierungen / Korrekturen",
@@ -178,7 +190,9 @@
         "materialize": true,
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
-        "keywords": ["Meross"],
+        "keywords": [
+            "Meross"
+        ],
         "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
         "loglevel": "info",
         "type": "iot-systems",
@@ -189,7 +203,10 @@
         "plugins": {
             "sentry": {
                 "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
-                "pathWhitelist": ["@apollon", "meross-cloud"]
+                "pathWhitelist": [
+                    "@apollon",
+                    "meross-cloud"
+                ]
             }
         }
     },
@@ -204,8 +221,7 @@
         "password": "",
         "electricityPollingInterval": 20
     },
-    "objects": [
-    ],
+    "objects": [],
     "instanceObjects": [
         {
             "_id": "info",

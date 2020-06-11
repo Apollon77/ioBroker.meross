@@ -1,55 +1,55 @@
 {
-    "version": "1.3.13",
-    "name": "iobroker.meross",
-    "author": {
-        "name": "Apollon77",
-        "email": "ingo@fischer-ka.de"
-    },
-    "bugs": {
-        "url": "https://github.com/Apollon77/ioBroker.meross/issues"
-    },
-    "contributors": [
-        {
-            "name": "Apollon77",
-            "email": "ingo@fischer-ka.de"
-        }
-    ],
-    "dependencies": {
-        "meross-cloud": "^1.3.5",
-        "@apollon/iobroker-tools": "^0.2.0",
-        "@iobroker/adapter-core": "^2.4.0",
-        "@sentry/node": "^5.17.0",
-        "@sentry/integrations": "^5.17.0",
-        "source-map-support": "^0.5.19"
-    },
-    "description": "meross cloud adapter for ioBroker",
-    "devDependencies": {
-        "@alcalzone/release-script": "^1.4.1",
-        "chai": "^4.2.0",
-        "gulp": "^4.0.2",
-        "mocha": "^8.0.1",
-        "@iobroker/testing": "^2.2.0"
-    },
-    "optionalDependencies": {},
-    "homepage": "https://github.com/Apollon77/ioBroker.meross",
-    "keywords": [
-        "ioBroker",
-        "Homee",
-        "Smart Home",
-        "home automation"
-    ],
-    "license": "MIT",
-    "main": "main.js",
-    "readmeFilename": "README.md",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Apollon77/ioBroker.meross.git"
-    },
-    "scripts": {
-        "test": "npm run test:package && npm run test:unit",
-        "test:package": "mocha test/package --exit",
-        "test:unit": "mocha test/unit --exit",
-        "test:integration": "mocha test/integration --exit",
-        "release": "release-script"
+  "version": "1.4.0",
+  "name": "iobroker.meross",
+  "author": {
+    "name": "Apollon77",
+    "email": "ingo@fischer-ka.de"
+  },
+  "bugs": {
+    "url": "https://github.com/Apollon77/ioBroker.meross/issues"
+  },
+  "contributors": [
+    {
+      "name": "Apollon77",
+      "email": "ingo@fischer-ka.de"
     }
+  ],
+  "dependencies": {
+    "meross-cloud": "^1.3.5",
+    "@apollon/iobroker-tools": "^0.2.0",
+    "@iobroker/adapter-core": "^2.4.0",
+    "@sentry/node": "^5.17.0",
+    "@sentry/integrations": "^5.17.0",
+    "source-map-support": "^0.5.19"
+  },
+  "description": "meross cloud adapter for ioBroker",
+  "devDependencies": {
+    "@alcalzone/release-script": "^1.4.1",
+    "chai": "^4.2.0",
+    "gulp": "^4.0.2",
+    "mocha": "^8.0.1",
+    "@iobroker/testing": "^2.2.0"
+  },
+  "optionalDependencies": {},
+  "homepage": "https://github.com/Apollon77/ioBroker.meross",
+  "keywords": [
+    "ioBroker",
+    "Homee",
+    "Smart Home",
+    "home automation"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apollon77/ioBroker.meross.git"
+  },
+  "scripts": {
+    "test": "npm run test:package && npm run test:unit",
+    "test:package": "mocha test/package --exit",
+    "test:unit": "mocha test/unit --exit",
+    "test:integration": "mocha test/integration --exit",
+    "release": "release-script"
+  }
 }
