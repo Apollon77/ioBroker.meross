@@ -32,6 +32,10 @@
     var secret;
 
     function encrypt(key, value) {
+        if (value === undefined) {
+            value = key;
+            key = secret;
+        }
         var result = '';
         for(var i = 0; i < value.length; ++i) {
             result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
@@ -40,6 +44,10 @@
     }
 
     function decrypt(key, value) {
+        if (value === undefined) {
+            value = key;
+            key = secret;
+        }
         var result = '';
         for(var i = 0; i < value.length; ++i) {
             result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));

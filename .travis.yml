@@ -6,7 +6,7 @@ language: node_js
 node_js:
   - '10'
   - '12'
-  - 'node'
+  - '14'
 before_install:
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then CC=gcc-6; fi'
   - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then CXX=g++-6; fi'

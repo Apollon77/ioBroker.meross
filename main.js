@@ -112,7 +112,7 @@ function initSentry(callback) {
         });
 
         adapter.getForeignObject('system.config', (err, obj) => {
-            if (obj && obj.common && obj.common.diag) {
+            if (obj && obj.common && obj.common.diag !== 'none') {
                 adapter.getForeignObject('system.meta.uuid', (err, obj) => {
                     // create uuid
                     if (!err  && obj) {
@@ -1253,7 +1253,7 @@ function main() {
 
     // Maximum password length supported by cloud is 15 characters
     if (adapter.config.password.length > 15) {
-        adapter.config.password = adapter.config.password.substring(0, 15);
+        adapter.log.info('Password is longer then 15 characters - if it do not work please cut it at 15 characters!');
     }
 
     const options = {

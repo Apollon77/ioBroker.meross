@@ -15,19 +15,20 @@
         }
     ],
     "dependencies": {
-        "meross-cloud": "^1.3.4",
+        "meross-cloud": "^1.3.5",
         "@apollon/iobroker-tools": "^0.2.0",
-        "@iobroker/adapter-core": "^2.2.1",
-        "@sentry/node": "^5.15.4",
-        "@sentry/integrations": "^5.15.4",
-        "source-map-support": "^0.5.16"
+        "@iobroker/adapter-core": "^2.4.0",
+        "@sentry/node": "^5.17.0",
+        "@sentry/integrations": "^5.17.0",
+        "source-map-support": "^0.5.19"
     },
     "description": "meross cloud adapter for ioBroker",
     "devDependencies": {
+        "@alcalzone/release-script": "^1.4.1",
         "chai": "^4.2.0",
         "gulp": "^4.0.2",
-        "mocha": "^7.1.1",
-        "@iobroker/testing": "^2.1.0"
+        "mocha": "^8.0.1",
+        "@iobroker/testing": "^2.2.0"
     },
     "optionalDependencies": {},
     "homepage": "https://github.com/Apollon77/ioBroker.meross",
@@ -48,6 +49,7 @@
         "test": "npm run test:package && npm run test:unit",
         "test:package": "mocha test/package --exit",
         "test:unit": "mocha test/unit --exit",
-        "test:integration": "mocha test/integration --exit"
+        "test:integration": "mocha test/integration --exit",
+        "release": "release-script"
     }
 }
