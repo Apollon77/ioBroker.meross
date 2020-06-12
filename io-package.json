@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.4.0",
+        "version": "1.4.1",
         "news": {
+            "1.4.1": {
+                "en": "Fix Admin finally",
+                "de": "Fix Admin endlich",
+                "ru": "Исправить Admin наконец",
+                "pt": "Corrigir Admin finalmente",
+                "nl": "Fix Admin eindelijk",
+                "fr": "Fix Admin enfin",
+                "it": "Risolto il problema con Admin",
+                "es": "Fix Admin finalmente",
+                "pl": "Napraw administratora w końcu",
+                "zh-cn": "最终修复管理员"
+            },
             "1.4.0": {
                 "en": "Fix Admin\nRemove the automatic cutting of passwords to 15 characters, but log info message",
                 "de": "Fix Admin\nEntfernen Sie das automatische Schneiden von Passwörtern auf 15 Zeichen, protokollieren Sie jedoch die Infomeldung",

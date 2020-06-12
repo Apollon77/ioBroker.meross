@@ -36,6 +36,9 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
+### 1.4.1 (2020-06-12)
+* (Apollon77) Fix Admin finally
+
 ### 1.4.0 (2020-06-12)
 * (Apollon77) Fix Admin
 * (Apollon77) Remove the automatic cutting of passwords to 15 characters, but log info message
