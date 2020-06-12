@@ -31,28 +31,31 @@
 <script type="text/javascript">
     var secret;
 
-    function encrypt(key, value) {
-        if (value === undefined) {
-            value = key;
-            key = secret;
+    if (!encrypt || typeof encrypt !== 'function') {
+        function encrypt(key, value) {
+            if (value === undefined) {
+                value = key;
+                key = secret;
+            }
+            var result = '';
+            for (var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
         }
-        var result = '';
-        for(var i = 0; i < value.length; ++i) {
-            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-        }
-        return result;
     }
-
-    function decrypt(key, value) {
-        if (value === undefined) {
-            value = key;
-            key = secret;
+    if (!decrypt || typeof decrypt !== 'function') {
+        function decrypt(key, value) {
+            if (value === undefined) {
+                value = key;
+                key = secret;
+            }
+            var result = '';
+            for (var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
         }
-        var result = '';
-        for(var i = 0; i < value.length; ++i) {
-            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-        }
-        return result;
     }
 
     // the function loadSettings has to exist ...
