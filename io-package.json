@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.4.1",
+        "version": "1.5.0",
         "news": {
+            "1.5.0": {
+                "en": "Prevent crash cases (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdd warning about poll interval and cloud deactivation and reset poll interval to 30s for now",
+                "de": "Verhindern Sie Absturzfälle (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nFügen Sie eine Warnung zum Abfrageintervall und zur Deaktivierung der Cloud hinzu und setzen Sie das Abfrageintervall vorerst auf 30 Sekunden zurück",
+                "ru": "Предотвращение аварийных ситуаций (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nДобавить предупреждение об интервале опроса и облачной деактивации и сбросить интервал опроса до 30 с.",
+                "pt": "Evitar casos de falha (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdicione um aviso sobre o intervalo de pesquisa e desativação da nuvem e redefina o intervalo de pesquisa para 30s por enquanto",
+                "nl": "Voorkom crashgevallen (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nVoeg een waarschuwing toe over het pollinterval en de deactivering van de cloud en reset het pollinterval voorlopig naar 30 seconden",
+                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAjouter un avertissement sur l'intervalle d'interrogation et la désactivation du cloud et réinitialiser l'intervalle d'interrogation à 30 secondes pour l'instant",
+                "it": "Prevenire i casi di crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAggiungi un avviso sull'intervallo di polling e la disattivazione del cloud e reimposta l'intervallo di poll su 30s per ora",
+                "es": "Prevención de casos de bloqueo (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAgregue advertencia sobre el intervalo de sondeo y la desactivación de la nube y restablezca el intervalo de sondeo a 30 segundos por ahora",
+                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nDodaj ostrzeżenie o interwale odpytywania i dezaktywacji chmury i na razie zresetuj interwał odpytywania do 30s",
+                "zh-cn": "防止发生崩溃情况（哨兵IOBROKER-MEROSS-G，IOBROKER-MEROSS-F）\n添加有关轮询间隔和云停用的警告，并将轮询间隔暂时重置为30s"
+            },
             "1.4.1": {
                 "en": "Fix Admin finally",
                 "de": "Fix Admin endlich",
