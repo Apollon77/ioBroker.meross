@@ -231,7 +231,8 @@
     "native": {
         "user": "",
         "password": "",
-        "electricityPollingInterval": 20
+        "electricityPollingInterval": 30,
+        "electricityPollingIntervalReChecked": false
     },
     "objects": [],
     "instanceObjects": [

@@ -46,5 +46,17 @@ systemDictionary = {
         "it": "Intervallo di polling per i valori di elettricità",
         "es": "Intervalo de sondeo para valores de electricidad.",
         "pl": "Interwał odpytywania dla wartości energii elektrycznej"
+    },
+    "electricityPollingIntervalInfo": {
+        "en": "Make sure that the polling interval is not too short because Meross can disable the cloud functionality of the devices. Having a smaller value then 15s is risky.",
+        "de": "Stellen Sie sicher, dass das Abfrageintervall nicht zu kurz ist, da Meross die Cloud-Funktionalität der Geräte deaktivieren kann. Ein kleinerer Wert als 15s ist riskant.",
+        "ru": "Убедитесь, что интервал опроса не слишком короткий, потому что Meross может отключить облачную функциональность устройств. Имея меньшее значение, чем 15 с, рискованно.",
+        "pt": "Verifique se o intervalo de pesquisa não é muito curto porque o Meross pode desativar a funcionalidade de nuvem dos dispositivos. Ter um valor menor que 15s é arriscado.",
+        "nl": "Zorg ervoor dat het polling-interval niet te kort is, omdat Meross de cloudfunctionaliteit van de apparaten kan uitschakelen. Een kleinere waarde hebben dan 15s is riskant.",
+        "fr": "Assurez-vous que l'intervalle d'interrogation n'est pas trop court car Meross peut désactiver la fonctionnalité cloud des appareils. Avoir une valeur inférieure à 15 secondes est risqué.",
+        "it": "Assicurarsi che l'intervallo di polling non sia troppo breve poiché Meross può disabilitare la funzionalità cloud dei dispositivi. Avere un valore inferiore a 15 secondi è rischioso.",
+        "es": "Asegúrese de que el intervalo de sondeo no sea demasiado corto porque Meross puede deshabilitar la funcionalidad en la nube de los dispositivos. Tener un valor menor que 15s es arriesgado.",
+        "pl": "Upewnij się, że interwał odpytywania nie jest zbyt krótki, ponieważ Meross może wyłączyć funkcje urządzeń w chmurze. Posiadanie wartości mniejszej niż 15 sekund jest ryzykowne.",
+        "zh-cn": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。"
     }
 };

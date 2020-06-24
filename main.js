@@ -1252,10 +1252,14 @@ function main() {
     objectHelper.init(adapter);
 
     // Maximum password length supported by cloud is 15 characters
-    if (adapter.config.password.length > 15) {
+    if (typeof adapter.config.password === 'string' && adapter.config.password.length > 15) {
         adapter.log.info('Password is longer then 15 characters - if it do not work please cut it at 15 characters!');
     }
 
+    adapter.config.electricityPollingInterval = parseInt(adapter.config.electricityPollingInterval, 10) || 30;
+    if (!adapter.config.electricityPollingIntervalReChecked) {
+        adapter.config.electricityPollingInterval = 30;
+    }
     const options = {
         'email': adapter.config.user,
         'password': adapter.config.password,
@@ -1278,7 +1282,7 @@ function main() {
             initDevice(deviceId, deviceDef, device, () => {
                 device.getOnlineStatus((err, res) => {
                     adapter.log.debug('Online: ' + JSON.stringify(res));
-                    if (err || !res) return;
+                    if (err || !res || !res.online) return;
                     adapter.setState(deviceId + '.online', (res.online.status === 1), true);
                 });
 

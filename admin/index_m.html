@@ -62,7 +62,7 @@
     function loadHelper(settings, onChange) {
         // example: select elements with id=key and class=value and insert value
         if (!settings) return;
-        if (settings.electricityPollingInterval === undefined) settings.electricityPollingInterval = 20;
+        if (settings.electricityPollingInterval === undefined || !settings.electricityPollingIntervalReChecked) settings.electricityPollingInterval = 30;
 
         $('.value').each(function () {
             var $key = $(this);
@@ -117,6 +117,7 @@
                 obj[id] = value;
             }
         });
+        obj.electricityPollingIntervalReChecked = true;
 
         callback(obj);
     }
@@ -154,6 +155,12 @@
                         <input class="value" id="electricityPollingInterval" type="number"> s
                         <label for="electricityPollingInterval">electricityPollingInterval</label>
                         <span class="translate">electricityPollingInterval</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <img src="warning.png" width=60 height=60 align="middle">
+                        <span class="translate">electricityPollingIntervalInfo</span>
                     </div>
                 </div>
             </div>
