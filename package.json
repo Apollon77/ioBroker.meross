@@ -27,7 +27,7 @@
     "@alcalzone/release-script": "^1.8.1",
     "chai": "^4.2.0",
     "gulp": "^4.0.2",
-    "mocha": "^8.2.0",
+    "mocha": "^8.2.1",
     "@iobroker/testing": "^2.3.0"
   },
   "optionalDependencies": {},
