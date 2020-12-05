@@ -34,7 +34,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.5.1 (2020-12-05)
 * generate an unique uuid for each connection, fixes the "Server not available"
 
 ### 1.5.0 (2020-06-25)

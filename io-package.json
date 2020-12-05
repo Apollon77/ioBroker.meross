@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.5.0",
+        "version": "1.5.1",
         "news": {
+            "1.5.1": {
+                "en": "generate an unique uuid for each connection, fixes the \"Server not available\"",
+                "de": "Generieren Sie eine eindeutige UUID für jede Verbindung, behebt den \"Server nicht verfügbar\"",
+                "ru": "генерировать уникальный uuid для каждого подключения, исправляет \"Сервер недоступен\"",
+                "pt": "gerar um uuid exclusivo para cada conexão, corrige o \"Servidor não disponível\"",
+                "nl": "genereer een unieke uuid voor elke verbinding, repareert de \"Server niet beschikbaar\"",
+                "fr": "générer un uuid unique pour chaque connexion, corrige le \"Serveur non disponible\"",
+                "it": "genera un uuid univoco per ogni connessione, corregge il \"Server non disponibile\"",
+                "es": "genera un uuid único para cada conexión, corrige el \"Servidor no disponible\"",
+                "pl": "wygeneruje unikalny identyfikator użytkownika dla każdego połączenia, naprawia błąd „Serwer niedostępny”",
+                "zh-cn": "为每个连接生成唯一的uuid，修复“服务器不可用”"
+            },
             "1.5.0": {
                 "en": "Prevent crash cases (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdd warning about poll interval and cloud deactivation and reset poll interval to 30s for now",
                 "de": "Verhindern Sie Absturzfälle (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nFügen Sie eine Warnung zum Abfrageintervall und zur Deaktivierung der Cloud hinzu und setzen Sie das Abfrageintervall vorerst auf 30 Sekunden zurück",
