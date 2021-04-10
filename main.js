@@ -311,7 +311,7 @@ function initDeviceObjects(deviceId, channels, data) {
             return;
         }
     }
-    else if (data && data.togglex && !data.garageDoor) {
+    else if (data && data.togglex && !data.garageDoor && !data.diffuser) {
         if (!Array.isArray(data.togglex)) {
             data.togglex = [data.togglex];
         }
@@ -350,7 +350,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 objs.push(common);
             }
             else {
-                adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+                adapter.log.info('Unsupported type for digest togglex val ' + JSON.stringify(val));
             }
         });
     }
@@ -895,6 +895,103 @@ function initDeviceObjects(deviceId, channels, data) {
         });
     }
 
+    if (data.diffuser) {
+        if (data.diffuser.type && data.diffuser.type === 'mod100') {
+            if (data.diffuser.spray) {
+                if (!Array.isArray(data.diffuser.spray)) {
+                    data.diffuser.spray = [data.diffuser.spray];
+                }
+                data.diffuser.spray.forEach((val) => {
+                    const common = {};
+                    if (val.mode !== undefined) {
+                        common.type = 'number';
+                        common.read = true;
+                        common.write = true;
+                        common.name = val.channel + '-mode';
+                        common.role = defineRole(common);
+                        common.states = {0: 'Light', 1: 'Strong', 2: 'Off'};
+                        common.id = common.name;
+                        values[val.channel + '-mode'] = val.mode;
+
+                        common.onChange = (value) => {
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            knownDevices[deviceId].device.controlDiffusorSpray(data.diffuser.type, val.channel, value, (err, res) => {
+                                adapter.log.debug('Diffusor-Spray Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(deviceId + '.' + val.channel + ': set spray value ' + value);
+                            });
+                        };
+                        objs.push(common);
+                    }
+                    else {
+                        adapter.log.info('Unsupported type for spray digest val ' + JSON.stringify(val));
+                    }
+                });
+            }
+
+            // { "channel": 0, "onoff": 1, "mode": 1, "luminance": 84, "rgb": 65413 }
+            if (data.diffuser.light) {
+                for (let key in data.diffuser.light) {
+                    if (!data.diffuser.light.hasOwnProperty(key)) continue;
+                    if (key === 'channel' || key === 'lmTime') continue;
+                    const common = {};
+                    common.type = (key === 'rgb') ? 'string' : ((key === 'onoff') ? 'boolean' : 'number');
+                    common.read = true;
+                    common.write = true;
+                    common.name = data.diffuser.light.channel + '-' + key;
+                    common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
+                    common.id = common.name;
+                    values[common.id] = (key === 'rgb') ? convertNumberToHex(data.diffuser.light[key]) : ((key === 'onoff') ? !!data.diffuser.light[key] : data.diffuser.light[key]);
+                    if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
+
+                    common.onChange = (value) => {
+                        if (!knownDevices[deviceId].device) {
+                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            return;
+                        }
+
+                        const controlData = {
+                            channel: data.diffuser.light.channel
+                        };
+                        controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
+                        if (key === 'onoff') {
+                            controlData[key] = controlData[key] ? 1 : 0;
+                        }
+                        /*switch (key) {
+                            /*
+                                MODE_LUMINANCE = 4
+                                MODE_TEMPERATURE = 2
+                                MODE_RGB = 1
+                                MODE_RGB_LUMINANCE = 5
+                                MODE_TEMPERATURE_LUMINANCE = 6
+
+                            case 'rgb':
+                                controlData.capacity = 1;
+                                break;
+                            case 'temperature':
+                                controlData.capacity = 2;
+                                break;
+                            case 'luminance':
+                                controlData.capacity = 4;
+                                break;
+                        }*/
+                        knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
+                            adapter.log.debug('Diffusor-Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            adapter.log.debug(deviceId + '.' + data.diffuser.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
+                        });
+                    };
+                    objs.push(common);
+                }
+            }
+        } else {
+            adapter.log.info('Unsupported Diffusor type. Please send the following line to developer!');
+            adapter.log.info(JSON.stringify(data));
+        }
+    }
+
     objs.forEach((obj) => {
         const id = obj.id;
         delete obj.id;
@@ -961,7 +1058,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light']) {
                 adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -983,7 +1080,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray']) {
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light']) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
