@@ -1,0 +1,7 @@
+{
+    "MerossInfo": "Ten adapter łączy się z chmurą Meross, aby sterować urządzeniami. Wprowadź dane logowania na swoje konto Meross Cloud.",
+    "Password": "Hasło",
+    "User": "Nazwa Użytkownika",
+    "electricityPollingInterval": "Interwał odpytywania dla wartości energii elektrycznej",
+    "electricityPollingIntervalInfo": "Upewnij się, że interwał odpytywania nie jest zbyt krótki, ponieważ Meross może wyłączyć funkcje urządzeń w chmurze. Posiadanie wartości mniejszej niż 15 sekund jest ryzykowne."
+}

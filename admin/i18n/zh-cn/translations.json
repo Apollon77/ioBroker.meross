@@ -1,0 +1,7 @@
+{
+    "MerossInfo": "",
+    "Password": "",
+    "User": "",
+    "electricityPollingInterval": "",
+    "electricityPollingIntervalInfo": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。"
+}

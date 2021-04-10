@@ -25,6 +25,7 @@
   "description": "meross cloud adapter for ioBroker",
   "devDependencies": {
     "@alcalzone/release-script": "^1.8.1",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
     "gulp": "^4.0.2",
     "mocha": "^8.2.1",
@@ -34,7 +35,7 @@
   "homepage": "https://github.com/Apollon77/ioBroker.meross",
   "keywords": [
     "ioBroker",
-    "Homee",
+    "Homee",unding
     "Smart Home",
     "home automation"
   ],

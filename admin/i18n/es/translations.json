@@ -1,0 +1,7 @@
+{
+    "MerossInfo": "Este adaptador se conecta a la nube de Meross para controlar sus dispositivos. Introduzca las credenciales de inicio de sesión en su cuenta Meross Cloud.",
+    "Password": "Contraseña",
+    "User": "Nombre de usuario",
+    "electricityPollingInterval": "Intervalo de sondeo para valores de electricidad.",
+    "electricityPollingIntervalInfo": "Asegúrese de que el intervalo de sondeo no sea demasiado corto porque Meross puede deshabilitar la funcionalidad en la nube de los dispositivos. Tener un valor menor que 15s es arriesgado."
+}

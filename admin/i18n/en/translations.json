@@ -1,0 +1,7 @@
+{
+    "MerossInfo": "This adapter connects to the Meross Cloud to control your devices. Please enter the Login credentials to your Meross Cloud Account.",
+    "Password": "Password",
+    "User": "Username",
+    "electricityPollingInterval": "Polling interval for electricity values",
+    "electricityPollingIntervalInfo": "Make sure that the polling interval is not too short because Meross can disable the cloud functionality of the devices. Having a smaller value then 15s is risky."
+}
