@@ -1,7 +1,7 @@
 {
-    "MerossInfo": "",
-    "Password": "",
-    "User": "",
-    "electricityPollingInterval": "",
+    "MerossInfo": "该适配器连接到Meross Cloud以控制您的设备。",
+    "Password": "密码",
+    "User": "用户名",
+    "electricityPollingInterval": "电量值的轮询间隔",
     "electricityPollingIntervalInfo": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。"
 }

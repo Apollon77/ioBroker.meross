@@ -203,7 +203,9 @@
             "nl": "Meross Cloud",
             "fr": "Meross Cloud",
             "it": "Meross Cloud",
-            "es": "Meross Cloud"
+            "es": "Meross Cloud",
+            "pl": "Meross Cloud",
+            "zh-cn": "美洛斯云"
         },
         "desc": {
             "en": "support for Meross Wifi devices",
@@ -214,7 +216,8 @@
             "fr": "support pour les appareils Meross Wifi",
             "it": "supporto per i dispositivi Meross Wifi",
             "es": "soporte para dispositivos wifi Meross",
-            "pl": "obsługa urządzeń Wi-Fi firmy Meross"
+            "pl": "obsługa urządzeń Wi-Fi firmy Meross",
+            "zh-cn": "支持Meross Wifi设备"
         },
         "authors": [
             "Apollon77 <ingo@fischer-ka.de>"
