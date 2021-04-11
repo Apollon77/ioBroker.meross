@@ -909,7 +909,7 @@ function initDeviceObjects(deviceId, channels, data) {
                         common.write = true;
                         common.name = val.channel + '-mode';
                         common.role = defineRole(common);
-                        common.states = {0: 'Light', 1: 'Strong', 2: 'Off'};
+                        common.states = {0: 'Light Spray', 1: 'Dense Spray', 2: 'Off'};
                         common.id = common.name;
                         values[val.channel + '-mode'] = val.mode;
 
@@ -942,6 +942,9 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.read = true;
                     common.write = true;
                     common.name = data.diffuser.light.channel + '-' + key;
+                    if (key === 'mode') {
+                        common.states = {0: 'Auto cycle (RGB)', 1: 'RGB', 2: 'Color Temperature'};
+                    }
                     common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
                     common.id = common.name;
                     values[common.id] = (key === 'rgb') ? convertNumberToHex(data.diffuser.light[key]) : ((key === 'onoff') ? !!data.diffuser.light[key] : data.diffuser.light[key]);
