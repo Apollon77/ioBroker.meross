@@ -934,60 +934,65 @@ function initDeviceObjects(deviceId, channels, data) {
 
             // { "channel": 0, "onoff": 1, "mode": 1, "luminance": 84, "rgb": 65413 }
             if (data.diffuser.light) {
-                for (let key in data.diffuser.light) {
-                    if (!data.diffuser.light.hasOwnProperty(key)) continue;
-                    if (key === 'channel' || key === 'lmTime') continue;
-                    const common = {};
-                    common.type = (key === 'rgb') ? 'string' : ((key === 'onoff') ? 'boolean' : 'number');
-                    common.read = true;
-                    common.write = true;
-                    common.name = data.diffuser.light.channel + '-' + key;
-                    if (key === 'mode') {
-                        common.states = {0: 'Auto cycle (RGB)', 1: 'RGB', 2: 'Color Temperature'};
-                    }
-                    common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
-                    common.id = common.name;
-                    values[common.id] = (key === 'rgb') ? convertNumberToHex(data.diffuser.light[key]) : ((key === 'onoff') ? !!data.diffuser.light[key] : data.diffuser.light[key]);
-                    if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
-
-                    common.onChange = (value) => {
-                        if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                            return;
-                        }
-
-                        const controlData = {
-                            channel: data.diffuser.light.channel
-                        };
-                        controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
-                        if (key === 'onoff') {
-                            controlData[key] = controlData[key] ? 1 : 0;
-                        }
-                        /*switch (key) {
-                            /*
-                                MODE_LUMINANCE = 4
-                                MODE_TEMPERATURE = 2
-                                MODE_RGB = 1
-                                MODE_RGB_LUMINANCE = 5
-                                MODE_TEMPERATURE_LUMINANCE = 6
-
-                            case 'rgb':
-                                controlData.capacity = 1;
-                                break;
-                            case 'temperature':
-                                controlData.capacity = 2;
-                                break;
-                            case 'luminance':
-                                controlData.capacity = 4;
-                                break;
-                        }*/
-                        knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
-                            adapter.log.debug('Diffusor-Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                            adapter.log.debug(deviceId + '.' + data.diffuser.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
-                        });
-                    };
-                    objs.push(common);
+                if (!Array.isArray(data.diffuser.light)) {
+                    data.diffuser.light = [data.diffuser.light];
                 }
+                data.diffuser.light.forEach(diffuserLight => {
+                    for (let key in diffuserLight) {
+                        if (!diffuserLight.hasOwnProperty(key)) continue;
+                        if (key === 'channel' || key === 'lmTime') continue;
+                        const common = {};
+                        common.type = (key === 'rgb') ? 'string' : ((key === 'onoff') ? 'boolean' : 'number');
+                        common.read = true;
+                        common.write = true;
+                        common.name = 'light-' + diffuserLight.channel + '-' + key;
+                        if (key === 'mode') {
+                            common.states = {0: 'Auto cycle (RGB)', 1: 'RGB', 2: 'Color Temperature'};
+                        }
+                        common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
+                        common.id = common.name;
+                        values[common.id] = (key === 'rgb') ? convertNumberToHex(diffuserLight[key]) : ((key === 'onoff') ? !!diffuserLight[key] : diffuserLight[key]);
+                        if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
+
+                        common.onChange = (value) => {
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            const controlData = {
+                                channel: diffuserLight.channel
+                            };
+                            controlData[key] = (key === 'rgb') ? convertHexToNumber(value) : value;
+                            if (key === 'onoff') {
+                                controlData[key] = controlData[key] ? 1 : 0;
+                            }
+                            /*switch (key) {
+                                /*
+                                    MODE_LUMINANCE = 4
+                                    MODE_TEMPERATURE = 2
+                                    MODE_RGB = 1
+                                    MODE_RGB_LUMINANCE = 5
+                                    MODE_TEMPERATURE_LUMINANCE = 6
+
+                                case 'rgb':
+                                    controlData.capacity = 1;
+                                    break;
+                                case 'temperature':
+                                    controlData.capacity = 2;
+                                    break;
+                                case 'luminance':
+                                    controlData.capacity = 4;
+                                    break;
+                            }*/
+                            knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
+                                adapter.log.debug('Diffusor-Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(deviceId + '.' + diffuserLight.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
+                            });
+                        };
+                        objs.push(common);
+                    }
+                });
             }
         } else {
             adapter.log.info('Unsupported Diffusor type. Please send the following line to developer!');
