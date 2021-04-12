@@ -940,7 +940,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 data.diffuser.light.forEach(diffuserLight => {
                     for (let key in diffuserLight) {
                         if (!diffuserLight.hasOwnProperty(key)) continue;
-                        if (key === 'channel' || key === 'lmTime') continue;
+                        if (key === 'channel') continue;
                         const common = {};
                         common.type = (key === 'rgb') ? 'string' : ((key === 'onoff') ? 'boolean' : 'number');
                         common.read = true;
@@ -1351,6 +1351,37 @@ function setValuesElectricity(deviceId, payload) {
     }
 }
 
+function setValuesDiffuserLight(deviceId, payload) {
+    // {"type":"mod100","light":[{"rgb":16774912,"onoff":0,"mode":1,"luminance":71,"lmTime":1618222769,"channel":0}]}
+    if (payload && payload.light) {
+        if (!Array.isArray(payload.light)) {
+            payload.light = [payload.light];
+        }
+        payload.light.forEach(light => {
+            for (let key in light) {
+                if (!light.hasOwnProperty(key)) continue;
+                if (key === 'channel') continue;
+                if (key === 'rgb') light[key] = convertNumberToHex(light[key]);
+                if (key === 'onoff') light[key] = !!light[key];
+                    adapter.setState(deviceId + '.light-' + light.channel + '-' + key, light[key], true);
+            }
+        });
+    }
+}
+
+function setValuesDiffuserSpray(deviceId, payload) {
+    // {"type":"mod100","spray":[{"mode":1,"lmTime":1618222739,"channel":0}]}
+    if (payload && payload.spray) {
+        if (!Array.isArray(payload.spray)) {
+            payload.spray = [payload.spray];
+        }
+        payload.spray.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.channel + '-mode', val.mode, true);
+        });
+    }
+}
+
+
 // main function
 function main() {
     setConnected(false);
@@ -1459,6 +1490,12 @@ function main() {
                     break;
                 case 'Appliance.Control.Spray':
                     setValuesSpray(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Diffuser.Light':
+                    setValuesDiffuserLight(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Diffuser.Spray':
+                    setValuesDiffuserSpray(deviceId, payload);
                     break;
                 case 'Appliance.Hub.ToggleX':
                     setValuesHubToggleX(deviceId, payload);
