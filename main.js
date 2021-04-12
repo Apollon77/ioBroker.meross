@@ -967,14 +967,14 @@ function initDeviceObjects(deviceId, channels, data) {
                             if (key === 'onoff') {
                                 controlData[key] = controlData[key] ? 1 : 0;
                             }
-                            /*switch (key) {
+                            switch (key) {
                                 /*
                                     MODE_LUMINANCE = 4
                                     MODE_TEMPERATURE = 2
                                     MODE_RGB = 1
                                     MODE_RGB_LUMINANCE = 5
                                     MODE_TEMPERATURE_LUMINANCE = 6
-
+                                */
                                 case 'rgb':
                                     controlData.capacity = 1;
                                     break;
@@ -984,7 +984,7 @@ function initDeviceObjects(deviceId, channels, data) {
                                 case 'luminance':
                                     controlData.capacity = 4;
                                     break;
-                            }*/
+                            }
                             knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
                                 adapter.log.debug('Diffusor-Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
                                 adapter.log.debug(deviceId + '.' + diffuserLight.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
