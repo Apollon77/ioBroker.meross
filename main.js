@@ -976,13 +976,13 @@ function initDeviceObjects(deviceId, channels, data) {
                                     MODE_TEMPERATURE_LUMINANCE = 6
                                 */
                                 case 'rgb':
-                                    controlData.capacity = 1;
+                                    controlData.mode = 1;
                                     break;
                                 case 'temperature':
-                                    controlData.capacity = 2;
+                                    controlData.mode = 2;
                                     break;
                                 case 'luminance':
-                                    controlData.capacity = 4;
+                                    controlData.mode = values['light-' + diffuserLight.channel + '-mode'];
                                     break;
                             }
                             knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
