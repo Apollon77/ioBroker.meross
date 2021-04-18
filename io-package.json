@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.5.1",
+        "version": "1.6.0",
         "news": {
+            "1.6.0": {
+                "en": "add MOD100 Diffuser Spray device",
+                "de": "MOD100 Diffusor Spray Gerät hinzufügen",
+                "ru": "добавить устройство распыления диффузора MOD100",
+                "pt": "adicionar dispositivo difusor de spray MOD100",
+                "nl": "voeg MOD100 Diffuser Spray-apparaat toe",
+                "fr": "ajouter le dispositif de pulvérisation de diffuseur MOD100",
+                "it": "aggiungere il dispositivo di spruzzatura diffusore MOD100",
+                "es": "añadir dispositivo de pulverización difusor MOD100",
+                "pl": "dodaj urządzenie rozpylające z dyfuzorem MOD100",
+                "zh-cn": "添加MOD100扩散喷雾器"
+            },
             "1.5.1": {
                 "en": "generate an unique uuid for each connection, fixes the \"Server not available\"",
                 "de": "Generieren Sie eine eindeutige UUID für jede Verbindung, behebt den \"Server nicht verfügbar\"",
