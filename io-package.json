@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.6.0",
+        "version": "1.6.1",
         "news": {
+            "1.6.1": {
+                "en": "prevent crash case (Sentry IOBROKER-MEROSS-Z)",
+                "de": "Absturz verhindern (Sentry IOBROKER-MEROSS-Z)",
+                "ru": "случай предотвращения сбоя (Sentry IOBROKER-MEROSS-Z)",
+                "pt": "evitar caso de travamento (Sentry IOBROKER-MEROSS-Z)",
+                "nl": "crashgeval voorkomen (Sentry IOBROKER-MEROSS-Z)",
+                "fr": "éviter les cas de crash (Sentry IOBROKER-MEROSS-Z)",
+                "it": "prevenire crash case (Sentry IOBROKER-MEROSS-Z)",
+                "es": "prevenir caso de choque (Sentry IOBROKER-MEROSS-Z)",
+                "pl": "zapobiegać awariom (Sentry IOBROKER-MEROSS-Z)",
+                "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MEROSS-Z）"
+            },
             "1.6.0": {
                 "en": "add MOD100 Diffuser Spray device",
                 "de": "MOD100 Diffusor Spray Gerät hinzufügen",
