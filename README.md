@@ -34,7 +34,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
-### __WORK IN PRPGRESS__
+### __WORK IN PROGRESS__
 * (Apollon77) prevent crash case (Sentry IOBROKER-MEROSS-Z)
 
 ### 1.6.0 (2021-04-18)
