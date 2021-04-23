@@ -895,7 +895,7 @@ function initDeviceObjects(deviceId, channels, data) {
         });
     }
 
-    if (data.diffuser) {
+    if (data && data.diffuser) {
         if (data.diffuser.type && data.diffuser.type === 'mod100') {
             if (data.diffuser.spray) {
                 if (!Array.isArray(data.diffuser.spray)) {
