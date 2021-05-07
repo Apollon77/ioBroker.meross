@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "meross",
-        "version": "1.6.1",
+        "version": "1.6.2",
         "news": {
+            "1.6.2": {
+                "en": "optimize for js-controller 3.3",
+                "de": "optimieren für js-controller 3.3",
+                "ru": "оптимизировать под js-controller 3.3",
+                "pt": "otimizar para js-controller 3.3",
+                "nl": "optimaliseren voor js-controller 3.3",
+                "fr": "optimiser pour js-controller 3.3",
+                "it": "ottimizzare per js-controller 3.3",
+                "es": "optimizar para js-controller 3.3",
+                "pl": "optymalizacja dla kontrolera js 3.3",
+                "zh-cn": "针对js-controller 3.3进行优化"
+            },
             "1.6.1": {
                 "en": "prevent crash case (Sentry IOBROKER-MEROSS-Z)",
                 "de": "Absturz verhindern (Sentry IOBROKER-MEROSS-Z)",
