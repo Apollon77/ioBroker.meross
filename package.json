@@ -24,7 +24,7 @@
   },
   "description": "meross cloud adapter for ioBroker",
   "devDependencies": {
-    "@alcalzone/release-script": "^2.2.1",
+    "@alcalzone/release-script": "^3.4.1",
     "axios": "^0.24.0",
     "chai": "^4.3.4",
     "gulp": "^4.0.2",
