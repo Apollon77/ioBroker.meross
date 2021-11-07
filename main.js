@@ -573,6 +573,8 @@ function initDeviceObjects(deviceId, channels, data) {
             }
             if (sub.mts100) {
                 name += ' MTS100';
+            } else if (sub.mts150) {
+                name += ' MTS150';
             } else if (sub.mts100v3) {
                 name += ' MTS100v3';
             } else if (sub.ms100) {
@@ -628,7 +630,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             objs.push(common);
 
-            if (sub.mts100 || sub.mts100v3) {
+            if (sub.mts100 || sub.mts100v3 || sub.mts150) {
                 common = {};
                 common.type = 'number';
                 common.read = true;
@@ -636,10 +638,16 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'mode';
                 common.role = defineRole(common);
                 common.id = sub.id + '.' + common.name;
-                values[common.id] = sub.mts100 ? sub.mts100.mode : sub.mts100v3.mode;
+                if (sub.mts100) {
+                    values[common.id] = sub.mts100.mode;
+                } else if (sub.mts100v3) {
+                    values[common.id] = sub.mts100v3.mode;
+                } else if (sub.mts150) {
+                    values[common.id] = sub.mts150.mode;
+                }
                 common.min = 0;
-                common.max = 3;
-                common.states = {0: 'MODE_0', 1: 'MODE_1', 2: 'MODE_2', 3: 'MODE_3'};
+                common.max = 4;
+                common.states = {0: 'MODE_0', 1: 'MODE_1', 2: 'MODE_2', 3: 'MODE_3', 4: 'MODE_4'};
                 // Schedule mode 'klötze' 3
                 // Comfort Mode 1
                 // Economy Mode 2
@@ -788,7 +796,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     objs.push(common);
 
-                    if (sub.mts100v3) {
+                    if (sub.mts100v3 || sub.mts150) {
                         common = {};
                         common.type = 'number';
                         common.read = true;
