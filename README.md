@@ -22,8 +22,8 @@ One Adapter instance will show all devices from one Meross Cloud account and all
 * mss425e
 * mss310
 * MSS620 EU/UK
-* MTS100
-
+* MTS100, MTS100v3, MTS150
+* MRS100
 
 If more devices work (or also not) please report them by opening a GitHub issue.
 
@@ -37,6 +37,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ### __WORK IN PROGRESS__
 * (Apollon77) Add support for MTS150 Thermostats
+* (Apollon77) Add support for MRS100 RollerShutter devices
 
 ### 1.6.3 (2021-06-04)
 * (Apollon77) Update translations

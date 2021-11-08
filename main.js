@@ -1074,7 +1074,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State']) {
                 adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -1126,6 +1126,75 @@ function initDevice(deviceId, deviceDef, device, callback) {
                     adapter.log.debug(deviceId + ' DND-Mode: ' + JSON.stringify(res));
                     initDeviceObjects(deviceId, deviceDef.channels, res);
 
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                        });
+                    }
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.RollerShutter.State']) {
+                objAsyncCount++;
+                device.getRollerShutterState((err, res) => {
+                    if (res && res.state) {
+                        res.state.forEach(val => {
+                            const common = {};
+                            if (val.state !== undefined) {
+                                common.type = 'number';
+                                common.read = true;
+                                common.write = true;
+                                common.name = val.channel + '-state';
+                                common.role = defineRole(common);
+                                common.states = {0: 'Pause/Stop', 1: 'Up', 2: 'Down'};
+                                common.id = common.name;
+                                values[val.channel + '-state'] = val.state;
+
+                                common.onChange = (value) => {
+                                    if (!knownDevices[deviceId].device) {
+                                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                        return;
+                                    }
+
+                                    knownDevices[deviceId].device.controlRollerShutter(val.channel, value, (err, res) => {
+                                        adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                        adapter.log.debug(deviceId + '.' + val.channel + '-state: set RollerShutter state value ' + value);
+                                    });
+                                };
+                                objs.push(common);
+                            }
+                        });
+                    }
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                        });
+                    }
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.RollerShutter.Position']) {
+                objAsyncCount++;
+                device.getRollerShutterPosition((err, res) => {
+                    if (res && res.position) {
+                        res.position.forEach(val => {
+                            const common = {};
+                            if (val.position !== undefined) {
+                                common.type = 'number';
+                                common.read = true;
+                                common.write = false;
+                                common.name = val.channel + '-position';
+                                common.role = defineRole(common);
+                                common.unit = '%';
+                                common.min = 0;
+                                common.max = 100;
+                                common.id = common.name;
+                                values[val.channel + '-position'] = val.position;
+
+                                objs.push(common);
+                            }
+                        });
+                    }
                     if (!--objAsyncCount) {
                         objectHelper.processObjectQueue(() => {
                             callback && callback();
@@ -1389,6 +1458,29 @@ function setValuesDiffuserSpray(deviceId, payload) {
     }
 }
 
+function setValuesRollerShutterState(deviceId, payload) {
+    // {"state":[{"state":1,"channel":0}]}
+    if (payload && payload.state) {
+        if (!Array.isArray(payload.state)) {
+            payload.state = [payload.state];
+        }
+        payload.state.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.channel + '-state', val.state, true);
+        });
+    }
+}
+
+function setValuesRollerShutterPosition(deviceId, payload) {
+    // {"position":[{"position":0,"channel":0}]}
+    if (payload && payload.position) {
+        if (!Array.isArray(payload.position)) {
+            payload.position = [payload.position];
+        }
+        payload.position.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.channel + '-position', val.position, true);
+        });
+    }
+}
 
 // main function
 function main() {
@@ -1504,6 +1596,12 @@ function main() {
                     break;
                 case 'Appliance.Control.Diffuser.Spray':
                     setValuesDiffuserSpray(deviceId, payload);
+                    break;
+                case 'Appliance.RollerShutter.State':
+                    setValuesRollerShutterState(deviceId, payload);
+                    break;
+                case 'Appliance.RollerShutter.Position':
+                    setValuesRollerShutterPosition(deviceId, payload);
                     break;
                 case 'Appliance.Hub.ToggleX':
                     setValuesHubToggleX(deviceId, payload);
