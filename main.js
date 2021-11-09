@@ -1147,10 +1147,8 @@ function initDevice(deviceId, deviceDef, device, callback) {
                                 common.name = val.channel + '-state';
                                 common.role = defineRole(common);
                                 common.states = {0: 'Pause/Stop', 1: 'Up', 2: 'Down'};
-                                common.id = common.name;
-                                values[val.channel + '-state'] = val.state;
 
-                                common.onChange = (value) => {
+                                const onChange = (value) => {
                                     if (!knownDevices[deviceId].device) {
                                         adapter.log.debug(deviceId + 'Device communication not initialized ...');
                                         return;
@@ -1161,10 +1159,14 @@ function initDevice(deviceId, deviceDef, device, callback) {
                                         adapter.log.debug(deviceId + '.' + val.channel + '-state: set RollerShutter state value ' + value);
                                     });
                                 };
-                                objs.push(common);
+                                objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
+                                    type: 'state',
+                                    common
+                                }, val.state, onChange);
                             }
                         });
                     }
+
                     if (!--objAsyncCount) {
                         objectHelper.processObjectQueue(() => {
                             callback && callback();
@@ -1188,10 +1190,11 @@ function initDevice(deviceId, deviceDef, device, callback) {
                                 common.unit = '%';
                                 common.min = 0;
                                 common.max = 100;
-                                common.id = common.name;
-                                values[val.channel + '-position'] = val.position;
 
-                                objs.push(common);
+                                objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
+                                    type: 'state',
+                                    common
+                                }, val.position);
                             }
                         });
                     }
