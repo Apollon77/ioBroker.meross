@@ -1139,31 +1139,83 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 device.getRollerShutterState((err, res) => {
                     if (res && res.state) {
                         res.state.forEach(val => {
-                            const common = {};
-                            if (val.state !== undefined) {
-                                common.type = 'number';
-                                common.read = true;
-                                common.write = true;
-                                common.name = val.channel + '-state';
-                                common.role = defineRole(common);
-                                common.states = {0: 'Pause/Stop', 1: 'Up', 2: 'Down'};
-
-                                const onChange = (value) => {
-                                    if (!knownDevices[deviceId].device) {
-                                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                                        return;
-                                    }
-
-                                    knownDevices[deviceId].device.controlRollerShutter(val.channel, value, (err, res) => {
-                                        adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                        adapter.log.debug(deviceId + '.' + val.channel + '-state: set RollerShutter state value ' + value);
-                                    });
-                                };
-                                objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
-                                    type: 'state',
-                                    common
-                                }, val.state, onChange);
+                            if (val.state === undefined) {
+                                return;
                             }
+                            const commonUp = {};
+                            commonUp.type = 'boolean';
+                            commonUp.read = true;
+                            commonUp.write = true;
+                            commonUp.name = val.channel + '-up';
+                            commonUp.role = 'button.open.blind';
+
+                            const onChangeUp = (value) => {
+                                if (!value) {
+                                    return;
+                                }
+                                if (!knownDevices[deviceId].device) {
+                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                    return;
+                                }
+
+                                knownDevices[deviceId].device.controlRollerShutterUp(val.channel, (err, res) => {
+                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                });
+                            };
+                            objectHelper.setOrUpdateObject(deviceId + '.' + commonUp.name, {
+                                type: 'state',
+                                commonUp
+                            }, val.state === 1, onChangeUp);
+
+                            const commonDown = {};
+                            commonDown.type = 'boolean';
+                            commonDown.read = true;
+                            commonDown.write = true;
+                            commonDown.name = val.channel + '-down';
+                            commonDown.role = 'button.close.blind';
+
+                            const onChangeDown = (value) => {
+                                if (!value) {
+                                    return;
+                                }
+                                if (!knownDevices[deviceId].device) {
+                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                    return;
+                                }
+
+                                knownDevices[deviceId].device.controlRollerShutterDown(val.channel, (err, res) => {
+                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                });
+                            };
+                            objectHelper.setOrUpdateObject(deviceId + '.' + commonDown.name, {
+                                type: 'state',
+                                commonDown
+                            }, val.state === 2, onChangeDown);
+
+                            const commonStop = {};
+                            commonStop.type = 'boolean';
+                            commonStop.read = true;
+                            commonStop.write = true;
+                            commonStop.name = val.channel + '-stop';
+                            commonStop.role = 'button.stop';
+
+                            const onChangeStop = (value) => {
+                                if (!value) {
+                                    return;
+                                }
+                                if (!knownDevices[deviceId].device) {
+                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                    return;
+                                }
+
+                                knownDevices[deviceId].device.controlRollerShutterStop(val.channel, (err, res) => {
+                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                });
+                            };
+                            objectHelper.setOrUpdateObject(deviceId + '.' + commonStop.name, {
+                                type: 'state',
+                                commonStop
+                            }, val.state === 0, onChangeStop);
                         });
                     }
 
@@ -1468,7 +1520,9 @@ function setValuesRollerShutterState(deviceId, payload) {
             payload.state = [payload.state];
         }
         payload.state.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-state', val.state, true);
+            adapter.setState(deviceId + '.' + val.channel + '-up', val.state === 1, true);
+            adapter.setState(deviceId + '.' + val.channel + '-down', val.state === 2, true);
+            adapter.setState(deviceId + '.' + val.channel + '-stop', val.state === 0, true);
         });
     }
 }
