@@ -1173,9 +1173,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                         });
                     }
                 });
-            }
 
-            if (deviceAbilities.ability['Appliance.RollerShutter.Position']) {
                 objAsyncCount++;
                 device.getRollerShutterPosition((err, res) => {
                     if (res && res.position) {
@@ -1186,7 +1184,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                                 common.read = true;
                                 common.write = false;
                                 common.name = val.channel + '-position';
-                                common.role = defineRole(common);
+                                common.role = 'value.blind';
                                 common.unit = '%';
                                 common.min = 0;
                                 common.max = 100;
@@ -1198,12 +1196,14 @@ function initDevice(deviceId, deviceDef, device, callback) {
                             }
                         });
                     }
+
                     if (!--objAsyncCount) {
                         objectHelper.processObjectQueue(() => {
                             callback && callback();
                         });
                     }
                 });
+
             }
 
             if (!objAsyncCount) {
