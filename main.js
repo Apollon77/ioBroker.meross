@@ -1546,7 +1546,7 @@ function main() {
 
     // Maximum password length supported by cloud is 15 characters
     if (typeof adapter.config.password === 'string' && adapter.config.password.length > 15) {
-        adapter.log.info('Password is longer then 15 characters - if it do not work please cut it at 15 characters!');
+        adapter.log.info('Password is longer then 15 characters - if it do not work please cut it at 15 characters! This might be needed for older passwords!');
     }
 
     adapter.config.electricityPollingInterval = parseInt(adapter.config.electricityPollingInterval, 10) || 30;
