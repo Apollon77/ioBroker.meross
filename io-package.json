@@ -1,337 +1,183 @@
 {
-    "common": {
-        "name": "meross",
-        "version": "1.6.3",
-        "news": {
-            "1.6.3": {
-                "en": "Update translations",
-                "de": "Übersetzungen aktualisieren",
-                "ru": "Обновить переводы",
-                "pt": "Atualizar traduções",
-                "nl": "Vertalingen bijwerken",
-                "fr": "Mettre à jour les traductions",
-                "it": "Aggiorna traduzioni",
-                "es": "Actualizar traducciones",
-                "pl": "Zaktualizuj tłumaczenia",
-                "zh-cn": "更新翻译"
-            },
-            "1.6.2": {
-                "en": "optimize for js-controller 3.3",
-                "de": "optimieren für js-controller 3.3",
-                "ru": "оптимизировать под js-controller 3.3",
-                "pt": "otimizar para js-controller 3.3",
-                "nl": "optimaliseren voor js-controller 3.3",
-                "fr": "optimiser pour js-controller 3.3",
-                "it": "ottimizzare per js-controller 3.3",
-                "es": "optimizar para js-controller 3.3",
-                "pl": "optymalizacja dla kontrolera js 3.3",
-                "zh-cn": "针对js-controller 3.3进行优化"
-            },
-            "1.6.1": {
-                "en": "prevent crash case (Sentry IOBROKER-MEROSS-Z)",
-                "de": "Absturz verhindern (Sentry IOBROKER-MEROSS-Z)",
-                "ru": "случай предотвращения сбоя (Sentry IOBROKER-MEROSS-Z)",
-                "pt": "evitar caso de travamento (Sentry IOBROKER-MEROSS-Z)",
-                "nl": "crashgeval voorkomen (Sentry IOBROKER-MEROSS-Z)",
-                "fr": "éviter les cas de crash (Sentry IOBROKER-MEROSS-Z)",
-                "it": "prevenire crash case (Sentry IOBROKER-MEROSS-Z)",
-                "es": "prevenir caso de choque (Sentry IOBROKER-MEROSS-Z)",
-                "pl": "zapobiegać awariom (Sentry IOBROKER-MEROSS-Z)",
-                "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MEROSS-Z）"
-            },
-            "1.6.0": {
-                "en": "add MOD100 Diffuser Spray device",
-                "de": "MOD100 Diffusor Spray Gerät hinzufügen",
-                "ru": "добавить устройство распыления диффузора MOD100",
-                "pt": "adicionar dispositivo difusor de spray MOD100",
-                "nl": "voeg MOD100 Diffuser Spray-apparaat toe",
-                "fr": "ajouter le dispositif de pulvérisation de diffuseur MOD100",
-                "it": "aggiungere il dispositivo di spruzzatura diffusore MOD100",
-                "es": "añadir dispositivo de pulverización difusor MOD100",
-                "pl": "dodaj urządzenie rozpylające z dyfuzorem MOD100",
-                "zh-cn": "添加MOD100扩散喷雾器"
-            },
-            "1.5.1": {
-                "en": "generate an unique uuid for each connection, fixes the \"Server not available\"",
-                "de": "Generieren Sie eine eindeutige UUID für jede Verbindung, behebt den \"Server nicht verfügbar\"",
-                "ru": "генерировать уникальный uuid для каждого подключения, исправляет \"Сервер недоступен\"",
-                "pt": "gerar um uuid exclusivo para cada conexão, corrige o \"Servidor não disponível\"",
-                "nl": "genereer een unieke uuid voor elke verbinding, repareert de \"Server niet beschikbaar\"",
-                "fr": "générer un uuid unique pour chaque connexion, corrige le \"Serveur non disponible\"",
-                "it": "genera un uuid univoco per ogni connessione, corregge il \"Server non disponibile\"",
-                "es": "genera un uuid único para cada conexión, corrige el \"Servidor no disponible\"",
-                "pl": "wygeneruje unikalny identyfikator użytkownika dla każdego połączenia, naprawia błąd „Serwer niedostępny”",
-                "zh-cn": "为每个连接生成唯一的uuid，修复“服务器不可用”"
-            },
-            "1.5.0": {
-                "en": "Prevent crash cases (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdd warning about poll interval and cloud deactivation and reset poll interval to 30s for now",
-                "de": "Verhindern Sie Absturzfälle (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nFügen Sie eine Warnung zum Abfrageintervall und zur Deaktivierung der Cloud hinzu und setzen Sie das Abfrageintervall vorerst auf 30 Sekunden zurück",
-                "ru": "Предотвращение аварийных ситуаций (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nДобавить предупреждение об интервале опроса и облачной деактивации и сбросить интервал опроса до 30 с.",
-                "pt": "Evitar casos de falha (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdicione um aviso sobre o intervalo de pesquisa e desativação da nuvem e redefina o intervalo de pesquisa para 30s por enquanto",
-                "nl": "Voorkom crashgevallen (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nVoeg een waarschuwing toe over het pollinterval en de deactivering van de cloud en reset het pollinterval voorlopig naar 30 seconden",
-                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAjouter un avertissement sur l'intervalle d'interrogation et la désactivation du cloud et réinitialiser l'intervalle d'interrogation à 30 secondes pour l'instant",
-                "it": "Prevenire i casi di crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAggiungi un avviso sull'intervallo di polling e la disattivazione del cloud e reimposta l'intervallo di poll su 30s per ora",
-                "es": "Prevención de casos de bloqueo (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAgregue advertencia sobre el intervalo de sondeo y la desactivación de la nube y restablezca el intervalo de sondeo a 30 segundos por ahora",
-                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nDodaj ostrzeżenie o interwale odpytywania i dezaktywacji chmury i na razie zresetuj interwał odpytywania do 30s",
-                "zh-cn": "防止发生崩溃情况（哨兵IOBROKER-MEROSS-G，IOBROKER-MEROSS-F）\n添加有关轮询间隔和云停用的警告，并将轮询间隔暂时重置为30s"
-            },
-            "1.4.1": {
-                "en": "Fix Admin finally",
-                "de": "Fix Admin endlich",
-                "ru": "Исправить Admin наконец",
-                "pt": "Corrigir Admin finalmente",
-                "nl": "Fix Admin eindelijk",
-                "fr": "Fix Admin enfin",
-                "it": "Risolto il problema con Admin",
-                "es": "Fix Admin finalmente",
-                "pl": "Napraw administratora w końcu",
-                "zh-cn": "最终修复管理员"
-            },
-            "1.4.0": {
-                "en": "Fix Admin\nRemove the automatic cutting of passwords to 15 characters, but log info message",
-                "de": "Fix Admin\nEntfernen Sie das automatische Schneiden von Passwörtern auf 15 Zeichen, protokollieren Sie jedoch die Infomeldung",
-                "ru": "Исправить админ\nУбрать автоматическую обрезку паролей до 15 символов, но записать в лог сообщение",
-                "pt": "Fix Admin\nRemova o corte automático de senhas para 15 caracteres, mas registre a mensagem informativa",
-                "nl": "Beheerder repareren\nVerwijder het automatisch knippen van wachtwoorden tot 15 tekens, maar log infobericht",
-                "fr": "Fix Admin\nSupprimez la découpe automatique des mots de passe à 15 caractères, mais enregistrez le message d'information",
-                "it": "Fix Admin\nRimuovi il taglio automatico delle password a 15 caratteri, ma registra il messaggio informativo",
-                "es": "Fix Admin\nElimine el corte automático de contraseñas a 15 caracteres, pero registre el mensaje de información",
-                "pl": "Napraw administratora\nUsuń automatyczne przycinanie haseł do 15 znaków, ale wiadomość z logami",
-                "zh-cn": "修复管理员\n删除自动切成15个字符的密码，但记录信息消息"
-            },
-            "1.3.13": {
-                "en": "compatibility for js-controller 3.0 added, dependencies updated and optimizations/fixes",
-                "de": "Kompatibilität für js-controller 3.0 hinzugefügt, Abhängigkeiten aktualisiert und Optimierungen / Korrekturen",
-                "ru": "добавлена совместимость для js-controller 3.0, обновлены зависимости и оптимизированы / исправлены",
-                "pt": "compatibilidade com o js-controller 3.0 adicionada, dependências atualizadas e otimizações / correções",
-                "nl": "compatibiliteit voor js-controller 3.0 toegevoegd, afhankelijkheden bijgewerkt en optimalisaties / fixes",
-                "fr": "compatibilité pour js-controller 3.0 ajoutée, dépendances mises à jour et optimisations / correctifs",
-                "it": "compatibilità per js-controller 3.0 aggiunta, dipendenze aggiornate e ottimizzazioni / correzioni",
-                "es": "compatibilidad para js-controller 3.0 agregado, dependencias actualizadas y optimizaciones / arreglos",
-                "pl": "dodano kompatybilność dla js-kontrolera 3.0, zaktualizowano zależności i optymalizacje / poprawki",
-                "zh-cn": "添加了与js-controller 3.0的兼容性，更新了依赖项以及优化/修复"
-            },
-            "1.3.12": {
-                "en": "update dependecies",
-                "de": "Abhängigkeiten aktualisiert",
-                "ru": "обновить зависимости",
-                "pt": "atualizar dependências",
-                "nl": "update afhankelijkheden",
-                "fr": "mettre à jour les dépendances",
-                "it": "aggiorna le dipendenze",
-                "es": "actualizar dependencias",
-                "pl": "aktualizować zależności",
-                "zh-cn": "更新依赖"
-            },
-            "1.3.11": {
-                "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
-                "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
-                "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
-                "pt": "correções e otimizações. Mudou para a instância Sentry do iobroker para relatar falhas",
-                "nl": "fixes en optimalisaties. Overgeschakeld naar iobroker eigen Sentry-instantie voor het melden van crashes",
-                "fr": "corrections et optimisations. Passé à l'instance Sentry d'iobroker pour le signalement des plantages",
-                "it": "correzioni e ottimizzazioni. Passato alla propria istanza Sentry di iobroker per la segnalazione di arresti anomali",
-                "es": "correcciones y optimizaciones. Se cambió a la instancia de Sentry propia de iobroker para informar sobre bloqueos",
-                "pl": "poprawki i optymalizacje. Przełączono na własną instancję Sentry iobroker w celu zgłaszania awarii",
-                "zh-cn": "修复和优化。切换到iobroker自己的Sentry实例以报告崩溃"
-            },
-            "1.3.9": {
-                "en": "some error cases are handled better",
-                "de": "Einige Fehlerfälle werden besser behandelt",
-                "ru": "некоторые ошибки обрабатываются лучше",
-                "pt": "alguns casos de erro são tratados melhor",
-                "nl": "sommige foutgevallen worden beter afgehandeld",
-                "fr": "certains cas d'erreur sont mieux gérés",
-                "it": "alcuni casi di errore sono gestiti meglio",
-                "es": "algunos casos de error se manejan mejor",
-                "pl": "niektóre przypadki błędów są obsługiwane lepiej",
-                "zh-cn": "一些错误情况得到更好的处理"
-            },
-            "1.3.8": {
-                "en": "update dependecies",
-                "de": "Abhängigkeiten aktualisiert",
-                "ru": "обновить зависимости",
-                "pt": "atualizar dependências",
-                "nl": "update afhankelijkheden",
-                "fr": "mettre à jour les dépendances",
-                "it": "aggiorna le dipendenze",
-                "es": "actualizar dependencias",
-                "pl": "aktualizować zależności",
-                "zh-cn": "更新依赖"
-            },
-            "1.3.7": {
-                "en": "some error cases are handled better",
-                "de": "Einige Fehlerfälle werden besser behandelt",
-                "ru": "некоторые ошибки обрабатываются лучше",
-                "pt": "alguns casos de erro são tratados melhor",
-                "nl": "sommige foutgevallen worden beter afgehandeld",
-                "fr": "certains cas d'erreur sont mieux gérés",
-                "it": "alcuni casi di errore sono gestiti meglio",
-                "es": "algunos casos de error se manejan mejor",
-                "pl": "niektóre przypadki błędów są obsługiwane lepiej",
-                "zh-cn": "一些错误情况得到更好的处理"
-            },
-            "1.3.6": {
-                "en": "some error cases are handled better",
-                "de": "Einige Fehlerfälle werden besser behandelt",
-                "ru": "некоторые ошибки обрабатываются лучше",
-                "pt": "alguns casos de erro são tratados melhor",
-                "nl": "sommige foutgevallen worden beter afgehandeld",
-                "fr": "certains cas d'erreur sont mieux gérés",
-                "it": "alcuni casi di errore sono gestiti meglio",
-                "es": "algunos casos de error se manejan mejor",
-                "pl": "niektóre przypadki błędów są obsługiwane lepiej",
-                "zh-cn": "一些错误情况得到更好的处理"
-            },
-            "1.3.5": {
-                "en": "some error cases are handled better",
-                "de": "Einige Fehlerfälle werden besser behandelt",
-                "ru": "некоторые ошибки обрабатываются лучше",
-                "pt": "alguns casos de erro são tratados melhor",
-                "nl": "sommige foutgevallen worden beter afgehandeld",
-                "fr": "certains cas d'erreur sont mieux gérés",
-                "it": "alcuni casi di errore sono gestiti meglio",
-                "es": "algunos casos de error se manejan mejor",
-                "pl": "niektóre przypadki błędów są obsługiwane lepiej",
-                "zh-cn": "一些错误情况得到更好的处理"
-            },
-            "1.3.4": {
-                "en": "names for hub sub devices added",
-                "de": "Namen für Hub-Sub-Geräte hinzugefügt",
-                "ru": "добавлены имена для вспомогательных устройств-концентраторов",
-                "pt": "nomes para sub-dispositivos de hub adicionados",
-                "nl": "namen voor hub-subapparaten toegevoegd",
-                "fr": "noms des sous-concentrateurs ajoutés",
-                "it": "nomi per i dispositivi secondari hub aggiunti",
-                "es": "nombres para dispositivos secundarios de concentrador agregados",
-                "pl": "dodano nazwy urządzeń podrzędnych koncentratora",
-                "zh-cn": "集线器子设备的名称已添加"
-            },
-            "1.3.0": {
-                "en": "New devices and compact mode added, see README.md for details",
-                "de": "Neue Geräte und Kompaktmodus hinzugefügt. Weitere Informationen finden Sie in README.md",
-                "ru": "Добавлены новые устройства и компактный режим, подробнее см. README.md",
-                "pt": "Novos dispositivos e modo compacto adicionados, consulte README.md para obter detalhes",
-                "nl": "Nieuwe apparaten en compacte modus toegevoegd, zie README.md voor details",
-                "fr": "Nouveaux appareils et mode compact ajouté, voir README.md pour plus de détails",
-                "it": "Nuovi dispositivi e modalità compatta aggiunti, vedere README.md per i dettagli",
-                "es": "Nuevos dispositivos y modo compacto agregados, vea README.md para más detalles",
-                "pl": "Dodano nowe urządzenia i tryb kompaktowy, zobacz README.md, aby uzyskać szczegółowe informacje",
-                "zh-cn": "添加了新设备和紧凑模式，有关详细信息，请参见README.md"
-            },
-            "1.0.1": {
-                "en": "Added mss310 devices and electricity value handling including polling interval",
-                "de": "Mss310-Geräte und Stromwertverarbeitung einschließlich Abfrageintervall hinzugefügt",
-                "ru": "Добавлены устройства mss310 и обработка стоимости электроэнергии, включая интервал опроса",
-                "pt": "Adicionado dispositivos mss310 e manipulação de valor de eletricidade, incluindo intervalo de pesquisa",
-                "nl": "Mss310-apparaten en afhandeling van elektriciteitswaarde toegevoegd, inclusief polling-interval",
-                "fr": "Ajout de périphériques mss310 et de la gestion de la valeur électrique, y compris l'intervalle d'interrogation",
-                "it": "Aggiunti dispositivi mss310 e gestione del valore dell'elettricità compreso l'intervallo di polling",
-                "es": "Se agregaron dispositivos mss310 y manejo del valor de la electricidad, incluido el intervalo de sondeo",
-                "pl": "Dodano urządzenia mss310 i obsługę wartości elektrycznej, w tym interwał sondowania"
-            },
-            "0.1.0": {
-                "en": "Initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Первый выпуск",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie"
-            }
-        },
-        "title": "Meross Cloud",
-        "titleLang": {
-            "en": "Meross Cloud",
-            "de": "Meross Cloud",
-            "ru": "Meross Cloud",
-            "pt": "Meross Cloud",
-            "nl": "Meross Cloud",
-            "fr": "Meross Cloud",
-            "it": "Meross Cloud",
-            "es": "Meross Cloud",
-            "pl": "Meross Cloud",
-            "zh-cn": "美洛斯云"
-        },
-        "desc": {
-            "en": "support for Meross Wifi devices",
-            "de": "Unterstützung für Meross Wifi-Geräte",
-            "ru": "поддержка устройств Meross Wifi",
-            "pt": "suporte para dispositivos Wifi Meross",
-            "nl": "ondersteuning voor Meross Wifi-apparaten",
-            "fr": "support pour les appareils Meross Wifi",
-            "it": "supporto per i dispositivi Meross Wifi",
-            "es": "soporte para dispositivos wifi Meross",
-            "pl": "obsługa urządzeń Wi-Fi firmy Meross",
-            "zh-cn": "支持Meross Wifi设备"
-        },
-        "authors": [
-            "Apollon77 <ingo@fischer-ka.de>"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "mode": "daemon",
-        "icon": "meross.png",
-        "materialize": true,
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
-        "keywords": [
-            "Meross"
-        ],
-        "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
-        "loglevel": "info",
-        "type": "iot-systems",
-        "stopTimeout": 5000,
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "push",
-        "tier": 2,
-        "plugins": {
-            "sentry": {
-                "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
-                "pathWhitelist": [
-                    "@apollon",
-                    "meross-cloud"
-                ]
-            }
-        }
+  "common": {
+    "name": "meross",
+    "version": "1.7.0",
+    "news": {
+      "1.7.0": {
+        "en": "Add support for MTS150 Thermostats\nAdd support for MRS100 RollerShutter devices",
+        "de": "Unterstützung für MTS150-Thermostate hinzufügen\nUnterstützung für MRS100 RollerShutter-Geräte hinzufügen",
+        "ru": "Добавить поддержку термостатов MTS150\nДобавить поддержку устройств MRS100 RollerShutter",
+        "pt": "Adicionar suporte para termostatos MTS150\nAdicionar suporte para dispositivos MRS100 RollerShutter",
+        "nl": "Ondersteuning toevoegen voor MTS150-thermostaten\nOndersteuning toevoegen voor MRS100 RollerShutter-apparaten",
+        "fr": "Ajout de la prise en charge des thermostats MTS150\nAjout de la prise en charge des dispositifs MRS100 RollerShutter",
+        "it": "Aggiungi il supporto per i termostati MTS150\nAggiungi il supporto per i dispositivi RollerShutter MRS100",
+        "es": "Agregar soporte para termostatos MTS150\nAgregue soporte para dispositivos RollerShutter MRS100",
+        "pl": "Dodaj obsługę termostatów MTS150\nDodaj obsługę urządzeń MRS100 RollerShutter",
+        "zh-cn": "添加对 MTS150 恒温器的支持\n添加对 MRS100 RollerShutter 设备的支持"
+      },
+      "1.6.3": {
+        "en": "Update translations",
+        "de": "Übersetzungen aktualisieren",
+        "ru": "Обновить переводы",
+        "pt": "Atualizar traduções",
+        "nl": "Vertalingen bijwerken",
+        "fr": "Mettre à jour les traductions",
+        "it": "Aggiorna traduzioni",
+        "es": "Actualizar traducciones",
+        "pl": "Zaktualizuj tłumaczenia",
+        "zh-cn": "更新翻译"
+      },
+      "1.6.2": {
+        "en": "optimize for js-controller 3.3",
+        "de": "optimieren für js-controller 3.3",
+        "ru": "оптимизировать под js-controller 3.3",
+        "pt": "otimizar para js-controller 3.3",
+        "nl": "optimaliseren voor js-controller 3.3",
+        "fr": "optimiser pour js-controller 3.3",
+        "it": "ottimizzare per js-controller 3.3",
+        "es": "optimizar para js-controller 3.3",
+        "pl": "optymalizacja dla kontrolera js 3.3",
+        "zh-cn": "针对js-controller 3.3进行优化"
+      },
+      "1.6.1": {
+        "en": "prevent crash case (Sentry IOBROKER-MEROSS-Z)",
+        "de": "Absturz verhindern (Sentry IOBROKER-MEROSS-Z)",
+        "ru": "случай предотвращения сбоя (Sentry IOBROKER-MEROSS-Z)",
+        "pt": "evitar caso de travamento (Sentry IOBROKER-MEROSS-Z)",
+        "nl": "crashgeval voorkomen (Sentry IOBROKER-MEROSS-Z)",
+        "fr": "éviter les cas de crash (Sentry IOBROKER-MEROSS-Z)",
+        "it": "prevenire crash case (Sentry IOBROKER-MEROSS-Z)",
+        "es": "prevenir caso de choque (Sentry IOBROKER-MEROSS-Z)",
+        "pl": "zapobiegać awariom (Sentry IOBROKER-MEROSS-Z)",
+        "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MEROSS-Z）"
+      },
+      "1.6.0": {
+        "en": "add MOD100 Diffuser Spray device",
+        "de": "MOD100 Diffusor Spray Gerät hinzufügen",
+        "ru": "добавить устройство распыления диффузора MOD100",
+        "pt": "adicionar dispositivo difusor de spray MOD100",
+        "nl": "voeg MOD100 Diffuser Spray-apparaat toe",
+        "fr": "ajouter le dispositif de pulvérisation de diffuseur MOD100",
+        "it": "aggiungere il dispositivo di spruzzatura diffusore MOD100",
+        "es": "añadir dispositivo de pulverización difusor MOD100",
+        "pl": "dodaj urządzenie rozpylające z dyfuzorem MOD100",
+        "zh-cn": "添加MOD100扩散喷雾器"
+      },
+      "1.5.1": {
+        "en": "generate an unique uuid for each connection, fixes the \"Server not available\"",
+        "de": "Generieren Sie eine eindeutige UUID für jede Verbindung, behebt den \"Server nicht verfügbar\"",
+        "ru": "генерировать уникальный uuid для каждого подключения, исправляет \"Сервер недоступен\"",
+        "pt": "gerar um uuid exclusivo para cada conexão, corrige o \"Servidor não disponível\"",
+        "nl": "genereer een unieke uuid voor elke verbinding, repareert de \"Server niet beschikbaar\"",
+        "fr": "générer un uuid unique pour chaque connexion, corrige le \"Serveur non disponible\"",
+        "it": "genera un uuid univoco per ogni connessione, corregge il \"Server non disponibile\"",
+        "es": "genera un uuid único para cada conexión, corrige el \"Servidor no disponible\"",
+        "pl": "wygeneruje unikalny identyfikator użytkownika dla każdego połączenia, naprawia błąd „Serwer niedostępny”",
+        "zh-cn": "为每个连接生成唯一的uuid，修复“服务器不可用”"
+      },
+      "1.5.0": {
+        "en": "Prevent crash cases (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdd warning about poll interval and cloud deactivation and reset poll interval to 30s for now",
+        "de": "Verhindern Sie Absturzfälle (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nFügen Sie eine Warnung zum Abfrageintervall und zur Deaktivierung der Cloud hinzu und setzen Sie das Abfrageintervall vorerst auf 30 Sekunden zurück",
+        "ru": "Предотвращение аварийных ситуаций (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nДобавить предупреждение об интервале опроса и облачной деактивации и сбросить интервал опроса до 30 с.",
+        "pt": "Evitar casos de falha (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAdicione um aviso sobre o intervalo de pesquisa e desativação da nuvem e redefina o intervalo de pesquisa para 30s por enquanto",
+        "nl": "Voorkom crashgevallen (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nVoeg een waarschuwing toe over het pollinterval en de deactivering van de cloud en reset het pollinterval voorlopig naar 30 seconden",
+        "fr": "Prévenir les cas de crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAjouter un avertissement sur l'intervalle d'interrogation et la désactivation du cloud et réinitialiser l'intervalle d'interrogation à 30 secondes pour l'instant",
+        "it": "Prevenire i casi di crash (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAggiungi un avviso sull'intervallo di polling e la disattivazione del cloud e reimposta l'intervallo di poll su 30s per ora",
+        "es": "Prevención de casos de bloqueo (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nAgregue advertencia sobre el intervalo de sondeo y la desactivación de la nube y restablezca el intervalo de sondeo a 30 segundos por ahora",
+        "pl": "Zapobiegaj awariom (Sentry IOBROKER-MEROSS-G, IOBROKER-MEROSS-F)\nDodaj ostrzeżenie o interwale odpytywania i dezaktywacji chmury i na razie zresetuj interwał odpytywania do 30s",
+        "zh-cn": "防止发生崩溃情况（哨兵IOBROKER-MEROSS-G，IOBROKER-MEROSS-F）\n添加有关轮询间隔和云停用的警告，并将轮询间隔暂时重置为30s"
+      }
     },
-    "encryptedNative": [
-        "password"
-    ],
-    "protectedNative": [
-        "password"
-    ],
-    "native": {
-        "user": "",
-        "password": "",
-        "electricityPollingInterval": 30,
-        "electricityPollingIntervalReChecked": false
+    "title": "Meross Cloud",
+    "titleLang": {
+      "en": "Meross Cloud",
+      "de": "Meross Cloud",
+      "ru": "Meross Cloud",
+      "pt": "Meross Cloud",
+      "nl": "Meross Cloud",
+      "fr": "Meross Cloud",
+      "it": "Meross Cloud",
+      "es": "Meross Cloud",
+      "pl": "Meross Cloud",
+      "zh-cn": "美洛斯云"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to Meross Cloud",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
-    ]
+    "desc": {
+      "en": "support for Meross Wifi devices",
+      "de": "Unterstützung für Meross Wifi-Geräte",
+      "ru": "поддержка устройств Meross Wifi",
+      "pt": "suporte para dispositivos Wifi Meross",
+      "nl": "ondersteuning voor Meross Wifi-apparaten",
+      "fr": "support pour les appareils Meross Wifi",
+      "it": "supporto per i dispositivi Meross Wifi",
+      "es": "soporte para dispositivos wifi Meross",
+      "pl": "obsługa urządzeń Wi-Fi firmy Meross",
+      "zh-cn": "支持Meross Wifi设备"
+    },
+    "authors": [
+      "Apollon77 <ingo@fischer-ka.de>"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "icon": "meross.png",
+    "materialize": true,
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
+    "keywords": [
+      "Meross"
+    ],
+    "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
+    "loglevel": "info",
+    "type": "iot-systems",
+    "stopTimeout": 5000,
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "push",
+    "tier": 2,
+    "plugins": {
+      "sentry": {
+        "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
+        "pathWhitelist": [
+          "@apollon",
+          "meross-cloud"
+        ]
+      }
+    }
+  },
+  "encryptedNative": [
+    "password"
+  ],
+  "protectedNative": [
+    "password"
+  ],
+  "native": {
+    "user": "",
+    "password": "",
+    "electricityPollingInterval": 30,
+    "electricityPollingIntervalReChecked": false
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected to Meross Cloud",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
