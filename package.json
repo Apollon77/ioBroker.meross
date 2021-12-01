@@ -20,7 +20,7 @@
     "@iobroker/adapter-core": "^2.5.1",
     "@sentry/node": "^6.14.1",
     "@sentry/integrations": "^6.14.1",
-    "source-map-support": "^0.5.20"
+    "source-map-support": "^0.5.21"
   },
   "description": "meross cloud adapter for ioBroker",
   "devDependencies": {
