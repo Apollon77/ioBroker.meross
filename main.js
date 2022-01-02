@@ -25,7 +25,13 @@ const roleValues = {
     'temperature': {unit: 'K', role: 'level.color.temperature', min: 1, max: 100},
     'luminance': {unit: '', role: 'level.color.luminance', min: 1, max: 100},
     'gradual': {unit: ''},
-    'transform': {unit: ''}
+    'transform': {unit: ''},
+    'currentTemp': {scale: -1, role: 'value.temperature', min: 5, max: 35},
+    'heatTemp': {scale: -1, role: 'level'},
+    'coolTemp': {scale: -1, role: 'level'},
+    'ecoTemp': {scale: -1, role: 'level'},
+    'manualTemp': {scale: -1, role: 'level'},
+    'targetTemp': {scale: -1, role: 'level.temperature'}
 };
 
 let Sentry;
@@ -513,6 +519,88 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         }
     }
+
+    if (data && data.thermostat) {
+        if (data.thermostat.mode) {
+            data.thermostat.mode.forEach(val => {
+                const channel = val.channel;
+                for (let key in val) {
+                    if (!val.hasOwnProperty(key)) continue;
+                    if (key === 'channel' || key === 'min' || key === 'max') continue;
+                    const common = {};
+                    common.type = 'number';
+                    common.read = true;
+                    if (key.endsWith('Temp')) {
+                        if (key === 'currentTemp') {
+                            common.write = false;
+                        } else {
+                            common.write = true;
+                            common.min = val.min;
+                            common.max = val.max;
+                        }
+                    } else if (key === 'onoff' || key === 'state') {
+                        common.write = true;
+                        common.type = 'boolean';
+                    } else if (key === 'warning') {
+                        common.write = false;
+                        common.type = 'boolean';
+                    } else if (key === 'mode') {
+                        //common.states = {}
+                    }
+
+                    if (common.write) {
+                        common.onChange = (value) => {
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            const controlData = {};
+                            if (common.type === 'boolean') {
+                                controlData[key] = value ? 1 : 0;
+                            } else {
+                                controlData[key] = value;
+                            }
+
+                            knownDevices[deviceId].device.controlThermostatMode(channel, controlData, (err, res) => {
+                                adapter.log.debug('Thermostat Mode Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(deviceId + '.' + channel + '-' + key + ': set value ' + JSON.stringify(controlData));
+                            });
+                        };
+                    }
+
+                    common.name = key;
+                    common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
+                    common.id = channel + '-mode-' + key;
+                    values[common.id] = common.type === 'boolean' ? !!val[key] : val[key];
+                    if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
+
+                    objs.push(common);
+                }
+            });
+        }
+        if (data.thermostat.windowOpened) {
+            data.thermostat.windowOpened.forEach(val => {
+                const channel = val.channel;
+                for (let key in val) {
+                    if (!val.hasOwnProperty(key)) continue;
+                    if (key === 'channel') continue;
+                    const common = {};
+                    common.type = key === 'status' ? 'boolean' : 'number';
+                    common.read = true;
+                    common.write = false;
+                    common.name = key;
+                    common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
+                    common.id = channel + '-windowOpened-' + key;
+                    values[common.id] = key === 'status' ? !!val[key] : val[key];
+                    if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
+
+                    objs.push(common);
+                }
+            });
+        }
+    }
+
 
     if (data && data.DNDMode) {
         const common = {};
@@ -1074,7 +1162,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
             }
             knownDevices[deviceId].deviceAllData = deviceAllData;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
                 adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -1096,7 +1184,7 @@ function initDevice(deviceId, deviceDef, device, callback) {
                 }, deviceAllData.all.system.firmware.innerIp);
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light']) {
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
@@ -1539,6 +1627,44 @@ function setValuesRollerShutterPosition(deviceId, payload) {
     }
 }
 
+function setValuesThermostatMode(deviceId, payload) {
+    // {"mode":[{"warning":0,"targetTemp":120,"state":0,"onoff":1,"mode":2,"min":50,"max":350,"manualTemp":240,"lmTime":1639427735,"heatTemp":260,"ecoTemp":120,"currentTemp":245,"coolTemp":180,"channel":0}]}
+    if (payload && payload.mode) {
+        if (!Array.isArray(payload.mode)) {
+            payload.mode = [payload.mode];
+        }
+        payload.mode.forEach((mode) => {
+            for (let key in mode) {
+                if (!mode.hasOwnProperty(key)) continue;
+                if (key === 'channel' || key === 'min' || key === 'max') continue;
+                if (key === 'onoff' || key === 'state' || key === 'warning') {
+                    mode[key] = !!mode[key];
+                }
+                adapter.setState(deviceId + '.' + mode.channel + '-mode-' + key, mode[key], true);
+            }
+        });
+    }
+}
+
+function setValuesThermostatWindowOpened(deviceId, payload) {
+    // ??
+    if (payload && payload.windowOpened) {
+        if (!Array.isArray(payload.windowOpened)) {
+            payload.windowOpened = [payload.windowOpened];
+        }
+        payload.windowOpened.forEach((windowOpened) => {
+            for (let key in windowOpened) {
+                if (!windowOpened.hasOwnProperty(key)) continue;
+                if (key === 'channel') continue;
+                if (key === 'state') {
+                    windowOpened[key] = !!windowOpened[key];
+                }
+                adapter.setState(deviceId + '.' + windowOpened.channel + '-windowOpened-' + key, windowOpened[key], true);
+            }
+        });
+    }
+}
+
 // main function
 function main() {
     setConnected(false);
@@ -1674,6 +1800,12 @@ function main() {
                     break;
                 case 'Appliance.Hub.Sensor.TempHum':
                     setValuesHubMts100TempHum(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Thermostat.Mode':
+                    setValuesThermostatMode(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Thermostat.WindowOpened':
+                    setValuesThermostatWindowOpened(deviceId, payload);
                     break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
