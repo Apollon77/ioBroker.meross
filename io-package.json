@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.7.1",
+    "version": "1.8.0",
     "news": {
+      "1.8.0": {
+        "en": "Add support for MTS200 Wifi Thermostat",
+        "de": "Unterstützung für MTS200 Wifi Thermostat hinzufügen",
+        "ru": "Добавить поддержку термостата MTS200 Wifi",
+        "pt": "Adicionar suporte para termostato Wifi MTS200",
+        "nl": "Ondersteuning toevoegen voor MTS200 Wifi-thermostaat",
+        "fr": "Ajout de la prise en charge du thermostat Wifi MTS200",
+        "it": "Aggiungi il supporto per il termostato Wi-Fi MTS200",
+        "es": "Agregue soporte para el termostato Wifi MTS200",
+        "pl": "Dodaj obsługę termostatu Wifi MTS200",
+        "zh-cn": "添加对 MTS200 Wifi 恒温器的支持"
+      },
       "1.7.1": {
         "en": "Allow to enter passwords with more than 15 characters",
         "de": "Erlaube die Eingabe von Passwörtern mit mehr als 15 Zeichen",
@@ -74,18 +86,6 @@
         "es": "añadir dispositivo de pulverización difusor MOD100",
         "pl": "dodaj urządzenie rozpylające z dyfuzorem MOD100",
         "zh-cn": "添加MOD100扩散喷雾器"
-      },
-      "1.5.1": {
-        "en": "generate an unique uuid for each connection, fixes the \"Server not available\"",
-        "de": "Generieren Sie eine eindeutige UUID für jede Verbindung, behebt den \"Server nicht verfügbar\"",
-        "ru": "генерировать уникальный uuid для каждого подключения, исправляет \"Сервер недоступен\"",
-        "pt": "gerar um uuid exclusivo para cada conexão, corrige o \"Servidor não disponível\"",
-        "nl": "genereer een unieke uuid voor elke verbinding, repareert de \"Server niet beschikbaar\"",
-        "fr": "générer un uuid unique pour chaque connexion, corrige le \"Serveur non disponible\"",
-        "it": "genera un uuid univoco per ogni connessione, corregge il \"Server non disponibile\"",
-        "es": "genera un uuid único para cada conexión, corrige el \"Servidor no disponible\"",
-        "pl": "wygeneruje unikalny identyfikator użytkownika dla każdego połączenia, naprawia błąd „Serwer niedostępny”",
-        "zh-cn": "为每个连接生成唯一的uuid，修复“服务器不可用”"
       }
     },
     "title": "Meross Cloud",
