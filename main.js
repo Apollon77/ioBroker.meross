@@ -535,17 +535,24 @@ function initDeviceObjects(deviceId, channels, data) {
                             common.write = false;
                         } else {
                             common.write = true;
-                            common.min = val.min;
-                            common.max = val.max;
+                            common.min = Math.floor(val.min * Math.pow(10, -1) * 100) / 100;
+                            common.max = Math.floor(val.max * Math.pow(10, -1) * 100) / 100;
                         }
-                    } else if (key === 'onoff' || key === 'state') {
+                        if (roleValues[key] && roleValues[key].scale !== undefined) {
+                            val[key] = Math.floor(val[key] * Math.pow(10, roleValues[key].scale) * 100) / 100;
+                        }
+                    } else if (key === 'onoff') {
                         common.write = true;
+                        common.type = 'boolean';
+                    } else if (key === 'state') {
+                        common.write = false;
                         common.type = 'boolean';
                     } else if (key === 'warning') {
                         common.write = false;
                         common.type = 'boolean';
                     } else if (key === 'mode') {
-                        //common.states = {}
+                        common.write = true;
+                        common.states = {0: 'HEATING', 1: 'COOLING', 2: 'ECO', 3: 'AUTO', 4: 'MANU'};
                     }
 
                     if (common.write) {
@@ -559,6 +566,9 @@ function initDeviceObjects(deviceId, channels, data) {
                             if (common.type === 'boolean') {
                                 controlData[key] = value ? 1 : 0;
                             } else {
+                                if (roleValues[key] && roleValues[key].scale !== undefined) {
+                                    value = value * Math.pow(10, -roleValues[key].scale);
+                                }
                                 controlData[key] = value;
                             }
 
@@ -572,6 +582,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.name = key;
                     common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
                     common.id = channel + '-mode-' + key;
+
                     values[common.id] = common.type === 'boolean' ? !!val[key] : val[key];
                     if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
@@ -1639,6 +1650,9 @@ function setValuesThermostatMode(deviceId, payload) {
                 if (key === 'channel' || key === 'min' || key === 'max') continue;
                 if (key === 'onoff' || key === 'state' || key === 'warning') {
                     mode[key] = !!mode[key];
+                }
+                if (roleValues[key] && roleValues[key].scale !== undefined) {
+                    mode[key] = Math.floor(mode[key] * Math.pow(10, roleValues[key].scale) * 100) / 100;
                 }
                 adapter.setState(deviceId + '.' + mode.channel + '-mode-' + key, mode[key], true);
             }
