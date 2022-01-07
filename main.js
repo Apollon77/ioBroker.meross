@@ -555,41 +555,40 @@ function initDeviceObjects(deviceId, channels, data) {
                             } else {
                                 if (roleValues[key] && roleValues[key].scale !== undefined) {
                                     value = value * Math.pow(10, -roleValues[key].scale);
-
-                                    switch (key) {
-                                        case 'targetTemp':
-                                            key = 'manualTemp';
-                                            controlData.mode = 4;
-                                            break;
-                                    }
                                 }
-                                if (key === 'mode') {
-                                    switch (value) {
-                                        case 0: // HEATING
-                                            const heatTemp = await adapter.getStateAsync(channel + '-mode-heatTemp');
-                                            if (heatTemp && heatTemp.val) {
-                                                controlData.targetTemp = heatTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
-                                            }
-                                            break;
-                                        case 1: // COOLING
-                                            const coolTemp = await adapter.getStateAsync(channel + '-mode-coolTemp');
-                                            if (coolTemp && coolTemp.val) {
-                                                controlData.targetTemp = coolTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
-                                            }
-                                            break;
-                                        case 2: // ECO
-                                            const ecoTemp = await adapter.getStateAsync(channel + '-mode-ecoTemp');
-                                            if (ecoTemp && ecoTemp.val) {
-                                                controlData.targetTemp = ecoTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
-                                            }
-                                            break;
-                                        case 4: // MANUAL
-                                            const manualTemp = await adapter.getStateAsync(channel + '-mode-manualTemp');
-                                            if (manualTemp && manualTemp.val) {
-                                                controlData.targetTemp = manualTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
-                                            }
-                                            break;
-                                    }
+                                switch (key) {
+                                    case 'targetTemp':
+                                        key = 'manualTemp';
+                                        controlData.mode = 4;
+                                        break;
+                                    case 'mode':
+                                        switch (value) {
+                                            case 0: // HEATING
+                                                const heatTemp = await adapter.getStateAsync(channel + '-mode-heatTemp');
+                                                if (heatTemp && heatTemp.val) {
+                                                    controlData.targetTemp = heatTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                                }
+                                                break;
+                                            case 1: // COOLING
+                                                const coolTemp = await adapter.getStateAsync(channel + '-mode-coolTemp');
+                                                if (coolTemp && coolTemp.val) {
+                                                    controlData.targetTemp = coolTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                                }
+                                                break;
+                                            case 2: // ECO
+                                                const ecoTemp = await adapter.getStateAsync(channel + '-mode-ecoTemp');
+                                                if (ecoTemp && ecoTemp.val) {
+                                                    controlData.targetTemp = ecoTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                                }
+                                                break;
+                                            case 4: // MANUAL
+                                                const manualTemp = await adapter.getStateAsync(channel + '-mode-manualTemp');
+                                                if (manualTemp && manualTemp.val) {
+                                                    controlData.targetTemp = manualTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                                }
+                                                break;
+                                        }
+                                        break;
                                 }
                                 controlData[key] = value;
                             }
