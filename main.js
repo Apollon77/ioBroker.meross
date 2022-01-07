@@ -556,9 +556,11 @@ function initDeviceObjects(deviceId, channels, data) {
                                 if (roleValues[key] && roleValues[key].scale !== undefined) {
                                     value = value * Math.pow(10, -roleValues[key].scale);
                                 }
+                                controlData[key] = value;
                                 switch (key) {
                                     case 'targetTemp':
-                                        key = 'manualTemp';
+                                        controlData.manualTemp = value;
+                                        delete controlData[key];
                                         controlData.mode = 4;
                                         break;
                                     case 'mode':
@@ -590,7 +592,6 @@ function initDeviceObjects(deviceId, channels, data) {
                                         }
                                         break;
                                 }
-                                controlData[key] = value;
                             }
 
                             knownDevices[deviceId].device.controlThermostatMode(channel, controlData, (err, res) => {
@@ -1188,11 +1189,11 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         // ignore
     }
 
-    device.getSystemAbilities((err, deviceAbilities) => {
-        adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
-        if (err || !deviceAbilities || !deviceAbilities.ability) {
-            !knownDevices[deviceId].disabled && adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
-            knownDevices[deviceId].disabled && adapter.log.debug('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
+    device.getSystemAllData((err, deviceAllData) => {
+        adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
+        if (err || !deviceAllData) {
+            !knownDevices[deviceId].disabled && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
+            knownDevices[deviceId].disabled && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
             if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
@@ -1205,12 +1206,26 @@ async function initDevice(deviceId, deviceDef, device, callback) {
             });
             return;
         }
-        knownDevices[deviceId].deviceAbilities = deviceAbilities;
+        knownDevices[deviceId].deviceAllData = deviceAllData;
 
-        device.getSystemAllData((err, deviceAllData) => {
-            adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
-            if (err || !deviceAllData) {
-                adapter.log.warn('Can not get Data for Device ' + deviceId + ': ' + err);
+        if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
+            objectHelper.setOrUpdateObject(deviceId + '.ip', {
+                type: 'state',
+                common: {
+                    name: 'Device IP',
+                    type: 'string',
+                    role: 'info.ip',
+                    read: true,
+                    write: false
+                }
+            }, deviceAllData.all.system.firmware.innerIp);
+            knownDevices[deviceId].device.setKnownInnerIp(deviceAllData.all.system.firmware.innerIp);
+        }
+
+        device.getSystemAbilities((err, deviceAbilities) => {
+            adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
+            if (err || !deviceAbilities || !deviceAbilities.ability) {
+                adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
                 if (knownDevices[deviceId].reconnectTimeout) {
                     clearTimeout(knownDevices[deviceId].reconnectTimeout);
                 }
@@ -1223,7 +1238,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
                 });
                 return;
             }
-            knownDevices[deviceId].deviceAllData = deviceAllData;
+            knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
             if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
                 adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
@@ -1232,19 +1247,6 @@ async function initDevice(deviceId, deviceDef, device, callback) {
                     callback && callback();
                 });
                 return;
-            }
-
-            if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
-                objectHelper.setOrUpdateObject(deviceId + '.ip', {
-                    type: 'state',
-                    common: {
-                        name: 'Device IP',
-                        type: 'string',
-                        role: 'info.ip',
-                        read: true,
-                        write: false
-                    }
-                }, deviceAllData.all.system.firmware.innerIp);
             }
 
             if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
@@ -1748,7 +1750,8 @@ function main() {
     const options = {
         'email': adapter.config.user,
         'password': adapter.config.password,
-        'logger': adapter.log.debug
+        'logger': adapter.log.debug,
+        'localHttpFirst': true
     };
 
     meross = new MerossCloud(options);

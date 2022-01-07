@@ -35,8 +35,9 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 ### __WORK IN PROGRESS__
-* (Apollon77) Optimize Meross Communication by using only one connection instead of one per device
 * (Apollon77) Optimize MTS200 handling
+* (Apollon77) Optimize Meross Communication by using only one MQTT connection instead of one per device
+* (Apollon77) Optimize Meross Communication to first try to communicate with the device locally before sending data to MQTT 
 * (Apollon77) Add new state "disabled" to ignore connection error of a device; reconnections are still tried, but no error are logged if not successful
 
 ### 1.8.0 (2022-01-05)
