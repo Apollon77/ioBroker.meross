@@ -211,19 +211,6 @@ function startAdapter(options) {
     return adapter;
 }
 
-process.on('SIGINT', function() {
-    stopAll();
-    setConnected(false);
-});
-
-process.on('uncaughtException', function(err) {
-    console.log('Exception: ' + err + '/' + err.toString());
-    adapter && adapter.log && adapter.log.warn('Exception: ' + err);
-
-    stopAll();
-    setConnected(false);
-});
-
 function stopAll() {
     stopped = true;
     if (meross) {
@@ -1155,7 +1142,7 @@ function initDeviceObjects(deviceId, channels, data) {
     });
 }
 
-function initDevice(deviceId, deviceDef, device, callback) {
+async function initDevice(deviceId, deviceDef, device, callback) {
     if (!knownDevices[deviceId]) {
         knownDevices[deviceId] = {};
     }
@@ -1180,10 +1167,33 @@ function initDevice(deviceId, deviceDef, device, callback) {
         }
     }, false);
 
+    objectHelper.setOrUpdateObject(deviceId + '.disabled', {
+        type: 'state',
+        common: {
+            name: 'Device disable status to ignore connection errors',
+            type: 'boolean',
+            role: 'switch',
+            read: true,
+            write: true,
+            def: false
+        }
+    },(value) => {
+        knownDevices[deviceId].disabled = !!value;
+    });
+    try {
+        const disabledState = await adapter.getStateAsync(deviceId + '.disabled');
+        if (disabledState && disabledState.val !== undefined) {
+            knownDevices[deviceId].disabled = !!disabledState.val;
+        }
+    } catch {
+        // ignore
+    }
+
     device.getSystemAbilities((err, deviceAbilities) => {
         adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
         if (err || !deviceAbilities || !deviceAbilities.ability) {
-            adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
+            !knownDevices[deviceId].disabled && adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
+            knownDevices[deviceId].disabled && adapter.log.debug('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
             if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
@@ -1757,7 +1767,7 @@ function main() {
             }
             initDevice(deviceId, deviceDef, device, () => {
                 device.getOnlineStatus((err, res) => {
-                    adapter.log.debug('Online: ' + JSON.stringify(res));
+                    adapter.log.debug('Online ' + deviceId + ': ' + JSON.stringify(res));
                     if (err || !res || !res.online) return;
                     adapter.setState(deviceId + '.online', (res.online.status === 1), true);
                 });
@@ -1779,6 +1789,7 @@ function main() {
             }
             if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
+                knownDevices[deviceId].reconnectTimeout = null;
             }
             if (!stopped)  {
                 knownDevices[deviceId].reconnectTimeout = setTimeout(() => {

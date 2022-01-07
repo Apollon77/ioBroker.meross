@@ -34,6 +34,11 @@ Please use GitHub issues for this.
 Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column Log level). Then please get the logfile from disk (subdirectory "log" in ioBroker installation directory and not from Admin because Admin cuts the lines). If you do not like providing it in GitHub issue you can also send it to me via email (iobroker@fischer-ka.de). Please add a reference to the relevant GitHub issue AND also describe what I see in the log at which time.
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (Apollon77) Optimize Meross Communication by using only one connection instead of one per device
+* (Apollon77) Optimize MTS200 handling
+* (Apollon77) Add new state "disabled" to ignore connection error of a device; reconnections are still tried, but no error are logged if not successful
+
 ### 1.8.0 (2022-01-05)
 * (Apollon77) Add support for MTS200 Wifi Thermostat
 
