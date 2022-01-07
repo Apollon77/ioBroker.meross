@@ -149,7 +149,7 @@ function decrypt(key, value) {
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
-        adapter && adapter.setState('info.connection', connected, true, (err) => {
+        adapter && adapter.setState && adapter.setState('info.connection', connected, true, (err) => {
             // analyse if the state could be set (because of permissions)
             if (err && adapter && adapter.log) adapter.log.error('Can not update connected state: ' + err);
                 else if (adapter && adapter.log) adapter.log.debug('connected set to ' + connected);
@@ -556,7 +556,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     }
 
                     if (common.write) {
-                        common.onChange = (value) => {
+                        common.onChange = async (value) => {
                             if (!knownDevices[deviceId].device) {
                                 adapter.log.debug(deviceId + 'Device communication not initialized ...');
                                 return;
@@ -568,6 +568,41 @@ function initDeviceObjects(deviceId, channels, data) {
                             } else {
                                 if (roleValues[key] && roleValues[key].scale !== undefined) {
                                     value = value * Math.pow(10, -roleValues[key].scale);
+
+                                    switch (key) {
+                                        case 'targetTemp':
+                                            key = 'manualTemp';
+                                            controlData.mode = 4;
+                                            break;
+                                    }
+                                }
+                                if (key === 'mode') {
+                                    switch (value) {
+                                        case 0: // HEATING
+                                            const heatTemp = await adapter.getStateAsync(channel + '-mode-heatTemp');
+                                            if (heatTemp && heatTemp.val) {
+                                                controlData.targetTemp = heatTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                            }
+                                            break;
+                                        case 1: // COOLING
+                                            const coolTemp = await adapter.getStateAsync(channel + '-mode-coolTemp');
+                                            if (coolTemp && coolTemp.val) {
+                                                controlData.targetTemp = coolTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                            }
+                                            break;
+                                        case 2: // ECO
+                                            const ecoTemp = await adapter.getStateAsync(channel + '-mode-ecoTemp');
+                                            if (ecoTemp && ecoTemp.val) {
+                                                controlData.targetTemp = ecoTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                            }
+                                            break;
+                                        case 4: // MANUAL
+                                            const manualTemp = await adapter.getStateAsync(channel + '-mode-manualTemp');
+                                            if (manualTemp && manualTemp.val) {
+                                                controlData.targetTemp = manualTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
+                                            }
+                                            break;
+                                    }
                                 }
                                 controlData[key] = value;
                             }
@@ -1149,7 +1184,11 @@ function initDevice(deviceId, deviceDef, device, callback) {
         adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
         if (err || !deviceAbilities || !deviceAbilities.ability) {
             adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
-            setTimeout(() => {
+            if (knownDevices[deviceId].reconnectTimeout) {
+                clearTimeout(knownDevices[deviceId].reconnectTimeout);
+            }
+            knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                knownDevices[deviceId].reconnectTimeout = null;
                 initDevice(deviceId, deviceDef, device);
             }, 60000);
             objectHelper.processObjectQueue(() => {
@@ -1163,7 +1202,11 @@ function initDevice(deviceId, deviceDef, device, callback) {
             adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
             if (err || !deviceAllData) {
                 adapter.log.warn('Can not get Data for Device ' + deviceId + ': ' + err);
-                setTimeout(() => {
+                if (knownDevices[deviceId].reconnectTimeout) {
+                    clearTimeout(knownDevices[deviceId].reconnectTimeout);
+                }
+                knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                    knownDevices[deviceId].reconnectTimeout = null;
                     initDevice(deviceId, deviceDef, device);
                 }, 60000);
                 objectHelper.processObjectQueue(() => {
@@ -1739,6 +1782,7 @@ function main() {
             }
             if (!stopped)  {
                 knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                    knownDevices[deviceId].reconnectTimeout = null;
                     device.connect();
                 }, 10000);
             }
@@ -1752,6 +1796,7 @@ function main() {
             }
             if (!stopped) {
                 knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+                    knownDevices[deviceId].reconnectTimeout = null;
                     device.connect();
                 }, 10000);
             }
