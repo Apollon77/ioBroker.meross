@@ -1814,7 +1814,7 @@ function main() {
                 device.getOnlineStatus((err, res) => {
                     adapter.log.debug('Online ' + deviceId + ': ' + JSON.stringify(res));
                     if (err || !res || !res.online) return;
-                    adapter.setState(deviceId + '.online', (res.online.status === 1), true);
+                    adapter.setState(deviceId + '.online', (parseInt(res.online.status) === 1), true);
                 });
 
                 if (!--deviceCount) initDone();
