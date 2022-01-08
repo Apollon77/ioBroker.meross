@@ -40,6 +40,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 * (Apollon77) Add new state "disabled" to ignore connection error of a device; reconnections are still tried, but no error are logged if not successful
 * (Apollon77) Add support for Online status reports from MTS100 hub devices
 * (Apollon77) Automatically logout from meross cloud on adapter end; next start will do a new Login
+* (Apollon77) Automatically delete old devices if no longer existing (when js-controller >=2.2)
 * (Apollon77) Optimize MTS200 handling
 
 ### 1.8.0 (2022-01-05)

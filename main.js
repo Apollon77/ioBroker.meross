@@ -285,7 +285,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
                     return;
                 }
 
@@ -328,7 +328,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
                         return;
                     }
 
@@ -390,7 +390,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
                         return;
                     }
 
@@ -439,7 +439,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
                         return;
                     }
 
@@ -472,7 +472,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
                     return;
                 }
 
@@ -546,7 +546,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     if (common.write) {
                         common.onChange = async (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -648,7 +648,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
         common.onChange = (value) => {
             if (!knownDevices[deviceId].device) {
-                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                 return;
             }
 
@@ -733,7 +733,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
                     return;
                 }
 
@@ -777,7 +777,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
                         return;
                     }
 
@@ -827,7 +827,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
                             return;
                         }
 
@@ -853,7 +853,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
                             return;
                         }
 
@@ -879,7 +879,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
                             return;
                         }
 
@@ -905,7 +905,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
                             return;
                         }
 
@@ -932,7 +932,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1045,7 +1045,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1086,7 +1086,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1339,7 +1339,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1364,7 +1364,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1389,7 +1389,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
                                 return;
                             }
 
@@ -1454,6 +1454,21 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
 function initDone() {
     adapter.log.info('Devices initialized');
     adapter.subscribeStates('*');
+    if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_DEL_OBJECT_RECURSIVE')) {
+        adapter.getDevices((err, devices) => {
+            if (devices && devices.length) {
+                devices.forEach((device) => {
+                    if (device._id && device.native) {
+                        const id = device._id.substr(adapter.namespace.length + 1);
+                        if (!knownDevices[id]) {
+                            adapter.log.info(`Found old/unknown device ${id}: delete states`);
+                            adapter.delObject(id, {recursive: true});
+                        }
+                    }
+                });
+            }
+        });
+    }
 }
 
 function pollElectricity(deviceId, delay) {
