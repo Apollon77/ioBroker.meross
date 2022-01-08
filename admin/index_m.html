@@ -31,31 +31,27 @@
 <script type="text/javascript">
     var secret;
 
-    if (!encrypt || typeof encrypt !== 'function') {
-        function encrypt(key, value) {
-            if (value === undefined) {
-                value = key;
-                key = secret;
-            }
-            var result = '';
-            for (var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
+    function myencrypt(key, value) {
+        if (value === undefined) {
+            value = key;
+            key = secret;
         }
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
     }
-    if (!decrypt || typeof decrypt !== 'function') {
-        function decrypt(key, value) {
-            if (value === undefined) {
-                value = key;
-                key = secret;
-            }
-            var result = '';
-            for (var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
+    function mydecrypt(key, value) {
+        if (value === undefined) {
+            value = key;
+            key = secret;
         }
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
     }
 
     // the function loadSettings has to exist ...
@@ -68,7 +64,7 @@
             var $key = $(this);
             var id = $key.attr('id');
             if (id === 'password' && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
-                settings[id] = decrypt(secret, settings[id]);
+                settings[id] = mydecrypt(secret, settings[id]);
             }
 
             if ($key.attr('type') === 'checkbox') {
@@ -112,7 +108,7 @@
             } else {
                 var value = $this.val();
                 if (id === 'password' && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
-                    value = encrypt(secret, value);
+                    value = myencrypt(secret, value);
                 }
                 obj[id] = value;
             }
