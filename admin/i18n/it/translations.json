@@ -3,5 +3,6 @@
     "Password": "Parola d'ordine",
     "User": "Nome utente",
     "electricityPollingInterval": "Intervallo di polling per i valori di elettricità",
-    "electricityPollingIntervalInfo": "Assicurarsi che l'intervallo di polling non sia troppo breve poiché Meross può disabilitare la funzionalità cloud dei dispositivi. Avere un valore inferiore a 15 secondi è rischioso."
+    "electricityPollingIntervalInfo": "Assicurarsi che l'intervallo di polling non sia troppo breve poiché Meross può disabilitare la funzionalità cloud dei dispositivi. Avere un valore inferiore a 15 secondi è rischioso.",
+    "noDirectLocalCommunication": "Nessuna comunicazione locale: usa sempre il Cloud"
 }

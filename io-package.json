@@ -154,7 +154,8 @@
     "user": "",
     "password": "",
     "electricityPollingInterval": 30,
-    "electricityPollingIntervalReChecked": false
+    "electricityPollingIntervalReChecked": false,
+    "noDirectLocalCommunication": false
   },
   "objects": [],
   "instanceObjects": [

@@ -3,5 +3,6 @@
     "Password": "密码",
     "User": "用户名",
     "electricityPollingInterval": "电量值的轮询间隔",
-    "electricityPollingIntervalInfo": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。"
+    "electricityPollingIntervalInfo": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。",
+    "noDirectLocalCommunication": "没有本地通信 - 始终使用云"
 }

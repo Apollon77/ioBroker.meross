@@ -1528,6 +1528,18 @@ function setValuesHubBattery(deviceId, payload) {
     }
 }
 
+function setValuesHubOnline(deviceId, payload) {
+    // {"online":[{"status":1,"lastActiveTime":1641599783,"id":"0100D4DC"}]}
+    if (payload && payload.online) {
+        if (!Array.isArray(payload.online)) {
+            payload.online = [payload.online];
+        }
+        payload.online.forEach((val) => {
+            adapter.setState(deviceId + '.' + val.id + '.online', !!val.status, true);
+        });
+    }
+}
+
 function setValuesHubMts100Temperature(deviceId, payload) {
     // {"temperature":[{"id":"000013CD","currentSet":350,"custom":350,"comfort":260,"economy":155}]}
     // temperature": [{
@@ -1781,7 +1793,7 @@ function main() {
         'email': adapter.config.user,
         'password': adapter.config.password,
         'logger': adapter.log.debug,
-        'localHttpFirst': true
+        'localHttpFirst': !adapter.config.noDirectLocalCommunication
     };
 
     meross = new MerossCloud(options);
@@ -1894,6 +1906,9 @@ function main() {
                 case 'Appliance.Hub.Battery':
                     setValuesHubBattery(deviceId, payload);
                     break;
+                case 'Appliance.Hub.Online':
+                    setValuesHubOnline(deviceId, payload);
+                    break;
                 case 'Appliance.Hub.Mts100.Temperature':
                     setValuesHubMts100Temperature(deviceId, payload);
                     break;
@@ -1909,10 +1924,17 @@ function main() {
                 case 'Appliance.Control.Thermostat.WindowOpened':
                     setValuesThermostatWindowOpened(deviceId, payload);
                     break;
+                case 'Appliance.Hub.Sensor.WaterLeak':
+                    if (payload && payload.waterLeak && payload.waterLeak.length) {
+                        adapter.log.info('Received unknown data ' + namespace + ': ' + JSON.stringify(payload));
+                        adapter.log.info('Please send full line from logfile on disk to developer');
+                    }
+                    break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
                 case 'Appliance.Control.ConsumptionX':
                 case 'Appliance.Control.TimerX':
+                case 'Appliance.Hub.Mts100.ScheduleB':
                     break;
 
                 default:

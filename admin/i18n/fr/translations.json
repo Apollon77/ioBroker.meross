@@ -3,5 +3,6 @@
     "Password": "Mot de passe",
     "User": "Nom d'utilisateur",
     "electricityPollingInterval": "Intervalle d'interrogation pour les valeurs d'électricité",
-    "electricityPollingIntervalInfo": "Assurez-vous que l'intervalle d'interrogation n'est pas trop court car Meross peut désactiver la fonctionnalité cloud des appareils. Avoir une valeur inférieure à 15 secondes est risqué."
+    "electricityPollingIntervalInfo": "Assurez-vous que l'intervalle d'interrogation n'est pas trop court car Meross peut désactiver la fonctionnalité cloud des appareils. Avoir une valeur inférieure à 15 secondes est risqué.",
+    "noDirectLocalCommunication": "Pas de communication locale - utilisez toujours le Cloud"
 }
