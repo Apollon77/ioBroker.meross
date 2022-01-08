@@ -1875,7 +1875,7 @@ function main() {
                     setValuesToggle(deviceId, payload);
                     break;
                 case 'Appliance.System.Online':
-                    adapter.setState(deviceId + '.online', (payload.online.status === 1), true);
+                    adapter.setState(deviceId + '.online', (parseInt(payload.online.status) === 1), true);
                     break;
                 case 'Appliance.GarageDoor.State':
                     setValuesGarageDoor(deviceId, payload);
