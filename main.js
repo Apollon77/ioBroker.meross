@@ -170,8 +170,9 @@ function startAdapter(options) {
         try {
             setConnected(false);
             stopAll();
-            // adapter.log.info('cleaned everything up...');
-            setTimeout(callback, 3000);
+            meross && meross.logout(() => {
+                setTimeout(callback, 3000);
+            })
         } catch (e) {
             callback();
         }
