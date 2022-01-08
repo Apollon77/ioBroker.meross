@@ -1179,6 +1179,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         }
     },(value) => {
         knownDevices[deviceId].disabled = !!value;
+        adapter.setState(deviceId + '.disabled', knownDevices[deviceId].disabled, true);
     });
     try {
         const disabledState = await adapter.getStateAsync(deviceId + '.disabled');
@@ -1189,11 +1190,73 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         // ignore
     }
 
-    device.getSystemAllData((err, deviceAllData) => {
-        adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
-        if (err || !deviceAllData) {
-            !knownDevices[deviceId].disabled && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
-            knownDevices[deviceId].disabled && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
+    try {
+        const knownIpState = await adapter.getStateAsync(deviceId + '.ip');
+        if (knownIpState && knownIpState.val !== undefined && knownIpState.val.length) {
+            device.setKnownLocalIp(knownIpState.val);
+            // try to get with known local IP, remove again if not the right one
+            device.getSystemAllData((err, deviceAllData) => {
+                if (!err && deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.hardware && deviceAllData.all.system.hardware.uuid === deviceId) {
+                    initDeviceData(deviceId, deviceDef, device, deviceAllData, callback);
+                } else {
+                    adapter.log.debug(`Device ${deviceId} local IP seems incorrect ... retry via cloud: ${err}`);
+                    device.removeKnownLocalIp();
+                    device.getSystemAllData((err, deviceAllData) => {
+                        !knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
+                        knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
+                        initDeviceData(deviceId, deviceDef, device, deviceAllData, callback)
+                    });
+                }
+            });
+        } else {
+            device.getSystemAllData((err, deviceAllData) => {
+                !knownDevices[deviceId].disabled && err && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
+                knownDevices[deviceId].disabled && err && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
+                initDeviceData(deviceId, deviceDef, device, deviceAllData, callback);
+            });
+        }
+    } catch (e) {
+        adapter.log.error(e.message);
+        adapter.log.error(e.stack);
+        // ignore
+    }
+}
+
+function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
+    adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
+    if (!deviceAllData) {
+        if (knownDevices[deviceId].reconnectTimeout) {
+            clearTimeout(knownDevices[deviceId].reconnectTimeout);
+        }
+        knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
+            knownDevices[deviceId].reconnectTimeout = null;
+            initDevice(deviceId, deviceDef, device);
+        }, 60000);
+        objectHelper.processObjectQueue(() => {
+            callback && callback();
+        });
+        return;
+    }
+    knownDevices[deviceId].deviceAllData = deviceAllData;
+
+    if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
+        objectHelper.setOrUpdateObject(deviceId + '.ip', {
+            type: 'state',
+            common: {
+                name: 'Device IP',
+                type: 'string',
+                role: 'info.ip',
+                read: true,
+                write: false
+            }
+        }, deviceAllData.all.system.firmware.innerIp);
+        knownDevices[deviceId].device.setKnownLocalIp(deviceAllData.all.system.firmware.innerIp);
+    }
+
+    device.getSystemAbilities((err, deviceAbilities) => {
+        adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
+        if (err || !deviceAbilities || !deviceAbilities.ability) {
+            adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
             if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
@@ -1206,217 +1269,184 @@ async function initDevice(deviceId, deviceDef, device, callback) {
             });
             return;
         }
-        knownDevices[deviceId].deviceAllData = deviceAllData;
+        knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
-        if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
-            objectHelper.setOrUpdateObject(deviceId + '.ip', {
-                type: 'state',
-                common: {
-                    name: 'Device IP',
-                    type: 'string',
-                    role: 'info.ip',
-                    read: true,
-                    write: false
-                }
-            }, deviceAllData.all.system.firmware.innerIp);
-            knownDevices[deviceId].device.setKnownInnerIp(deviceAllData.all.system.firmware.innerIp);
+        if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
+            adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
+            adapter.log.info(JSON.stringify(deviceAbilities));
+            objectHelper.processObjectQueue(() => {
+                callback && callback();
+            });
+            return;
         }
 
-        device.getSystemAbilities((err, deviceAbilities) => {
-            adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
-            if (err || !deviceAbilities || !deviceAbilities.ability) {
-                adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
-                if (knownDevices[deviceId].reconnectTimeout) {
-                    clearTimeout(knownDevices[deviceId].reconnectTimeout);
+        if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
+            initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
+        }
+
+        let objAsyncCount = 0;
+
+        if (deviceAbilities.ability['Appliance.Control.Electricity']) {
+            objAsyncCount++;
+            device.getControlElectricity((err, res) => {
+                //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+                adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
+                initDeviceObjects(deviceId, deviceDef.channels, res);
+
+                pollElectricity(deviceId);
+
+                if (!--objAsyncCount) {
+                    objectHelper.processObjectQueue(() => {
+                        callback && callback();
+                    });
                 }
-                knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
-                    knownDevices[deviceId].reconnectTimeout = null;
-                    initDevice(deviceId, deviceDef, device);
-                }, 60000);
-                objectHelper.processObjectQueue(() => {
-                    callback && callback();
-                });
-                return;
-            }
-            knownDevices[deviceId].deviceAbilities = deviceAbilities;
+            });
+        }
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
-                adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
-                adapter.log.info(JSON.stringify(deviceAbilities));
-                objectHelper.processObjectQueue(() => {
-                    callback && callback();
-                });
-                return;
-            }
+        if (deviceAbilities.ability['Appliance.System.DNDMode']) {
+            objAsyncCount++;
+            device.getSystemDNDMode((err, res) => {
+                //{"DNDMode":{"mode":1}}
+                adapter.log.debug(deviceId + ' DND-Mode: ' + JSON.stringify(res));
+                initDeviceObjects(deviceId, deviceDef.channels, res);
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
-                initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
-            }
+                if (!--objAsyncCount) {
+                    objectHelper.processObjectQueue(() => {
+                        callback && callback();
+                    });
+                }
+            });
+        }
 
-            let objAsyncCount = 0;
+        if (deviceAbilities.ability['Appliance.RollerShutter.State']) {
+            objAsyncCount++;
+            device.getRollerShutterState((err, res) => {
+                if (res && res.state) {
+                    res.state.forEach(val => {
+                        if (val.state === undefined) {
+                            return;
+                        }
+                        const commonUp = {};
+                        commonUp.type = 'boolean';
+                        commonUp.read = true;
+                        commonUp.write = true;
+                        commonUp.name = val.channel + '-up';
+                        commonUp.role = 'button.open.blind';
 
-            if (deviceAbilities.ability['Appliance.Control.Electricity']) {
-                objAsyncCount++;
-                device.getControlElectricity((err, res) => {
-                    //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
-                    adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
-                    initDeviceObjects(deviceId, deviceDef.channels, res);
-
-                    pollElectricity(deviceId);
-
-                    if (!--objAsyncCount) {
-                        objectHelper.processObjectQueue(() => {
-                            callback && callback();
-                        });
-                    }
-                });
-            }
-
-            if (deviceAbilities.ability['Appliance.System.DNDMode']) {
-                objAsyncCount++;
-                device.getSystemDNDMode((err, res) => {
-                    //{"DNDMode":{"mode":1}}
-                    adapter.log.debug(deviceId + ' DND-Mode: ' + JSON.stringify(res));
-                    initDeviceObjects(deviceId, deviceDef.channels, res);
-
-                    if (!--objAsyncCount) {
-                        objectHelper.processObjectQueue(() => {
-                            callback && callback();
-                        });
-                    }
-                });
-            }
-
-            if (deviceAbilities.ability['Appliance.RollerShutter.State']) {
-                objAsyncCount++;
-                device.getRollerShutterState((err, res) => {
-                    if (res && res.state) {
-                        res.state.forEach(val => {
-                            if (val.state === undefined) {
+                        const onChangeUp = (value) => {
+                            if (!value) {
                                 return;
                             }
-                            const commonUp = {};
-                            commonUp.type = 'boolean';
-                            commonUp.read = true;
-                            commonUp.write = true;
-                            commonUp.name = val.channel + '-up';
-                            commonUp.role = 'button.open.blind';
-
-                            const onChangeUp = (value) => {
-                                if (!value) {
-                                    return;
-                                }
-                                if (!knownDevices[deviceId].device) {
-                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                                    return;
-                                }
-
-                                knownDevices[deviceId].device.controlRollerShutterUp(val.channel, (err, res) => {
-                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                });
-                            };
-                            objectHelper.setOrUpdateObject(deviceId + '.' + commonUp.name, {
-                                type: 'state',
-                                commonUp
-                            }, val.state === 1, onChangeUp);
-
-                            const commonDown = {};
-                            commonDown.type = 'boolean';
-                            commonDown.read = true;
-                            commonDown.write = true;
-                            commonDown.name = val.channel + '-down';
-                            commonDown.role = 'button.close.blind';
-
-                            const onChangeDown = (value) => {
-                                if (!value) {
-                                    return;
-                                }
-                                if (!knownDevices[deviceId].device) {
-                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                                    return;
-                                }
-
-                                knownDevices[deviceId].device.controlRollerShutterDown(val.channel, (err, res) => {
-                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                });
-                            };
-                            objectHelper.setOrUpdateObject(deviceId + '.' + commonDown.name, {
-                                type: 'state',
-                                commonDown
-                            }, val.state === 2, onChangeDown);
-
-                            const commonStop = {};
-                            commonStop.type = 'boolean';
-                            commonStop.read = true;
-                            commonStop.write = true;
-                            commonStop.name = val.channel + '-stop';
-                            commonStop.role = 'button.stop';
-
-                            const onChangeStop = (value) => {
-                                if (!value) {
-                                    return;
-                                }
-                                if (!knownDevices[deviceId].device) {
-                                    adapter.log.debug(deviceId + 'Device communication not initialized ...');
-                                    return;
-                                }
-
-                                knownDevices[deviceId].device.controlRollerShutterStop(val.channel, (err, res) => {
-                                    adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                });
-                            };
-                            objectHelper.setOrUpdateObject(deviceId + '.' + commonStop.name, {
-                                type: 'state',
-                                commonStop
-                            }, val.state === 0, onChangeStop);
-                        });
-                    }
-
-                    if (!--objAsyncCount) {
-                        objectHelper.processObjectQueue(() => {
-                            callback && callback();
-                        });
-                    }
-                });
-
-                objAsyncCount++;
-                device.getRollerShutterPosition((err, res) => {
-                    if (res && res.position) {
-                        res.position.forEach(val => {
-                            const common = {};
-                            if (val.position !== undefined) {
-                                common.type = 'number';
-                                common.read = true;
-                                common.write = false;
-                                common.name = val.channel + '-position';
-                                common.role = 'value.blind';
-                                common.unit = '%';
-                                common.min = 0;
-                                common.max = 100;
-
-                                objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
-                                    type: 'state',
-                                    common
-                                }, val.position);
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
                             }
-                        });
-                    }
 
-                    if (!--objAsyncCount) {
-                        objectHelper.processObjectQueue(() => {
-                            callback && callback();
-                        });
-                    }
-                });
+                            knownDevices[deviceId].device.controlRollerShutterUp(val.channel, (err, res) => {
+                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            });
+                        };
+                        objectHelper.setOrUpdateObject(deviceId + '.' + commonUp.name, {
+                            type: 'state',
+                            commonUp
+                        }, val.state === 1, onChangeUp);
 
-            }
+                        const commonDown = {};
+                        commonDown.type = 'boolean';
+                        commonDown.read = true;
+                        commonDown.write = true;
+                        commonDown.name = val.channel + '-down';
+                        commonDown.role = 'button.close.blind';
 
-            if (!objAsyncCount) {
-                objectHelper.processObjectQueue(() => {
-                    callback && callback();
-                });
-            }
-        });
+                        const onChangeDown = (value) => {
+                            if (!value) {
+                                return;
+                            }
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            knownDevices[deviceId].device.controlRollerShutterDown(val.channel, (err, res) => {
+                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            });
+                        };
+                        objectHelper.setOrUpdateObject(deviceId + '.' + commonDown.name, {
+                            type: 'state',
+                            commonDown
+                        }, val.state === 2, onChangeDown);
+
+                        const commonStop = {};
+                        commonStop.type = 'boolean';
+                        commonStop.read = true;
+                        commonStop.write = true;
+                        commonStop.name = val.channel + '-stop';
+                        commonStop.role = 'button.stop';
+
+                        const onChangeStop = (value) => {
+                            if (!value) {
+                                return;
+                            }
+                            if (!knownDevices[deviceId].device) {
+                                adapter.log.debug(deviceId + 'Device communication not initialized ...');
+                                return;
+                            }
+
+                            knownDevices[deviceId].device.controlRollerShutterStop(val.channel, (err, res) => {
+                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                            });
+                        };
+                        objectHelper.setOrUpdateObject(deviceId + '.' + commonStop.name, {
+                            type: 'state',
+                            commonStop
+                        }, val.state === 0, onChangeStop);
+                    });
+                }
+
+                if (!--objAsyncCount) {
+                    objectHelper.processObjectQueue(() => {
+                        callback && callback();
+                    });
+                }
+            });
+
+            objAsyncCount++;
+            device.getRollerShutterPosition((err, res) => {
+                if (res && res.position) {
+                    res.position.forEach(val => {
+                        const common = {};
+                        if (val.position !== undefined) {
+                            common.type = 'number';
+                            common.read = true;
+                            common.write = false;
+                            common.name = val.channel + '-position';
+                            common.role = 'value.blind';
+                            common.unit = '%';
+                            common.min = 0;
+                            common.max = 100;
+
+                            objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
+                                type: 'state',
+                                common
+                            }, val.position);
+                        }
+                    });
+                }
+
+                if (!--objAsyncCount) {
+                    objectHelper.processObjectQueue(() => {
+                        callback && callback();
+                    });
+                }
+            });
+
+        }
+
+        if (!objAsyncCount) {
+            objectHelper.processObjectQueue(() => {
+                callback && callback();
+            });
+        }
     });
 }
 
