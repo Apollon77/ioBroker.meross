@@ -718,7 +718,7 @@ function initDeviceObjects(deviceId, channels, data) {
             common.name = 'online';
             common.role = defineRole(common);
             common.id = sub.id + '.' + common.name;
-            values[common.id] = !!sub.status;
+            values[common.id] = parseInt(sub.status) === 1;
 
             objs.push(common);
 
@@ -1536,7 +1536,7 @@ function setValuesHubOnline(deviceId, payload) {
             payload.online = [payload.online];
         }
         payload.online.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '.online', !!val.status, true);
+            adapter.setState(deviceId + '.' + val.id + '.online', parseInt(val.status) === 1, true);
         });
     }
 }
