@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.8.0",
+    "version": "1.9.0",
     "news": {
       "1.8.0": {
         "en": "Add support for MTS200 Wifi Thermostat",
