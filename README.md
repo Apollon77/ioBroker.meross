@@ -19,13 +19,17 @@ You need to provide your Cloud login credentials. The adapter connects to your c
 One Adapter instance will show all devices from one Meross Cloud account and allows to control them.
 
 ## Known working devices
+
+All devices should work from my current knowledge. But please check the logs or report any feature or new devices types that are not creating states (new device types needs to be added manually by me, so an isue is important).
+
+Reported working are at least:
+
 * mss425e
 * mss310
 * MSS620 EU/UK
-* MTS100, MTS100v3, MTS150
+* MTS100, MTS100v3, MTS150, MTS200
 * MRS100
-
-If more devices work (or also not) please report them by opening a GitHub issue.
+* ... and more that are not yet listed :-) Just tell me when a device works which is not listed via a GitHub issue.
 
 ## How to report issues and feature requests
 
