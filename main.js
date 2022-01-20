@@ -1806,10 +1806,10 @@ function main() {
         adapter.config.electricityPollingInterval = 30;
     }
     const options = {
-        'email': adapter.config.user,
-        'password': adapter.config.password,
-        'logger': adapter.log.debug,
-        'localHttpFirst': !adapter.config.noDirectLocalCommunication
+        email: adapter.config.user,
+        password: adapter.config.password,
+        logger: adapter.log.debug,
+        localHttpFirst: !adapter.config.noDirectLocalCommunication
     };
 
     meross = new MerossCloud(options);
