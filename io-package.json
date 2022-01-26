@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.0",
+    "version": "1.10.1",
     "news": {
+      "1.10.1": {
+        "en": "Fix pot. crash case",
+        "de": "Topf fixieren. Crash-Fall",
+        "ru": "Починить горшок. аварийный случай",
+        "pt": "Conserte o pote. caso de acidente",
+        "nl": "Pot repareren. crashgeval",
+        "fr": "Casserole fixe. cas d'accident",
+        "it": "Riparare la pentola. caso di incidente",
+        "es": "Arreglar olla. caso de accidente",
+        "pl": "Napraw garnek. wypadek wypadku",
+        "zh-cn": "修锅。车祸案例"
+      },
       "1.10.0": {
         "en": "Optimize Meross Communication to first try to communicate with the device locally before sending data to MQTT - enabled by default, you can disable it in settings!\nOptimize Meross Communication by using only one MQTT connection instead of one per device when cloud is used\nAdd new state \"disabled\" to ignore connection error of a device; reconnections are still tried, but no error are logged if not successful\nAdd support for Online status reports from MTS100 hub devices\nAutomatically logout from meross cloud on adapter end; next start will do a new Login\nAutomatically delete old devices if no longer existing (when js-controller >=2.2)\nOptimize MTS200 handling",
         "de": "Optimieren Sie die Meross-Kommunikation, um zuerst zu versuchen, lokal mit dem Gerät zu kommunizieren, bevor Sie Daten an MQTT senden - standardmäßig aktiviert, Sie können es in den Einstellungen deaktivieren!\nOptimieren Sie die Meross-Kommunikation, indem Sie nur eine MQTT-Verbindung statt einer pro Gerät verwenden, wenn die Cloud verwendet wird\nNeuen Zustand „deaktiviert“ hinzufügen, um Verbindungsfehler eines Geräts zu ignorieren; Wiederverbindungen werden immer noch versucht, aber es werden keine Fehler protokolliert, wenn sie nicht erfolgreich sind\nUnterstützung für Online-Statusberichte von MTS100-Hub-Geräten hinzugefügt\nAutomatisches Abmelden von der Meross-Cloud am Adapterende; Beim nächsten Start wird ein neuer Login durchgeführt\nAlte Geräte automatisch löschen, wenn nicht mehr vorhanden (wenn js-controller >=2.2)\nOptimieren Sie die Handhabung des MTS200",
@@ -74,18 +86,6 @@
         "es": "optimizar para js-controller 3.3",
         "pl": "optymalizacja dla kontrolera js 3.3",
         "zh-cn": "针对js-controller 3.3进行优化"
-      },
-      "1.6.1": {
-        "en": "prevent crash case (Sentry IOBROKER-MEROSS-Z)",
-        "de": "Absturz verhindern (Sentry IOBROKER-MEROSS-Z)",
-        "ru": "случай предотвращения сбоя (Sentry IOBROKER-MEROSS-Z)",
-        "pt": "evitar caso de travamento (Sentry IOBROKER-MEROSS-Z)",
-        "nl": "crashgeval voorkomen (Sentry IOBROKER-MEROSS-Z)",
-        "fr": "éviter les cas de crash (Sentry IOBROKER-MEROSS-Z)",
-        "it": "prevenire crash case (Sentry IOBROKER-MEROSS-Z)",
-        "es": "prevenir caso de choque (Sentry IOBROKER-MEROSS-Z)",
-        "pl": "zapobiegać awariom (Sentry IOBROKER-MEROSS-Z)",
-        "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MEROSS-Z）"
       }
     },
     "title": "Meross Cloud",
