@@ -32,7 +32,7 @@
     "gulp": "^4.0.2",
     "mocha": "^9.1.4",
     "@iobroker/dev-server": "^0.4.0",
-    "@iobroker/testing": "^2.5.2"
+    "@iobroker/testing": "^2.5.3"
   },
   "optionalDependencies": {},
   "homepage": "https://github.com/Apollon77/ioBroker.meross",
