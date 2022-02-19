@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.1",
+    "version": "1.10.2",
     "news": {
+      "1.10.2": {
+        "en": "Correctly set the garageDoorWorking flag after starting a control action",
+        "de": "Das GarageDoorWorking-Flag nach dem Start einer Steueraktion korrekt setzen",
+        "ru": "Корректная установка флага GarageDoorWorking после запуска управляющего действия",
+        "pt": "Defina corretamente o sinalizador garageDoorWorking após iniciar uma ação de controle",
+        "nl": "Stel de garageDoorWorking-vlag correct in na het starten van een besturingsactie",
+        "fr": "Définissez correctement l'indicateur garageDoorWorking après le démarrage d'une action de contrôle",
+        "it": "Impostare correttamente il flag garageDoorWorking dopo aver avviato un'azione di controllo",
+        "es": "Configure correctamente el indicador garageDoorWorking después de iniciar una acción de control",
+        "pl": "Poprawnie ustawić flagę GarażDoorPraca po uruchomieniu akcji kontrolnej",
+        "zh-cn": "开始控制动作后正确设置garageDoorWorking标志"
+      },
       "1.10.1": {
         "en": "Fix pot. crash case",
         "de": "Topf fixieren. Crash-Fall",
@@ -74,18 +86,6 @@
         "es": "Actualizar traducciones",
         "pl": "Zaktualizuj tłumaczenia",
         "zh-cn": "更新翻译"
-      },
-      "1.6.2": {
-        "en": "optimize for js-controller 3.3",
-        "de": "optimieren für js-controller 3.3",
-        "ru": "оптимизировать под js-controller 3.3",
-        "pt": "otimizar para js-controller 3.3",
-        "nl": "optimaliseren voor js-controller 3.3",
-        "fr": "optimiser pour js-controller 3.3",
-        "it": "ottimizzare per js-controller 3.3",
-        "es": "optimizar para js-controller 3.3",
-        "pl": "optymalizacja dla kontrolera js 3.3",
-        "zh-cn": "针对js-controller 3.3进行优化"
       }
     },
     "title": "Meross Cloud",
