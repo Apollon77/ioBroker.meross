@@ -15,7 +15,7 @@
     }
   ],
   "dependencies": {
-    "meross-cloud": "^1.7.1",
+    "meross-cloud": "^1.7.2",
     "@apollon/iobroker-tools": "^0.2.0",
     "@iobroker/adapter-core": "^2.5.1",
     "@sentry/node": "^6.17.9",
@@ -30,7 +30,7 @@
     "axios": "^0.26.0",
     "chai": "^4.3.6",
     "gulp": "^4.0.2",
-    "mocha": "^9.2.0",
+    "mocha": "^9.2.1",
     "@iobroker/dev-server": "^0.4.0",
     "@iobroker/testing": "^2.5.4"
   },

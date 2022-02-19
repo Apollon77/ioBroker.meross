@@ -134,6 +134,11 @@
     "connectionType": "cloud",
     "dataSource": "push",
     "tier": 2,
+    "dependencies": [
+      {
+        "js-controller": ">=2.0.0"
+      }
+    ],
     "plugins": {
       "sentry": {
         "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
