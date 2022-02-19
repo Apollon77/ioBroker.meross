@@ -398,7 +398,7 @@ function initDeviceObjects(deviceId, channels, data) {
                         adapter.log.debug('GarageDoor Response: err: ' + err + ', res: ' + JSON.stringify(res));
                         adapter.log.debug(deviceId + '.' + val.channel + '-garageDoor: set value ' + value);
                         if (res && res.state) {
-                            adapter.setState(val.channel + '-garageDoorWorking', !!res.state.execute, true);
+                            adapter.setState(deviceId + '.' + val.channel + '-garageDoorWorking', !!res.state.execute, true);
                         }
                     });
                 };
