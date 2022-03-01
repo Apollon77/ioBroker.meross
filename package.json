@@ -19,7 +19,7 @@
     "@apollon/iobroker-tools": "^0.2.0",
     "@iobroker/adapter-core": "^2.5.1",
     "@sentry/node": "^6.17.9",
-    "@sentry/integrations": "^6.17.9",
+    "@sentry/integrations": "^6.18.1",
     "source-map-support": "^0.5.21"
   },
   "description": "meross cloud adapter for ioBroker",
