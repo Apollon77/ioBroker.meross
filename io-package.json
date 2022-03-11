@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.2",
+    "version": "1.10.3",
     "news": {
+      "1.10.3": {
+        "en": "Fix switch state for thermostats",
+        "de": "Schaltzustand für Thermostate fixieren",
+        "ru": "Исправить состояние переключателя для термостатов",
+        "pt": "Corrigir o estado do interruptor para termostatos",
+        "nl": "Schakelstatus voor thermostaten repareren",
+        "fr": "Correction de l'état du commutateur pour les thermostats",
+        "it": "Correzione dello stato dell'interruttore per i termostati",
+        "es": "Arreglar el estado del interruptor para los termostatos",
+        "pl": "Napraw stan przełącznika dla termostatów",
+        "zh-cn": "修复恒温器的开关状态"
+      },
       "1.10.2": {
         "en": "Correctly set the garageDoorWorking flag after starting a control action",
         "de": "Das GarageDoorWorking-Flag nach dem Start einer Steueraktion korrekt setzen",
@@ -74,18 +86,6 @@
         "es": "Agregar soporte para termostatos MTS150\nAgregue soporte para dispositivos RollerShutter MRS100",
         "pl": "Dodaj obsługę termostatów MTS150\nDodaj obsługę urządzeń MRS100 RollerShutter",
         "zh-cn": "添加对 MTS150 恒温器的支持\n添加对 MRS100 RollerShutter 设备的支持"
-      },
-      "1.6.3": {
-        "en": "Update translations",
-        "de": "Übersetzungen aktualisieren",
-        "ru": "Обновить переводы",
-        "pt": "Atualizar traduções",
-        "nl": "Vertalingen bijwerken",
-        "fr": "Mettre à jour les traductions",
-        "it": "Aggiorna traduzioni",
-        "es": "Actualizar traducciones",
-        "pl": "Zaktualizuj tłumaczenia",
-        "zh-cn": "更新翻译"
       }
     },
     "title": "Meross Cloud",
