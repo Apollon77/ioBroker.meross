@@ -1515,7 +1515,7 @@ function setValuesHubToggleX(deviceId, payload) {
             payload.togglex = [payload.togglex];
         }
         payload.togglex.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '-switch', !!val.onoff, true);
+            adapter.setState(deviceId + '.' + val.id + '.switch', !!val.onoff, true);
         });
     }
 }
