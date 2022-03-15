@@ -796,23 +796,6 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 objs.push(common);
 
-                if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Battery']) {
-                    common = {};
-                    common.type = 'number';
-                    common.read = true;
-                    common.write = false;
-                    common.name = 'battery';
-                    common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
-                    common.unit = '%';
-
-                    objs.push(common);
-
-                    knownDevices[deviceId].device.getHubBattery((err, res) => {
-                        setValuesHubBattery(deviceId, res);
-                    });
-                }
-
                 if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Mts100.Temperature']) {
                     common = {};
                     common.type = 'number';
@@ -985,7 +968,25 @@ function initDeviceObjects(deviceId, channels, data) {
                     });
                 }
             }
-            else if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Sensor.TempHum'] && sub.ms100) {
+
+            if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Battery']) {
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = false;
+                common.name = 'battery';
+                common.role = defineRole(common);
+                common.id = sub.id + '.' + common.name;
+                common.unit = '%';
+
+                objs.push(common);
+
+                knownDevices[deviceId].device.getHubBattery((err, res) => {
+                    setValuesHubBattery(deviceId, res);
+                });
+            }
+
+            if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Sensor.TempHum'] && sub.ms100) {
                 common = {};
                 common.type = 'number';
                 common.read = true;
