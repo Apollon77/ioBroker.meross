@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.3",
+    "version": "1.10.4",
     "news": {
+      "1.10.4": {
+        "en": "Add battery value for ms100 devices in hub if supported",
+        "de": "Batteriewert für ms100-Geräte im Hub hinzufügen, falls unterstützt",
+        "ru": "Добавьте значение батареи для устройств ms100 в концентраторе, если поддерживается",
+        "pt": "Adicione o valor da bateria para dispositivos ms100 no hub, se suportado",
+        "nl": "Voeg batterijwaarde toe voor ms100-apparaten in hub, indien ondersteund",
+        "fr": "Ajouter la valeur de la batterie pour les appareils ms100 dans le hub si pris en charge",
+        "it": "Aggiungi il valore della batteria per i dispositivi ms100 nell'hub, se supportato",
+        "es": "Agregar valor de batería para dispositivos ms100 en el concentrador si es compatible",
+        "pl": "Dodaj wartość baterii dla urządzeń ms100 w hubie, jeśli jest obsługiwana",
+        "zh-cn": "如果支持，为集线器中的 ms100 设备添加电池值"
+      },
       "1.10.3": {
         "en": "Fix switch state for thermostats",
         "de": "Schaltzustand für Thermostate fixieren",
@@ -74,18 +86,6 @@
         "es": "Permitir ingresar contraseñas con más de 15 caracteres",
         "pl": "Zezwalaj na wprowadzanie haseł zawierających więcej niż 15 znaków",
         "zh-cn": "允许输入超过 15 个字符的密码"
-      },
-      "1.7.0": {
-        "en": "Add support for MTS150 Thermostats\nAdd support for MRS100 RollerShutter devices",
-        "de": "Unterstützung für MTS150-Thermostate hinzufügen\nUnterstützung für MRS100 RollerShutter-Geräte hinzufügen",
-        "ru": "Добавить поддержку термостатов MTS150\nДобавить поддержку устройств MRS100 RollerShutter",
-        "pt": "Adicionar suporte para termostatos MTS150\nAdicionar suporte para dispositivos MRS100 RollerShutter",
-        "nl": "Ondersteuning toevoegen voor MTS150-thermostaten\nOndersteuning toevoegen voor MRS100 RollerShutter-apparaten",
-        "fr": "Ajout de la prise en charge des thermostats MTS150\nAjout de la prise en charge des dispositifs MRS100 RollerShutter",
-        "it": "Aggiungi il supporto per i termostati MTS150\nAggiungi il supporto per i dispositivi RollerShutter MRS100",
-        "es": "Agregar soporte para termostatos MTS150\nAgregue soporte para dispositivos RollerShutter MRS100",
-        "pl": "Dodaj obsługę termostatów MTS150\nDodaj obsługę urządzeń MRS100 RollerShutter",
-        "zh-cn": "添加对 MTS150 恒温器的支持\n添加对 MRS100 RollerShutter 设备的支持"
       }
     },
     "title": "Meross Cloud",
