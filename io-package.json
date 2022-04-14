@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.4",
+    "version": "1.10.5",
     "news": {
+      "1.10.5": {
+        "en": "Adjust to recent API changes from Meross services",
+        "de": "Passen Sie sich an die jüngsten API-Änderungen von Meross-Diensten an",
+        "ru": "Приспособиться к последним изменениям API от сервисов Meross",
+        "pt": "Ajuste às alterações recentes da API dos serviços Meross",
+        "nl": "Aanpassen aan recente API-wijzigingen van Meross-services",
+        "fr": "S'adapter aux modifications récentes de l'API des services Meross",
+        "it": "Adeguarsi alle recenti modifiche API dai servizi Meross",
+        "es": "Ajuste a los cambios recientes de API de los servicios de Meross",
+        "pl": "Dostosuj się do ostatnich zmian API z usług Meross",
+        "zh-cn": "根据 Meross 服务最近的 API 变化进行调整"
+      },
       "1.10.4": {
         "en": "Add battery value for ms100 devices in hub if supported",
         "de": "Batteriewert für ms100-Geräte im Hub hinzufügen, falls unterstützt",
@@ -74,18 +86,6 @@
         "es": "Agregue soporte para el termostato Wifi MTS200",
         "pl": "Dodaj obsługę termostatu Wifi MTS200",
         "zh-cn": "添加对 MTS200 Wifi 恒温器的支持"
-      },
-      "1.7.1": {
-        "en": "Allow to enter passwords with more than 15 characters",
-        "de": "Erlaube die Eingabe von Passwörtern mit mehr als 15 Zeichen",
-        "ru": "Разрешить вводить пароли длиной более 15 символов",
-        "pt": "Permite inserir senhas com mais de 15 caracteres",
-        "nl": "Sta toe om wachtwoorden in te voeren met meer dan 15 tekens",
-        "fr": "Autoriser la saisie de mots de passe de plus de 15 caractères",
-        "it": "Consenti l'inserimento di password con più di 15 caratteri",
-        "es": "Permitir ingresar contraseñas con más de 15 caracteres",
-        "pl": "Zezwalaj na wprowadzanie haseł zawierających więcej niż 15 znaków",
-        "zh-cn": "允许输入超过 15 个字符的密码"
       }
     },
     "title": "Meross Cloud",
