@@ -1,5 +1,5 @@
 {
-    "MerossInfo": "该适配器连接到Meross Cloud以控制您的设备。",
+    "MerossInfo": "该适配器通过连接Meross Cloud以控制您的设备。请输入你的Meross Cloud账户认证信息。",
     "Password": "密码",
     "User": "用户名",
     "electricityPollingInterval": "电量值的轮询间隔",
