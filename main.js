@@ -68,7 +68,7 @@ function initSentry(callback) {
     }
 
     Sentry.init({
-        release: adapter.pack.name + '@' + adapter.pack.version,
+        release: `${adapter.pack.name}@${adapter.pack.version}`,
         dsn: sentryConfig.dsn,
         integrations: [
             new SentryIntegrations.Dedupe()
@@ -151,8 +151,8 @@ function setConnected(isConnected) {
         connected = isConnected;
         adapter && adapter.setState && adapter.setState('info.connection', connected, true, (err) => {
             // analyse if the state could be set (because of permissions)
-            if (err && adapter && adapter.log) adapter.log.error('Can not update connected state: ' + err);
-                else if (adapter && adapter.log) adapter.log.debug('connected set to ' + connected);
+            if (err && adapter && adapter.log) adapter.log.error(`Can not update connected state: ${err}`);
+                else if (adapter && adapter.log) adapter.log.debug(`connected set to ${connected}`);
         });
     }
 }
@@ -181,7 +181,7 @@ function startAdapter(options) {
     // is called if a subscribed state changes
     adapter.on('stateChange', function(id, state) {
         // Warning, state can be null if it was deleted
-        adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+        adapter.log.debug(`stateChange ${id} ${JSON.stringify(state)}`);
         objectHelper.handleStateChange(id, state);
     });
 
@@ -254,7 +254,7 @@ function convertNumberToHex(number) {
     if (typeof number === 'string' && number[0] === '#') {
         return number;
     }
-    return "#"+ ('000000' + ((number)>>>0).toString(16)).slice(-6);
+    return `#${(`000000${((number) >>> 0).toString(16)}`).slice(-6)}`;
 }
 function convertHexToNumber(hex) {
     if (typeof hex !== 'string') {
@@ -270,7 +270,7 @@ function initDeviceObjects(deviceId, channels, data) {
     const objs = [];
     const values = {};
 
-    adapter.log.debug(deviceId + ': initDeviceObjects with channels = ' + JSON.stringify(channels) + ' and data = ' + JSON.stringify(data));
+    adapter.log.debug(`${deviceId}: initDeviceObjects with channels = ${JSON.stringify(channels)} and data = ${JSON.stringify(data)}`);
     if (data && data.toggle) {
         const val = data.toggle;
         const common = {};
@@ -285,13 +285,13 @@ function initDeviceObjects(deviceId, channels, data) {
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                     return;
                 }
 
                 knownDevices[deviceId].device.controlToggle((value ? 1 : 0), (err, res) => {
-                    adapter.log.debug('Toggle Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + '.0: set value ' + value);
+                    adapter.log.debug(`Toggle Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                    adapter.log.debug(`${deviceId}.0: set value ${value}`);
 
                     if (knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
                         pollElectricity(deviceId, 2);
@@ -301,7 +301,7 @@ function initDeviceObjects(deviceId, channels, data) {
             objs.push(common);
         }
         else {
-            adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+            adapter.log.info(`Unsupported type for digest val ${JSON.stringify(val)}`);
             return;
         }
     }
@@ -328,13 +328,13 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                         return;
                     }
 
                     knownDevices[deviceId].device.controlToggleX(val.channel, (value ? 1 : 0), (err, res) => {
-                        adapter.log.debug('ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + val.channel + ': set value ' + value);
+                        adapter.log.debug(`ToggleX Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                        adapter.log.debug(`${deviceId}.${val.channel}: set value ${value}`);
 
                         if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) {
                             pollElectricity(deviceId, 2);
@@ -344,14 +344,14 @@ function initDeviceObjects(deviceId, channels, data) {
                 objs.push(common);
             }
             else {
-                adapter.log.info('Unsupported type for digest togglex val ' + JSON.stringify(val));
+                adapter.log.info(`Unsupported type for digest togglex val ${JSON.stringify(val)}`);
             }
         });
     }
 
     if (data && data.electricity) {
         if (data.electricity.channel === undefined || data.electricity.channel !==0) {
-            adapter.log.info('Unsupported type for electricity val ' + JSON.stringify(data));
+            adapter.log.info(`Unsupported type for electricity val ${JSON.stringify(data)}`);
             return;
         }
         const channel = data.electricity.channel;
@@ -364,7 +364,7 @@ function initDeviceObjects(deviceId, channels, data) {
             common.write = false;
             common.name = key;
             common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
-            common.id = channel + '-' + key;
+            common.id = `${channel}-${key}`;
             values[common.id] = Math.floor(data.electricity[key] * Math.pow(10, (roleValues[key] ? roleValues[key].scale || 0 : 0)) * 100) / 100;
             if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
@@ -374,7 +374,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
     if (data && data.garageDoor) {
         if (!Array.isArray(data.garageDoor)) {
-            adapter.log.info('Unsupported type for garageDoor val ' + JSON.stringify(data));
+            adapter.log.info(`Unsupported type for garageDoor val ${JSON.stringify(data)}`);
             return;
         }
         data.garageDoor.forEach((val) => {
@@ -383,22 +383,22 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.type = 'boolean';
                 common.read = true;
                 common.write = true;
-                common.name = val.channel + '-garageDoor';
+                common.name = `${val.channel}-garageDoor`;
                 common.role = defineRole(common);
                 common.id = common.name;
                 values[common.name] = !!val.open;
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                         return;
                     }
 
                     knownDevices[deviceId].device.controlGarageDoor(val.channel, (value ? 1 : 0), (err, res) => {
-                        adapter.log.debug('GarageDoor Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + val.channel + '-garageDoor: set value ' + value);
+                        adapter.log.debug(`GarageDoor Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                        adapter.log.debug(`${deviceId}.${val.channel}-garageDoor: set value ${value}`);
                         if (res && res.state) {
-                            adapter.setState(deviceId + '.' + val.channel + '-garageDoorWorking', !!res.state.execute, true);
+                            adapter.setState(`${deviceId}.${val.channel}-garageDoorWorking`, !!res.state.execute, true);
                         }
                     });
                 };
@@ -408,7 +408,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common2.type = 'boolean';
                 common2.read = true;
                 common2.write = false;
-                common2.name = val.channel + '-garageDoorWorking';
+                common2.name = `${val.channel}-garageDoorWorking`;
                 common2.role = defineRole(common2);
                 common2.id = common2.name;
                 values[common2.name] = false;
@@ -416,7 +416,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 objs.push(common2);
             }
             else {
-                adapter.log.info('Unsupported type for digest val ' + JSON.stringify(val));
+                adapter.log.info(`Unsupported type for digest val ${JSON.stringify(val)}`);
             }
         });
     }
@@ -431,27 +431,27 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.type = 'number';
                 common.read = true;
                 common.write = true;
-                common.name = val.channel + '-mode';
+                common.name = `${val.channel}-mode`;
                 common.role = defineRole(common);
                 common.states = {0: 'Off', 1: 'Continuous', 2: 'Intermittent'};
                 common.id = common.name;
-                values[val.channel + '-mode'] = val.mode;
+                values[`${val.channel}-mode`] = val.mode;
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                         return;
                     }
 
                     knownDevices[deviceId].device.controlSpray(val.channel, value, (err, res) => {
-                        adapter.log.debug('Spray Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + val.channel + ': set spray value ' + value);
+                        adapter.log.debug(`Spray Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                        adapter.log.debug(`${deviceId}.${val.channel}: set spray value ${value}`);
                     });
                 };
                 objs.push(common);
             }
             else {
-                adapter.log.info('Unsupported type for spray digest val ' + JSON.stringify(val));
+                adapter.log.info(`Unsupported type for spray digest val ${JSON.stringify(val)}`);
             }
         });
     }
@@ -464,7 +464,7 @@ function initDeviceObjects(deviceId, channels, data) {
             common.type = (key === 'rgb') ? 'string' : 'number';
             common.read = true;
             common.write = true;
-            common.name = data.light.channel + '-' + key;
+            common.name = `${data.light.channel}-${key}`;
             common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
             common.id = common.name;
             values[common.id] = (key === 'rgb') ? convertNumberToHex(data.light[key]) : data.light[key];
@@ -472,7 +472,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                     return;
                 }
 
@@ -500,8 +500,8 @@ function initDeviceObjects(deviceId, channels, data) {
                         break;
                 }
                 knownDevices[deviceId].device.controlLight(controlData, (err, res) => {
-                    adapter.log.debug('Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + '.' + data.light.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
+                    adapter.log.debug(`Light Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                    adapter.log.debug(`${deviceId}.${data.light.channel}-${key}: set light value ${JSON.stringify(controlData)}`);
                 });
             };
             objs.push(common);
@@ -546,7 +546,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     if (common.write) {
                         common.onChange = async (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
@@ -567,25 +567,25 @@ function initDeviceObjects(deviceId, channels, data) {
                                     case 'mode':
                                         switch (value) {
                                             case 0: // HEATING
-                                                const heatTemp = await adapter.getStateAsync(channel + '-mode-heatTemp');
+                                                const heatTemp = await adapter.getStateAsync(`${channel}-mode-heatTemp`);
                                                 if (heatTemp && heatTemp.val) {
                                                     controlData.targetTemp = heatTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
                                                 }
                                                 break;
                                             case 1: // COOLING
-                                                const coolTemp = await adapter.getStateAsync(channel + '-mode-coolTemp');
+                                                const coolTemp = await adapter.getStateAsync(`${channel}-mode-coolTemp`);
                                                 if (coolTemp && coolTemp.val) {
                                                     controlData.targetTemp = coolTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
                                                 }
                                                 break;
                                             case 2: // ECO
-                                                const ecoTemp = await adapter.getStateAsync(channel + '-mode-ecoTemp');
+                                                const ecoTemp = await adapter.getStateAsync(`${channel}-mode-ecoTemp`);
                                                 if (ecoTemp && ecoTemp.val) {
                                                     controlData.targetTemp = ecoTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
                                                 }
                                                 break;
                                             case 4: // MANUAL
-                                                const manualTemp = await adapter.getStateAsync(channel + '-mode-manualTemp');
+                                                const manualTemp = await adapter.getStateAsync(`${channel}-mode-manualTemp`);
                                                 if (manualTemp && manualTemp.val) {
                                                     controlData.targetTemp = manualTemp.val * Math.pow(10, -roleValues.targetTemp.scale)
                                                 }
@@ -596,15 +596,15 @@ function initDeviceObjects(deviceId, channels, data) {
                             }
 
                             knownDevices[deviceId].device.controlThermostatMode(channel, controlData, (err, res) => {
-                                adapter.log.debug('Thermostat Mode Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                adapter.log.debug(deviceId + '.' + channel + '-' + key + ': set value ' + JSON.stringify(controlData));
+                                adapter.log.debug(`Thermostat Mode Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                adapter.log.debug(`${deviceId}.${channel}-${key}: set value ${JSON.stringify(controlData)}`);
                             });
                         };
                     }
 
                     common.name = key;
                     common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
-                    common.id = channel + '-mode-' + key;
+                    common.id = `${channel}-mode-${key}`;
 
                     values[common.id] = common.type === 'boolean' ? !!val[key] : val[key];
                     if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
@@ -625,7 +625,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = false;
                     common.name = key;
                     common.role = (roleValues[key] && roleValues[key].role) ? roleValues[key].role : defineRole(common);
-                    common.id = channel + '-windowOpened-' + key;
+                    common.id = `${channel}-windowOpened-${key}`;
                     values[common.id] = key === 'status' ? !!val[key] : val[key];
                     if (roleValues[key] && roleValues[key].unit) common.unit = roleValues[key].unit;
 
@@ -648,19 +648,19 @@ function initDeviceObjects(deviceId, channels, data) {
 
         common.onChange = (value) => {
             if (!knownDevices[deviceId].device) {
-                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                 return;
             }
 
             knownDevices[deviceId].device.setSystemDNDMode(!!value, (err, res) => {
-                adapter.log.debug('DNDMode Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                adapter.log.debug(deviceId + ': set DNDMode value ' + value);
+                adapter.log.debug(`DNDMode Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                adapter.log.debug(`${deviceId}: set DNDMode value ${value}`);
 
                 knownDevices[deviceId].device.getSystemDNDMode((err, res) => {
-                    adapter.log.debug('DNDMode Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + ': get DNDMode value ' + value);
+                    adapter.log.debug(`DNDMode Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                    adapter.log.debug(`${deviceId}: get DNDMode value ${value}`);
                     if (res && res.DNDMode) {
-                        adapter.setState(deviceId + '.dnd', !!res.DNDMode.mode, true);
+                        adapter.setState(`${deviceId}.dnd`, !!res.DNDMode.mode, true);
                     }
                 });
             });
@@ -702,10 +702,13 @@ function initDeviceObjects(deviceId, channels, data) {
             } else if (sub.ms100) {
                 name += ' MS100';
             }
-            objectHelper.setOrUpdateObject(deviceId + '.' + sub.id, {
+            objectHelper.setOrUpdateObject(`${deviceId}.${sub.id}`, {
                 type: 'channel',
                 common: {
-                    name: name
+                    name: name,
+                    statusStates: {
+                        onlineId: `${this.namespace}.${deviceId}.${sub.id}.online`
+                    }
                 },
                 native: sub
             });
@@ -716,8 +719,8 @@ function initDeviceObjects(deviceId, channels, data) {
             common.read = true;
             common.write = false;
             common.name = 'online';
-            common.role = defineRole(common);
-            common.id = sub.id + '.' + common.name;
+            common.role = 'indicator.reachable';
+            common.id = `${sub.id}.${common.name}`;
             values[common.id] = parseInt(sub.status) === 1;
 
             objs.push(common);
@@ -728,18 +731,18 @@ function initDeviceObjects(deviceId, channels, data) {
             common.write = true;
             common.name = 'switch';
             common.role = defineRole(common);
-            common.id = sub.id + '.' + common.name;
+            common.id = `${sub.id}.${common.name}`;
             values[common.id] = !!sub.onoff;
 
             common.onChange = (value) => {
                 if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                     return;
                 }
 
                 knownDevices[deviceId].device.controlHubToggleX(sub.id, (value ? 1 : 0), (err, res) => {
-                    adapter.log.debug('Hub-ToggleX Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                    adapter.log.debug(deviceId + '.' + sub.id + '.switch: set value ' + value);
+                    adapter.log.debug(`Hub-ToggleX Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                    adapter.log.debug(`${deviceId}.${sub.id}.switch: set value ${value}`);
 
                     knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
                         if (res && res.all && res.all[0] && res.all[0].togglex) {
@@ -759,7 +762,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.write = true;
                 common.name = 'mode';
                 common.role = defineRole(common);
-                common.id = sub.id + '.' + common.name;
+                common.id = `${sub.id}.${common.name}`;
                 if (sub.mts100) {
                     values[common.id] = sub.mts100.mode;
                 } else if (sub.mts100v3) {
@@ -777,13 +780,13 @@ function initDeviceObjects(deviceId, channels, data) {
 
                 common.onChange = (value) => {
                     if (!knownDevices[deviceId].device) {
-                        adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                         return;
                     }
 
                     knownDevices[deviceId].device.controlHubMts100Mode(sub.id, value, (err, res) => {
-                        adapter.log.debug('Hub-Mode Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                        adapter.log.debug(deviceId + '.' + sub.id + '.mode: set value ' + value);
+                        adapter.log.debug(`Hub-Mode Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                        adapter.log.debug(`${deviceId}.${sub.id}.mode: set value ${value}`);
 
                         knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
                             if (res && res.all && res.all[0] && res.all[0].mode) {
@@ -803,20 +806,20 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = true;
                     common.name = 'custom';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
                     common.unit = '°C';
                     common.min = 5;
                     common.max = 35;
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                            adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                             return;
                         }
 
                         knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {custom: value * 10}, (err, res) => {
-                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                            adapter.log.debug(deviceId + '.' + sub.id + '.custom: set value ' + value);
+                            adapter.log.debug(`Hub-Temperature Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                            adapter.log.debug(`${deviceId}.${sub.id}.custom: set value ${value}`);
                             setValuesHubMts100Temperature(deviceId, res);
                         });
                     };
@@ -829,20 +832,20 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = true;
                     common.name = 'currentSet';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
                     common.unit = '°C';
                     common.min = 5;
                     common.max = 35;
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                            adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                             return;
                         }
 
                         knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {currentSet: value * 10}, (err, res) => {
-                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                            adapter.log.debug(deviceId + '.' + sub.id + '.currentSet: set value ' + value);
+                            adapter.log.debug(`Hub-Temperature Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                            adapter.log.debug(`${deviceId}.${sub.id}.currentSet: set value ${value}`);
                             setValuesHubMts100Temperature(deviceId, res);
                         });
                     };
@@ -855,20 +858,20 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = true;
                     common.name = 'comfort';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
                     common.unit = '°C';
                     common.min = 5;
                     common.max = 35;
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                            adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                             return;
                         }
 
                         knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {comfort: value * 10}, (err, res) => {
-                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                            adapter.log.debug(deviceId + '.' + sub.id + '.comfort: set value ' + value);
+                            adapter.log.debug(`Hub-Temperature Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                            adapter.log.debug(`${deviceId}.${sub.id}.comfort: set value ${value}`);
                             setValuesHubMts100Temperature(deviceId, res);
                         });
                     };
@@ -881,20 +884,20 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = true;
                     common.name = 'economy';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
                     common.unit = '°C';
                     common.min = 5;
                     common.max = 35;
 
                     common.onChange = (value) => {
                         if (!knownDevices[deviceId].device) {
-                            adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                            adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                             return;
                         }
 
                         knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {economy: value * 10}, (err, res) => {
-                            adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                            adapter.log.debug(deviceId + '.' + sub.id + '.economy: set value ' + value);
+                            adapter.log.debug(`Hub-Temperature Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                            adapter.log.debug(`${deviceId}.${sub.id}.economy: set value ${value}`);
                             setValuesHubMts100Temperature(deviceId, res);
                         });
                     };
@@ -908,20 +911,20 @@ function initDeviceObjects(deviceId, channels, data) {
                         common.write = true;
                         common.name = 'away';
                         common.role = defineRole(common);
-                        common.id = sub.id + '.' + common.name;
+                        common.id = `${sub.id}.${common.name}`;
                         common.unit = '°C';
                         common.min = 5;
                         common.max = 35;
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
                             knownDevices[deviceId].device.controlHubMts100Temperature(sub.id, {away: value * 10}, (err, res) => {
-                                adapter.log.debug('Hub-Temperature Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                adapter.log.debug(deviceId + '.' + sub.id + '.economy: set value ' + value);
+                                adapter.log.debug(`Hub-Temperature Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                adapter.log.debug(`${deviceId}.${sub.id}.economy: set value ${value}`);
                                 setValuesHubMts100Temperature(deviceId, res);
                             });
                         };
@@ -935,7 +938,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = false;
                     common.name = 'room';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
                     common.unit = '°C';
 
                     objs.push(common);
@@ -946,7 +949,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = false;
                     common.name = 'heating';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
 
                     objs.push(common);
 
@@ -956,7 +959,7 @@ function initDeviceObjects(deviceId, channels, data) {
                     common.write = false;
                     common.name = 'openWindow';
                     common.role = defineRole(common);
-                    common.id = sub.id + '.' + common.name;
+                    common.id = `${sub.id}.${common.name}`;
 
                     objs.push(common);
 
@@ -976,7 +979,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.write = false;
                 common.name = 'battery';
                 common.role = defineRole(common);
-                common.id = sub.id + '.' + common.name;
+                common.id = `${sub.id}.${common.name}`;
                 common.unit = '%';
 
                 objs.push(common);
@@ -994,7 +997,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'latestTemperature';
                 common.role = 'value.temperature';
                 common.unit = '°C';
-                common.id = sub.id + '.' + common.name;
+                common.id = `${sub.id}.${common.name}`;
                 values[common.id] = sub.ms100.latestTemperature;
 
                 objs.push(common);
@@ -1006,7 +1009,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'latestHumidity';
                 common.role = 'value.humidity';
                 common.unit = '%';
-                common.id = sub.id + '.' + common.name;
+                common.id = `${sub.id}.${common.name}`;
                 values[common.id] = sub.ms100.latestHumidity;
 
                 objs.push(common);
@@ -1018,7 +1021,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'voltage';
                 common.role = defineRole(common);
                 common.unit = 'V';
-                common.id = sub.id + '.' + common.name;
+                common.id = `${sub.id}.${common.name}`;
                 values[common.id] = sub.ms100.voltage;
 
                 objs.push(common);
@@ -1038,27 +1041,27 @@ function initDeviceObjects(deviceId, channels, data) {
                         common.type = 'number';
                         common.read = true;
                         common.write = true;
-                        common.name = val.channel + '-mode';
+                        common.name = `${val.channel}-mode`;
                         common.role = defineRole(common);
                         common.states = {0: 'Light Spray', 1: 'Dense Spray', 2: 'Off'};
                         common.id = common.name;
-                        values[val.channel + '-mode'] = val.mode;
+                        values[`${val.channel}-mode`] = val.mode;
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
                             knownDevices[deviceId].device.controlDiffusorSpray(data.diffuser.type, val.channel, value, (err, res) => {
-                                adapter.log.debug('Diffusor-Spray Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                adapter.log.debug(deviceId + '.' + val.channel + ': set spray value ' + value);
+                                adapter.log.debug(`Diffusor-Spray Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                adapter.log.debug(`${deviceId}.${val.channel}: set spray value ${value}`);
                             });
                         };
                         objs.push(common);
                     }
                     else {
-                        adapter.log.info('Unsupported type for spray digest val ' + JSON.stringify(val));
+                        adapter.log.info(`Unsupported type for spray digest val ${JSON.stringify(val)}`);
                     }
                 });
             }
@@ -1076,7 +1079,7 @@ function initDeviceObjects(deviceId, channels, data) {
                         common.type = (key === 'rgb') ? 'string' : ((key === 'onoff') ? 'boolean' : 'number');
                         common.read = true;
                         common.write = true;
-                        common.name = 'light-' + diffuserLight.channel + '-' + key;
+                        common.name = `light-${diffuserLight.channel}-${key}`;
                         if (key === 'mode') {
                             common.states = {0: 'Auto cycle (RGB)', 1: 'RGB', 2: 'Color Temperature'};
                         }
@@ -1087,7 +1090,7 @@ function initDeviceObjects(deviceId, channels, data) {
 
                         common.onChange = (value) => {
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
@@ -1113,12 +1116,12 @@ function initDeviceObjects(deviceId, channels, data) {
                                     controlData.mode = 2;
                                     break;
                                 case 'luminance':
-                                    controlData.mode = values['light-' + diffuserLight.channel + '-mode'];
+                                    controlData.mode = values[`light-${diffuserLight.channel}-mode`];
                                     break;
                             }
                             knownDevices[deviceId].device.controlDiffusorLight(data.diffuser.type, controlData, (err, res) => {
-                                adapter.log.debug('Diffusor-Light Response: err: ' + err + ', res: ' + JSON.stringify(res));
-                                adapter.log.debug(deviceId + '.' + diffuserLight.channel + '-' + key + ': set light value ' + JSON.stringify(controlData));
+                                adapter.log.debug(`Diffusor-Light Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                adapter.log.debug(`${deviceId}.${diffuserLight.channel}-${key}: set light value ${JSON.stringify(controlData)}`);
                             });
                         };
                         objs.push(common);
@@ -1137,7 +1140,7 @@ function initDeviceObjects(deviceId, channels, data) {
         const onChange = obj.onChange;
         delete obj.onChange;
         //console.log('Create: ' + deviceId + '.' + id);
-        objectHelper.setOrUpdateObject(deviceId + '.' + id, {
+        objectHelper.setOrUpdateObject(`${deviceId}.${id}`, {
             type: 'state',
             common: obj
         }, values[id], onChange);
@@ -1154,11 +1157,14 @@ async function initDevice(deviceId, deviceDef, device, callback) {
     objectHelper.setOrUpdateObject(deviceId, {
         type: 'device',
         common: {
-            name: deviceDef.devName || 'Device ' + deviceId
+            name: deviceDef.devName || `Device ${deviceId}`,
+            statusStates: {
+                onlineId: `${this.namespace}.${deviceId}.online`
+            }
         },
         native: deviceDef
     });
-    objectHelper.setOrUpdateObject(deviceId + '.online', {
+    objectHelper.setOrUpdateObject(`${deviceId}.online`, {
         type: 'state',
         common: {
             name: 'Device online status',
@@ -1169,7 +1175,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         }
     }, false);
 
-    objectHelper.setOrUpdateObject(deviceId + '.disabled', {
+    objectHelper.setOrUpdateObject(`${deviceId}.disabled`, {
         type: 'state',
         common: {
             name: 'Device disable status to ignore connection errors',
@@ -1181,10 +1187,10 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         }
     },(value) => {
         knownDevices[deviceId].disabled = !!value;
-        adapter.setState(deviceId + '.disabled', knownDevices[deviceId].disabled, true);
+        adapter.setState(`${deviceId}.disabled`, knownDevices[deviceId].disabled, true);
     });
     try {
-        const disabledState = await adapter.getStateAsync(deviceId + '.disabled');
+        const disabledState = await adapter.getStateAsync(`${deviceId}.disabled`);
         if (disabledState && disabledState.val !== undefined) {
             knownDevices[deviceId].disabled = !!disabledState.val;
         }
@@ -1193,7 +1199,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
     }
 
     try {
-        const knownIpState = await adapter.getStateAsync(deviceId + '.ip');
+        const knownIpState = await adapter.getStateAsync(`${deviceId}.ip`);
         if (knownIpState && knownIpState.val !== undefined && knownIpState.val.length) {
             device.setKnownLocalIp(knownIpState.val);
             // try to get with known local IP, remove again if not the right one
@@ -1204,16 +1210,16 @@ async function initDevice(deviceId, deviceDef, device, callback) {
                     adapter.log.debug(`Device ${deviceId} local IP seems incorrect ... retry via cloud: ${err}`);
                     device.removeKnownLocalIp();
                     device.getSystemAllData((err, deviceAllData) => {
-                        !knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
-                        knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
+                        !knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.info(`Can not get Data for Device ${deviceId}: ${err}`);
+                        knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.debug(`Can not get Data for Device ${deviceId}: ${err}`);
                         initDeviceData(deviceId, deviceDef, device, deviceAllData, callback)
                     });
                 }
             });
         } else {
             device.getSystemAllData((err, deviceAllData) => {
-                !knownDevices[deviceId].disabled && err && adapter.log.info('Can not get Data for Device ' + deviceId + ': ' + err);
-                knownDevices[deviceId].disabled && err && adapter.log.debug('Can not get Data for Device ' + deviceId + ': ' + err);
+                !knownDevices[deviceId].disabled && err && adapter.log.info(`Can not get Data for Device ${deviceId}: ${err}`);
+                knownDevices[deviceId].disabled && err && adapter.log.debug(`Can not get Data for Device ${deviceId}: ${err}`);
                 initDeviceData(deviceId, deviceDef, device, deviceAllData, callback);
             });
         }
@@ -1221,12 +1227,12 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         adapter.log.error(e.message);
         adapter.log.error(e.stack);
         // ignore
+        initDeviceData(deviceId, deviceDef, device, undefined, callback);
     }
 }
 
 function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
-    adapter.log.debug(deviceId + ' All-Data: ' + JSON.stringify(deviceAllData));
-    if (!deviceAllData) {
+    function reInitDevice() {
         if (knownDevices[deviceId].reconnectTimeout) {
             clearTimeout(knownDevices[deviceId].reconnectTimeout);
         }
@@ -1234,6 +1240,12 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             knownDevices[deviceId].reconnectTimeout = null;
             initDevice(deviceId, deviceDef, device);
         }, 60000);
+    }
+
+    adapter.log.debug(`${deviceId} All-Data: ${JSON.stringify(deviceAllData)}`);
+    if (!deviceAllData) {
+        adapter.log.warn(`Can not get Data for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAllData)}`);
+        reInitDevice()
         objectHelper.processObjectQueue(() => {
             callback && callback();
         });
@@ -1242,7 +1254,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
     knownDevices[deviceId].deviceAllData = deviceAllData;
 
     if (deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.firmware && deviceAllData.all.system.firmware.innerIp) {
-        objectHelper.setOrUpdateObject(deviceId + '.ip', {
+        objectHelper.setOrUpdateObject(`${deviceId}.ip`, {
             type: 'state',
             common: {
                 name: 'Device IP',
@@ -1256,16 +1268,11 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
     }
 
     device.getSystemAbilities((err, deviceAbilities) => {
-        adapter.log.debug(deviceId + ' Abilities: ' + JSON.stringify(deviceAbilities));
+        adapter.log.debug(`${deviceId} Abilities: ${JSON.stringify(deviceAbilities)}`);
         if (err || !deviceAbilities || !deviceAbilities.ability) {
-            adapter.log.warn('Can not get Abilities for Device ' + deviceId + ': ' + err + ' / ' + JSON.stringify(deviceAbilities));
-            if (knownDevices[deviceId].reconnectTimeout) {
-                clearTimeout(knownDevices[deviceId].reconnectTimeout);
-            }
-            knownDevices[deviceId].reconnectTimeout = setTimeout(() => {
-                knownDevices[deviceId].reconnectTimeout = null;
-                initDevice(deviceId, deviceDef, device);
-            }, 60000);
+            adapter.log.warn(`Can not get Abilities for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAbilities)}`);
+            adapter.log.warn(`Can not get Data for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAllData)}`);
+            reInitDevice()
             objectHelper.processObjectQueue(() => {
                 callback && callback();
             });
@@ -1274,7 +1281,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
         knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
         if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
-            adapter.log.info('Known abilities not supported by Device ' + deviceId + ': send next line from disk to developer');
+            adapter.log.info(`Known abilities not supported by Device ${deviceId}: send next line from disk to developer`);
             adapter.log.info(JSON.stringify(deviceAbilities));
             objectHelper.processObjectQueue(() => {
                 callback && callback();
@@ -1291,15 +1298,20 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
         if (deviceAbilities.ability['Appliance.Control.Electricity']) {
             objAsyncCount++;
             device.getControlElectricity((err, res) => {
-                //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
-                adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
-                initDeviceObjects(deviceId, deviceDef.channels, res);
+                if (!err && res) {
+                    //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+                    adapter.log.debug(`${deviceId} Electricity: ${JSON.stringify(res)}`);
+                    initDeviceObjects(deviceId, deviceDef.channels, res);
 
-                pollElectricity(deviceId);
-
+                    pollElectricity(deviceId);
+                } else {
+                    adapter.log.warn(`Can not get Electricity data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    reInitDevice()
+                }
                 if (!--objAsyncCount) {
                     objectHelper.processObjectQueue(() => {
                         callback && callback();
+                        callback = null;
                     });
                 }
             });
@@ -1308,13 +1320,19 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
         if (deviceAbilities.ability['Appliance.System.DNDMode']) {
             objAsyncCount++;
             device.getSystemDNDMode((err, res) => {
-                //{"DNDMode":{"mode":1}}
-                adapter.log.debug(deviceId + ' DND-Mode: ' + JSON.stringify(res));
-                initDeviceObjects(deviceId, deviceDef.channels, res);
+                if (!err && res) {
+                    //{"DNDMode":{"mode":1}}
+                    adapter.log.debug(`${deviceId} DND-Mode: ${JSON.stringify(res)}`);
+                    initDeviceObjects(deviceId, deviceDef.channels, res);
+                } else {
+                    adapter.log.warn(`Can not get DNDMode data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    reInitDevice()
+                }
 
                 if (!--objAsyncCount) {
                     objectHelper.processObjectQueue(() => {
                         callback && callback();
+                        callback = null;
                     });
                 }
             });
@@ -1323,7 +1341,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
         if (deviceAbilities.ability['Appliance.RollerShutter.State']) {
             objAsyncCount++;
             device.getRollerShutterState((err, res) => {
-                if (res && res.state) {
+                if (!err && res && res.state) {
                     res.state.forEach(val => {
                         if (val.state === undefined) {
                             return;
@@ -1332,7 +1350,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         commonUp.type = 'boolean';
                         commonUp.read = true;
                         commonUp.write = true;
-                        commonUp.name = val.channel + '-up';
+                        commonUp.name = `${val.channel}-up`;
                         commonUp.role = 'button.open.blind';
 
                         const onChangeUp = (value) => {
@@ -1340,15 +1358,15 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
                             knownDevices[deviceId].device.controlRollerShutterUp(val.channel, (err, res) => {
-                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(`RollerShutter State Response: err: ${err}, res: ${JSON.stringify(res)}`);
                             });
                         };
-                        objectHelper.setOrUpdateObject(deviceId + '.' + commonUp.name, {
+                        objectHelper.setOrUpdateObject(`${deviceId}.${commonUp.name}`, {
                             type: 'state',
                             commonUp
                         }, val.state === 1, onChangeUp);
@@ -1357,7 +1375,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         commonDown.type = 'boolean';
                         commonDown.read = true;
                         commonDown.write = true;
-                        commonDown.name = val.channel + '-down';
+                        commonDown.name = `${val.channel}-down`;
                         commonDown.role = 'button.close.blind';
 
                         const onChangeDown = (value) => {
@@ -1365,15 +1383,15 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
                             knownDevices[deviceId].device.controlRollerShutterDown(val.channel, (err, res) => {
-                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(`RollerShutter State Response: err: ${err}, res: ${JSON.stringify(res)}`);
                             });
                         };
-                        objectHelper.setOrUpdateObject(deviceId + '.' + commonDown.name, {
+                        objectHelper.setOrUpdateObject(`${deviceId}.${commonDown.name}`, {
                             type: 'state',
                             commonDown
                         }, val.state === 2, onChangeDown);
@@ -1382,7 +1400,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         commonStop.type = 'boolean';
                         commonStop.read = true;
                         commonStop.write = true;
-                        commonStop.name = val.channel + '-stop';
+                        commonStop.name = `${val.channel}-stop`;
                         commonStop.role = 'button.stop';
 
                         const onChangeStop = (value) => {
@@ -1390,54 +1408,62 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                                 return;
                             }
                             if (!knownDevices[deviceId].device) {
-                                adapter.log.debug(deviceId + ' Device communication not initialized ...');
+                                adapter.log.debug(`${deviceId} Device communication not initialized ...`);
                                 return;
                             }
 
                             knownDevices[deviceId].device.controlRollerShutterStop(val.channel, (err, res) => {
-                                adapter.log.debug('RollerShutter State Response: err: ' + err + ', res: ' + JSON.stringify(res));
+                                adapter.log.debug(`RollerShutter State Response: err: ${err}, res: ${JSON.stringify(res)}`);
                             });
                         };
-                        objectHelper.setOrUpdateObject(deviceId + '.' + commonStop.name, {
+                        objectHelper.setOrUpdateObject(`${deviceId}.${commonStop.name}`, {
                             type: 'state',
                             commonStop
                         }, val.state === 0, onChangeStop);
                     });
+                } else {
+                    adapter.log.warn(`Can not get Roller/Shutter data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    reInitDevice()
                 }
 
                 if (!--objAsyncCount) {
                     objectHelper.processObjectQueue(() => {
                         callback && callback();
+                        callback = null;
                     });
                 }
             });
 
             objAsyncCount++;
             device.getRollerShutterPosition((err, res) => {
-                if (res && res.position) {
+                if (!err && res && res.position) {
                     res.position.forEach(val => {
                         const common = {};
                         if (val.position !== undefined) {
                             common.type = 'number';
                             common.read = true;
                             common.write = false;
-                            common.name = val.channel + '-position';
+                            common.name = `${val.channel}-position`;
                             common.role = 'value.blind';
                             common.unit = '%';
                             common.min = 0;
                             common.max = 100;
 
-                            objectHelper.setOrUpdateObject(deviceId + '.' + common.name, {
+                            objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
                                 type: 'state',
                                 common
                             }, val.position);
                         }
                     });
+                } else {
+                    adapter.log.warn(`Can not get Roller/Shutter position data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    reInitDevice()
                 }
 
                 if (!--objAsyncCount) {
                     objectHelper.processObjectQueue(() => {
                         callback && callback();
+                        callback = null;
                     });
                 }
             });
@@ -1447,6 +1473,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
         if (!objAsyncCount) {
             objectHelper.processObjectQueue(() => {
                 callback && callback();
+                callback = null;
             });
         }
     });
@@ -1476,18 +1503,18 @@ function pollElectricity(deviceId, delay) {
     if (!knownDevices[deviceId].deviceAbilities || !knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
     if (!delay) delay = adapter.config.electricityPollingInterval || 20;
     if (knownDevices[deviceId].electricityPollTimeout) {
-        adapter.log.debug(deviceId + ' Electricity schedule cleared');
+        adapter.log.debug(`${deviceId} Electricity schedule cleared`);
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
         knownDevices[deviceId].electricityPollTimeout = null;
     }
-    adapter.log.debug(deviceId + ' Electricity scheduled in : ' + delay + 's');
+    adapter.log.debug(`${deviceId} Electricity scheduled in : ${delay}s`);
     knownDevices[deviceId].electricityPollTimeout = setTimeout(() => {
         knownDevices[deviceId].electricityPollTimeout = null;
-        adapter.log.debug(deviceId + ' Electricity query executed now');
+        adapter.log.debug(`${deviceId} Electricity query executed now`);
         knownDevices[deviceId].device.getControlElectricity((err, res) => {
             if (!err) {
                 //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
-                adapter.log.debug(deviceId + ' Electricity: ' + JSON.stringify(res));
+                adapter.log.debug(`${deviceId} Electricity: ${JSON.stringify(res)}`);
                 setValuesElectricity(deviceId, res);
             }
             pollElectricity(deviceId);
@@ -1503,7 +1530,7 @@ function setValuesToggleX(deviceId, payload) {
             payload.togglex = [payload.togglex];
         }
         payload.togglex.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel, !!val.onoff, true);
+            adapter.setState(`${deviceId}.${val.channel}`, !!val.onoff, true);
         });
         pollElectricity(deviceId, 2);
     }
@@ -1516,7 +1543,7 @@ function setValuesHubToggleX(deviceId, payload) {
             payload.togglex = [payload.togglex];
         }
         payload.togglex.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '.switch', !!val.onoff, true);
+            adapter.setState(`${deviceId}.${val.id}.switch`, !!val.onoff, true);
         });
     }
 }
@@ -1528,7 +1555,7 @@ function setValuesSpray(deviceId, payload) {
             payload.spray = [payload.spray];
         }
         payload.spray.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-mode', val.mode, true);
+            adapter.setState(`${deviceId}.${val.channel}-mode`, val.mode, true);
         });
     }
 }
@@ -1540,7 +1567,7 @@ function setValuesHubBattery(deviceId, payload) {
             payload.battery = [payload.battery];
         }
         payload.battery.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '.battery', val.value, true);
+            adapter.setState(`${deviceId}.${val.id}.battery`, val.value, true);
         });
     }
 }
@@ -1552,7 +1579,7 @@ function setValuesHubOnline(deviceId, payload) {
             payload.online = [payload.online];
         }
         payload.online.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '.online', parseInt(val.status) === 1, true);
+            adapter.setState(`${deviceId}.${val.id}.online`, parseInt(val.status) === 1, true);
         });
     }
 }
@@ -1577,28 +1604,28 @@ function setValuesHubMts100Temperature(deviceId, payload) {
         }
         payload.temperature.forEach((val) => {
             if (val.room !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.room', val.room / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.room`, val.room / 10, true);
             }
             if (val.custom !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.custom', val.custom / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.custom`, val.custom / 10, true);
             }
             if (val.currentSet !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.currentSet', val.currentSet / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.currentSet`, val.currentSet / 10, true);
             }
             if (val.comfort !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.comfort', val.comfort / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.comfort`, val.comfort / 10, true);
             }
             if (val.economy !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.economy', val.economy / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.economy`, val.economy / 10, true);
             }
             if (val.away !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.away', val.away / 10, true);
+                adapter.setState(`${deviceId}.${val.id}.away`, val.away / 10, true);
             }
             if (val.heating !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.heating', !!val.heating, true);
+                adapter.setState(`${deviceId}.${val.id}.heating`, !!val.heating, true);
             }
             if (val.openWindow !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.openWindow', !!val.openWindow, true);
+                adapter.setState(`${deviceId}.${val.id}.openWindow`, !!val.openWindow, true);
             }
         });
     }
@@ -1612,19 +1639,19 @@ function setValuesHubMts100TempHum(deviceId, payload) {
         }
         payload.tempHum.forEach((val) => {
             if (val.latestTemperature !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.latestTemperature', {
+                adapter.setState(`${deviceId}.${val.id}.latestTemperature`, {
                     val: val.latestTemperature / 10,
                     ts: val.latestTime * 1000
                 }, true);
             }
             if (val.latestHumidity !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.latestHumidity', {
+                adapter.setState(`${deviceId}.${val.id}.latestHumidity`, {
                     val: val.latestHumidity / 10,
                     ts: val.latestTime * 1000
                 }, true);
             }
             if (val.voltage !== undefined) {
-                adapter.setState(deviceId + '.' + val.id + '.voltage', {
+                adapter.setState(`${deviceId}.${val.id}.voltage`, {
                     val: val.voltage / 1000,
                     ts: val.latestTime * 1000
                 }, true);
@@ -1640,7 +1667,7 @@ function setValuesHubMts100Mode(deviceId, payload) {
             payload.mode = [payload.mode];
         }
         payload.mode.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.id + '.mode', val.state, true);
+            adapter.setState(`${deviceId}.${val.id}.mode`, val.state, true);
         });
     }
 }
@@ -1653,7 +1680,7 @@ function setValuesLight(deviceId, payload) {
             if (!payload.light.hasOwnProperty(key)) continue;
             if (key === 'channel' || key === 'capacity') continue;
             if (key === 'rgb') payload.light[key] = convertNumberToHex(payload.light[key]);
-            adapter.setState(deviceId + '.' + payload.light.channel + '-' + key, payload.light[key], true);
+            adapter.setState(`${deviceId}.${payload.light.channel}-${key}`, payload.light[key], true);
         }
     }
 }
@@ -1667,9 +1694,9 @@ function setValuesGarageDoor(deviceId, payload) {
         }
         payload.state.forEach((val) => {
             if (val.execute !== 1) {
-                adapter.setState(deviceId + '.' + val.channel + '-garageDoor', !!val.open, true);
+                adapter.setState(`${deviceId}.${val.channel}-garageDoor`, !!val.open, true);
             }
-            adapter.setState(deviceId + '.' + val.channel + '-garageDoorWorking', !!val.execute, true);
+            adapter.setState(`${deviceId}.${val.channel}-garageDoorWorking`, !!val.execute, true);
         });
     }
 }
@@ -1677,7 +1704,7 @@ function setValuesGarageDoor(deviceId, payload) {
 function setValuesToggle(deviceId, payload) {
     // {"toggle":{"onoff":1,"lmTime":1542311107}}
     if (payload && payload.toggle) {
-        adapter.setState(deviceId + '.0-switch', !!payload.toggle.onoff, true);
+        adapter.setState(`${deviceId}.0-switch`, !!payload.toggle.onoff, true);
         pollElectricity(deviceId, 2);
     }
 }
@@ -1690,7 +1717,7 @@ function setValuesElectricity(deviceId, payload) {
             if (!payload.electricity.hasOwnProperty(key)) continue;
             if (key === 'channel') continue;
 
-            adapter.setState(deviceId + '.' + channel + '-' + key, Math.floor(payload.electricity[key] * Math.pow(10, (roleValues[key] ? roleValues[key].scale || 0 : 0)) * 100) / 100, true);
+            adapter.setState(`${deviceId}.${channel}-${key}`, Math.floor(payload.electricity[key] * Math.pow(10, (roleValues[key] ? roleValues[key].scale || 0 : 0)) * 100) / 100, true);
         }
     }
 }
@@ -1707,7 +1734,7 @@ function setValuesDiffuserLight(deviceId, payload) {
                 if (key === 'channel') continue;
                 if (key === 'rgb') light[key] = convertNumberToHex(light[key]);
                 if (key === 'onoff') light[key] = !!light[key];
-                    adapter.setState(deviceId + '.light-' + light.channel + '-' + key, light[key], true);
+                    adapter.setState(`${deviceId}.light-${light.channel}-${key}`, light[key], true);
             }
         });
     }
@@ -1720,7 +1747,7 @@ function setValuesDiffuserSpray(deviceId, payload) {
             payload.spray = [payload.spray];
         }
         payload.spray.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-mode', val.mode, true);
+            adapter.setState(`${deviceId}.${val.channel}-mode`, val.mode, true);
         });
     }
 }
@@ -1732,9 +1759,9 @@ function setValuesRollerShutterState(deviceId, payload) {
             payload.state = [payload.state];
         }
         payload.state.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-up', val.state === 1, true);
-            adapter.setState(deviceId + '.' + val.channel + '-down', val.state === 2, true);
-            adapter.setState(deviceId + '.' + val.channel + '-stop', val.state === 0, true);
+            adapter.setState(`${deviceId}.${val.channel}-up`, val.state === 1, true);
+            adapter.setState(`${deviceId}.${val.channel}-down`, val.state === 2, true);
+            adapter.setState(`${deviceId}.${val.channel}-stop`, val.state === 0, true);
         });
     }
 }
@@ -1746,7 +1773,7 @@ function setValuesRollerShutterPosition(deviceId, payload) {
             payload.position = [payload.position];
         }
         payload.position.forEach((val) => {
-            adapter.setState(deviceId + '.' + val.channel + '-position', val.position, true);
+            adapter.setState(`${deviceId}.${val.channel}-position`, val.position, true);
         });
     }
 }
@@ -1767,7 +1794,7 @@ function setValuesThermostatMode(deviceId, payload) {
                 if (roleValues[key] && roleValues[key].scale !== undefined) {
                     mode[key] = Math.floor(mode[key] * Math.pow(10, roleValues[key].scale) * 100) / 100;
                 }
-                adapter.setState(deviceId + '.' + mode.channel + '-mode-' + key, mode[key], true);
+                adapter.setState(`${deviceId}.${mode.channel}-mode-${key}`, mode[key], true);
             }
         });
     }
@@ -1786,7 +1813,7 @@ function setValuesThermostatWindowOpened(deviceId, payload) {
                 if (key === 'state') {
                     windowOpened[key] = !!windowOpened[key];
                 }
-                adapter.setState(deviceId + '.' + windowOpened.channel + '-windowOpened-' + key, windowOpened[key], true);
+                adapter.setState(`${deviceId}.${windowOpened.channel}-windowOpened-${key}`, windowOpened[key], true);
             }
         });
     }
@@ -1818,19 +1845,19 @@ function main() {
 
     let deviceCount = 0;
     meross.on('deviceInitialized', (deviceId, deviceDef, device) => {
-        adapter.log.info('Device ' + deviceId + ' initialized');
+        adapter.log.info(`Device ${deviceId} initialized`);
         adapter.log.debug(JSON.stringify(deviceDef));
 
         device.on('connected', () => {
-            adapter.log.info('Device: ' + deviceId + ' connected');
+            adapter.log.info(`Device: ${deviceId} connected`);
             if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
             initDevice(deviceId, deviceDef, device, () => {
                 device.getOnlineStatus((err, res) => {
-                    adapter.log.debug('Online ' + deviceId + ': ' + JSON.stringify(res));
+                    adapter.log.debug(`Online ${deviceId}: ${JSON.stringify(res)}`);
                     if (err || !res || !res.online) return;
-                    adapter.setState(deviceId + '.online', (parseInt(res.online.status) === 1), true);
+                    adapter.setState(`${deviceId}.online`, (parseInt(res.online.status) === 1), true);
                 });
 
                 if (!--deviceCount) initDone();
@@ -1840,8 +1867,8 @@ function main() {
         });
 
         device.on('close', (error) => {
-            adapter.log.info('Device: ' + deviceId + ' closed: ' + error);
-            adapter.setState(deviceId + '.online', false, true);
+            adapter.log.info(`Device: ${deviceId} closed: ${error}`);
+            adapter.setState(`${deviceId}.online`, false, true);
             setConnected((--connectedDevices > 0));
             knownDevices[deviceId] = knownDevices[deviceId] || {};
             if (knownDevices[deviceId].electricityPollTimeout) {
@@ -1861,7 +1888,7 @@ function main() {
         });
 
         device.on('error', (error) => {
-            adapter.log.info('Device: ' + deviceId + ' error: ' + error);
+            adapter.log.info(`Device: ${deviceId} error: ${error}`);
             knownDevices[deviceId] = knownDevices[deviceId] || {};
             if (knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
@@ -1875,14 +1902,14 @@ function main() {
         });
 
         device.on('reconnect', () => {
-            adapter.log.info('Device: ' + deviceId + ' reconnected');
+            adapter.log.info(`Device: ${deviceId} reconnected`);
             if (knownDevices[deviceId] && knownDevices[deviceId].reconnectTimeout) {
                 clearTimeout(knownDevices[deviceId].reconnectTimeout);
             }
         });
 
         device.on('data', (namespace, payload) => {
-            adapter.log.debug('Device: ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
+            adapter.log.debug(`Device: ${deviceId} ${namespace} - data: ${JSON.stringify(payload)}`);
             switch(namespace) {
                 case 'Appliance.Control.ToggleX':
                     setValuesToggleX(deviceId, payload);
@@ -1891,13 +1918,13 @@ function main() {
                     setValuesToggle(deviceId, payload);
                     break;
                 case 'Appliance.System.Online':
-                    adapter.setState(deviceId + '.online', (parseInt(payload.online.status) === 1), true);
+                    adapter.setState(`${deviceId}.online`, (parseInt(payload.online.status) === 1), true);
                     break;
                 case 'Appliance.GarageDoor.State':
                     setValuesGarageDoor(deviceId, payload);
                     break;
                 case 'Appliance.System.DNDMode':
-                    adapter.setState(deviceId + '.dnd', !!payload.DNDMode.mode, true);
+                    adapter.setState(`${deviceId}.dnd`, !!payload.DNDMode.mode, true);
                     break;
                 case 'Appliance.Control.Light':
                     setValuesLight(deviceId, payload);
@@ -1943,7 +1970,7 @@ function main() {
                     break;
                 case 'Appliance.Hub.Sensor.WaterLeak':
                     if (payload && payload.waterLeak && payload.waterLeak.length) {
-                        adapter.log.info('Received unknown data ' + namespace + ': ' + JSON.stringify(payload));
+                        adapter.log.info(`Received unknown data ${namespace}: ${JSON.stringify(payload)}`);
                         adapter.log.info('Please send full line from logfile on disk to developer');
                     }
                     break;
@@ -1955,15 +1982,15 @@ function main() {
                     break;
 
                 default:
-                    adapter.log.info('Received unknown data ' + namespace + ': ' + JSON.stringify(payload));
+                    adapter.log.info(`Received unknown data ${namespace}: ${JSON.stringify(payload)}`);
                     adapter.log.info('Please send full line from logfile on disk to developer');
             }
         });
         device.on('rawData', (message) => {
-            adapter.log.debug('Device Raw: ' + deviceId + ' - data: ' + JSON.stringify(message));
+            adapter.log.debug(`Device Raw: ${deviceId} - data: ${JSON.stringify(message)}`);
         });
         device.on('rawSendData', (message) => {
-            adapter.log.debug('Device Send Raw: ' + deviceId + ' - data: ' + JSON.stringify(message));
+            adapter.log.debug(`Device Send Raw: ${deviceId} - data: ${JSON.stringify(message)}`);
         });
 
     });
@@ -1974,7 +2001,7 @@ function main() {
 
     meross.connect((error, count) => {
         if (error) {
-            adapter.log.error('Meross Connection Error: ' + error);
+            adapter.log.error(`Meross Connection Error: ${error}`);
             return;
         }
         deviceCount += count;
