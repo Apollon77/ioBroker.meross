@@ -707,7 +707,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common: {
                     name: name,
                     statusStates: {
-                        onlineId: `${this.namespace}.${deviceId}.${sub.id}.online`
+                        onlineId: `${adapter.namespace}.${deviceId}.${sub.id}.online`
                     }
                 },
                 native: sub
@@ -1159,7 +1159,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
         common: {
             name: deviceDef.devName || `Device ${deviceId}`,
             statusStates: {
-                onlineId: `${this.namespace}.${deviceId}.online`
+                onlineId: `${adapter.namespace}.${deviceId}.online`
             }
         },
         native: deviceDef
