@@ -1244,7 +1244,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
 
     adapter.log.debug(`${deviceId} All-Data: ${JSON.stringify(deviceAllData)}`);
     if (!deviceAllData) {
-        adapter.log.warn(`Can not get Data for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAllData)}`);
+        adapter.log.warn(`Can not get Data for Device ${deviceId}: ${JSON.stringify(deviceAllData)}`);
         reInitDevice()
         objectHelper.processObjectQueue(() => {
             callback && callback();
