@@ -1200,7 +1200,7 @@ async function initDevice(deviceId, deviceDef, device, callback) {
 
     try {
         const knownIpState = await adapter.getStateAsync(`${deviceId}.ip`);
-        if (knownIpState && knownIpState.val !== undefined && knownIpState.val.length) {
+        if (knownIpState && typeof knownIpState.val === 'string' && knownIpState.val.length) {
             device.setKnownLocalIp(knownIpState.val);
             // try to get with known local IP, remove again if not the right one
             device.getSystemAllData((err, deviceAllData) => {
@@ -1244,7 +1244,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
 
     adapter.log.debug(`${deviceId} All-Data: ${JSON.stringify(deviceAllData)}`);
     if (!deviceAllData) {
-        adapter.log.warn(`Can not get Data for Device ${deviceId}: ${JSON.stringify(deviceAllData)}`);
+        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Data for Device ${deviceId}: ${JSON.stringify(deviceAllData)}`);
+        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Data for Device ${deviceId}: ${JSON.stringify(deviceAllData)}`);
         reInitDevice()
         objectHelper.processObjectQueue(() => {
             callback && callback();
@@ -1270,8 +1271,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
     device.getSystemAbilities((err, deviceAbilities) => {
         adapter.log.debug(`${deviceId} Abilities: ${JSON.stringify(deviceAbilities)}`);
         if (err || !deviceAbilities || !deviceAbilities.ability) {
-            adapter.log.warn(`Can not get Abilities for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAbilities)}`);
-            adapter.log.warn(`Can not get Data for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAllData)}`);
+            !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Abilities for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAbilities)}`);
+            knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Abilities for Device ${deviceId}: ${err} / ${JSON.stringify(deviceAbilities)}`);
             reInitDevice()
             objectHelper.processObjectQueue(() => {
                 callback && callback();
@@ -1305,7 +1306,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
 
                     pollElectricity(deviceId);
                 } else {
-                    adapter.log.warn(`Can not get Electricity data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Electricity data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Electricity data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                     reInitDevice()
                 }
                 if (!--objAsyncCount) {
@@ -1325,7 +1327,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                     adapter.log.debug(`${deviceId} DND-Mode: ${JSON.stringify(res)}`);
                     initDeviceObjects(deviceId, deviceDef.channels, res);
                 } else {
-                    adapter.log.warn(`Can not get DNDMode data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get DNDMode data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    knownDevices[deviceId].disabled && adapter.log.debug(`Can not get DNDMode data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                     reInitDevice()
                 }
 
@@ -1422,7 +1425,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         }, val.state === 0, onChangeStop);
                     });
                 } else {
-                    adapter.log.warn(`Can not get Roller/Shutter data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Roller/Shutter data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Roller/Shutter data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                     reInitDevice()
                 }
 
@@ -1456,7 +1460,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         }
                     });
                 } else {
-                    adapter.log.warn(`Can not get Roller/Shutter position data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Roller/Shutter position data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                    knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Roller/Shutter position data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                     reInitDevice()
                 }
 
