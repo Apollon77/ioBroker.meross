@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.10.5",
+    "version": "1.11.0",
     "news": {
+      "1.11.0": {
+        "en": "* (Apollon77) Add online status configuration to show online status in Admin UI\n* (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully",
+        "de": "* (Apollon77) Fügen Sie eine Online-Status-Konfiguration hinzu, um den Online-Status in der Admin-Benutzeroberfläche anzuzeigen\n* (Apollon77) Optimieren Sie die Geräteinitialisierung, um sicherzustellen, dass sie auch beendet wird, wenn nicht alle Geräte erfolgreich initialisiert wurden",
+        "ru": "* (Apollon77) Добавлена конфигурация онлайн-статуса для отображения онлайн-статуса в пользовательском интерфейсе администратора.\n* (Apollon77) Оптимизирована инициализация устройства, чтобы убедиться, что она завершается даже тогда, когда не все устройства успешно инициализированы.",
+        "pt": "* (Apollon77) Adicionar configuração de status online para mostrar o status online na interface do administrador\n* (Apollon77) Otimize a inicialização do dispositivo para garantir que ela termine também quando nem todos os dispositivos forem inicializados com sucesso",
+        "nl": "* (Apollon77) Online statusconfiguratie toevoegen om online status in Admin UI weer te geven\n* (Apollon77) Optimaliseer de apparaatinitialisatie om ervoor te zorgen dat deze ook wordt voltooid als niet alle apparaten met succes zijn geïnitialiseerd",
+        "fr": "* (Apollon77) Ajout de la configuration de l'état en ligne pour afficher l'état en ligne dans l'interface utilisateur d'administration\n* (Apollon77) Optimisez l'initialisation de l'appareil pour vous assurer qu'elle se termine également lorsque tous les appareils ne sont pas initialisés avec succès",
+        "it": "* (Apollon77) Aggiungi la configurazione dello stato online per mostrare lo stato online nell'interfaccia utente di amministrazione\n* (Apollon77) Ottimizza l'inizializzazione del dispositivo per assicurarti che finisca anche se non tutti i dispositivi vengono inizializzati correttamente",
+        "es": "* (Apollon77) Agregar configuración de estado en línea para mostrar el estado en línea en la interfaz de usuario de administración\n* (Apollon77) Optimizar la inicialización del dispositivo para asegurarse de que finalice también cuando no todos los dispositivos se inicialicen correctamente",
+        "pl": "* (Apollon77) Dodaj konfigurację statusu online, aby wyświetlić status online w interfejsie administratora\n* (Apollon77) Zoptymalizuj inicjalizację urządzenia, aby upewnić się, że kończy się ona również wtedy, gdy nie wszystkie urządzenia zostały pomyślnie zainicjowane",
+        "zh-cn": "* (Apollon77) 添加在线状态配置以在管理 UI 中显示在线状态\n* (Apollon77) 优化设备初始化，确保在并非所有设备都初始化成功的情况下也完成"
+      },
       "1.10.5": {
         "en": "Adjust to recent API changes from Meross services",
         "de": "Passen Sie sich an die jüngsten API-Änderungen von Meross-Diensten an",
@@ -74,18 +86,6 @@
         "es": "Optimice Meross Communication para intentar primero comunicarse con el dispositivo localmente antes de enviar datos a MQTT; habilitado de manera predeterminada, ¡puede deshabilitarlo en la configuración!\nOptimice Meross Communication usando solo una conexión MQTT en lugar de una por dispositivo cuando se usa la nube\nAgregar nuevo estado \"deshabilitado\" para ignorar el error de conexión de un dispositivo; las reconexiones aún se intentan, pero no se registra ningún error si no se realiza correctamente\nAgregue soporte para informes de estado en línea desde dispositivos concentradores MTS100\nCerrar sesión automáticamente desde la nube de meross en el extremo del adaptador; el próximo inicio hará un nuevo inicio de sesión\nEliminar automáticamente los dispositivos antiguos si ya no existen (cuando js-controller >=2.2)\nOptimizar el manejo de MTS200",
         "pl": "Zoptymalizuj komunikację Meross, aby najpierw spróbować komunikować się z urządzeniem lokalnie przed wysłaniem danych do MQTT - domyślnie włączone, można je wyłączyć w ustawieniach!\nZoptymalizuj komunikację Meross, używając tylko jednego połączenia MQTT zamiast jednego na urządzenie, gdy używana jest chmura\nDodaj nowy stan „wyłączony”, aby zignorować błąd połączenia urządzenia; próby ponownego połączenia są nadal próbowane, ale w przypadku niepowodzenia żaden błąd nie jest rejestrowany\nDodaj obsługę raportów o stanie online z urządzeń koncentratora MTS100\nAutomatycznie wyloguj się z chmury meross na końcu adaptera; następny start wykona nowe logowanie\nAutomatycznie usuwaj stare urządzenia, jeśli już nie istnieją (gdy js-controller >=2.2)\nZoptymalizuj obsługę MTS200",
         "zh-cn": "优化 Meross 通信，在向 MQTT 发送数据之前先尝试与设备本地通信 - 默认启用，您可以在设置中禁用它！\n使用云时，仅使用一个 MQTT 连接而不是每个设备一个，优化 Meross 通信\n添加新状态“禁用”以忽略设备的连接错误；仍然尝试重新连接，但如果不成功则不会记录错误\n添加对来自 MTS100 集线器设备的在线状态报告的支持\n适配器端自动退出meross云；下一次开始将做一个新的登录\n如果不再存在，则自动删除旧设备（当 js-controller >=2.2 时）\n优化 MTS200 处理"
-      },
-      "1.8.0": {
-        "en": "Add support for MTS200 Wifi Thermostat",
-        "de": "Unterstützung für MTS200 Wifi Thermostat hinzufügen",
-        "ru": "Добавить поддержку термостата MTS200 Wifi",
-        "pt": "Adicionar suporte para termostato Wifi MTS200",
-        "nl": "Ondersteuning toevoegen voor MTS200 Wifi-thermostaat",
-        "fr": "Ajout de la prise en charge du thermostat Wifi MTS200",
-        "it": "Aggiungi il supporto per il termostato Wi-Fi MTS200",
-        "es": "Agregue soporte para el termostato Wifi MTS200",
-        "pl": "Dodaj obsługę termostatu Wifi MTS200",
-        "zh-cn": "添加对 MTS200 Wifi 恒温器的支持"
       }
     },
     "title": "Meross Cloud",
