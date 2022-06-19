@@ -1281,6 +1281,10 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                     write: true,
                 }
             }, [], localConnection, value => {
+                if (adapter.config.noDirectLocalCommunication) {
+                    adapter.log.info(`Can not change local connection for device ${deviceId} because adapter is configured to not use local connections at all!`);
+                    value = false;
+                }
                 if (value) {
                     knownDevices[deviceId].device.setKnownLocalIp(deviceAllData.all.system.firmware.innerIp);
                 } else {
