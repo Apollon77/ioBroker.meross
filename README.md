@@ -48,8 +48,8 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 * (Apollon77) Detect reconnection issues to Meross Cloud and try to handle them better
 
 ### 1.11.0 (2022-06-02)
-** (Apollon77) Add online status configuration to show online status in Admin UI
-** (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully
+* (Apollon77) Add online status configuration to show online status in Admin UI
+* (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully
 
 ### 1.10.5 (2022-04-14)
 * (Apollon77) Adjust to recent API changes from Meross services
