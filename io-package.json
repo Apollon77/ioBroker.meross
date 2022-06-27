@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.12.0",
+    "version": "1.12.1",
     "news": {
+      "1.12.1": {
+        "en": "prevent crash case reported by Sentry",
+        "de": "verhindern Unfallfall gemeldet von Sentry",
+        "ru": "предотвратить случай аварии сообщается в Sentry",
+        "pt": "prevenir caso de acidente relatado por Sentry",
+        "nl": "vertaling:",
+        "fr": "prévenir les accidents signalés par Sentry",
+        "it": "prevenire il caso di crash segnalato da Sentry",
+        "es": "caso de emergencia reportado por Sentry",
+        "pl": "przypadek zapobiegania katastrofie",
+        "zh-cn": "防止Sentry所报告的事故"
+      },
       "1.12.0": {
         "en": "Add new state to allow controlling whether to connect locally first or not for each device (but global setting takes precedence if set there to never use local connection!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
         "de": "Fügen Sie neuen Zustand hinzu, um zu steuern, ob lokal zuerst oder nicht für jedes Gerät zu verbinden (aber globale Einstellung nimmt Vorrang, wenn es gesetzt, um nie lokale Verbindung verwenden!)\nErkennen Sie Reconnection Probleme mit Meross Cloud und versuchen Sie, sie besser zu handhaben",
@@ -74,18 +86,6 @@
         "es": "Configure correctamente el indicador garageDoorWorking después de iniciar una acción de control",
         "pl": "Poprawnie ustawić flagę GarażDoorPraca po uruchomieniu akcji kontrolnej",
         "zh-cn": "开始控制动作后正确设置garageDoorWorking标志"
-      },
-      "1.10.1": {
-        "en": "Fix pot. crash case",
-        "de": "Topf fixieren. Crash-Fall",
-        "ru": "Починить горшок. аварийный случай",
-        "pt": "Conserte o pote. caso de acidente",
-        "nl": "Pot repareren. crashgeval",
-        "fr": "Casserole fixe. cas d'accident",
-        "it": "Riparare la pentola. caso di incidente",
-        "es": "Arreglar olla. caso de accidente",
-        "pl": "Napraw garnek. wypadek wypadku",
-        "zh-cn": "修锅。车祸案例"
       }
     },
     "title": "Meross Cloud",
