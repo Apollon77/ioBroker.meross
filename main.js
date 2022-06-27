@@ -2037,6 +2037,10 @@ function main() {
         adapter.log.debug('Device(2): ' + deviceId + ' ' + namespace + ' - data: ' + JSON.stringify(payload));
     });*/
 
+    meross.on('error', (error, deviceId) => {
+        adapter.log.info(`Device: ${deviceId || 'general'} error: ${error}`);
+    });
+
     meross.connect((error, count) => {
         if (error) {
             adapter.log.error(`Meross Connection Error: ${error}`);
