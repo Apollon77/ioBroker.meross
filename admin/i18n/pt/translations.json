@@ -4,5 +4,7 @@
     "User": "Nome do usuário",
     "electricityPollingInterval": "Intervalo de pesquisa para valores de eletricidade",
     "electricityPollingIntervalInfo": "Verifique se o intervalo de pesquisa não é muito curto porque o Meross pode desativar a funcionalidade de nuvem dos dispositivos. Ter um valor menor que 15s é arriscado.",
-    "noDirectLocalCommunication": "Sem comunicação local - sempre use a nuvem"
+    "noDirectLocalCommunication": "Sem comunicação local - sempre use a nuvem",
+    "onlyLocalCommunicationToQueryData": "Apenas comunicação local para consultar dados",
+    "onlyLocalCommunicationToQueryDataInfo": "(relevante apenas quando a comunicação local é usada)"
 }

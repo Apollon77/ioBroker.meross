@@ -4,5 +4,7 @@
     "User": "Benutzername",
     "electricityPollingInterval": "Abfrageintervall für Stromwerte",
     "electricityPollingIntervalInfo": "Es sollte sichergestellt werden dass das Abfrageintervall nicht zu kurz ist, da Meross die Cloud-Funktionalität der Geräte deaktivieren kann. Ein kleinerer Wert als 15s ist riskant.",
-    "noDirectLocalCommunication": "Keine lokale Kommunikation - immer Cloud nutzen"
+    "noDirectLocalCommunication": "Keine lokale Kommunikation - immer Cloud nutzen",
+    "onlyLocalCommunicationToQueryData": "Nur lokale Kommunikation zur Datenabfrage",
+    "onlyLocalCommunicationToQueryDataInfo": "(nur relevant, wenn lokale Kommunikation verwendet wird)"
 }

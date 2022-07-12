@@ -1209,8 +1209,12 @@ async function initDevice(deviceId, deviceDef, device, callback) {
                 if (!err && deviceAllData && deviceAllData.all && deviceAllData.all.system && deviceAllData.all.system.hardware && deviceAllData.all.system.hardware.uuid === deviceId) {
                     initDeviceData(deviceId, deviceDef, device, deviceAllData, callback);
                 } else {
-                    adapter.log.debug(`Device ${deviceId} local IP seems incorrect ... retry via cloud: ${err}`);
-                    device.removeKnownLocalIp();
+                    if (!adapter.config.onlyLocalCommunicationToQueryData) {
+                        adapter.log.debug(`Device ${deviceId} local IP seems incorrect ... retry via cloud: ${err}`);
+                        device.removeKnownLocalIp();
+                    } else {
+                        adapter.log.debug(`Device ${deviceId} locally unreachable? ... retry once more: ${err}`);
+                    }
                     device.getSystemAllData((err, deviceAllData) => {
                         !knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.info(`Can not get Data for Device ${deviceId}: ${err}`);
                         knownDevices[deviceId].disabled && (err || !deviceAllData) && adapter.log.debug(`Can not get Data for Device ${deviceId}: ${err}`);
@@ -1539,7 +1543,7 @@ function initDone() {
 
 function pollElectricity(deviceId, delay) {
     if (!knownDevices[deviceId].deviceAbilities || !knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
-    if (!delay) delay = adapter.config.electricityPollingInterval || 20;
+    if (!delay) delay = adapter.config.electricityPollingInterval || 30;
     if (knownDevices[deviceId].electricityPollTimeout) {
         adapter.log.debug(`${deviceId} Electricity schedule cleared`);
         clearTimeout(knownDevices[deviceId].electricityPollTimeout);
@@ -1868,14 +1872,15 @@ function main() {
     }
 
     adapter.config.electricityPollingInterval = parseInt(adapter.config.electricityPollingInterval, 10) || 30;
-    if (!adapter.config.electricityPollingIntervalReChecked) {
+    if ((!adapter.config.electricityPollingIntervalReChecked || adapter.config.noDirectLocalCommunication) && adapter.config.electricityPollingInterval < 30) {
         adapter.config.electricityPollingInterval = 30;
     }
     const options = {
         email: adapter.config.user,
         password: adapter.config.password,
         logger: adapter.log.debug,
-        localHttpFirst: !adapter.config.noDirectLocalCommunication
+        localHttpFirst: !adapter.config.noDirectLocalCommunication,
+        onlyLocalForGet: adapter.config.onlyLocalCommunicationToQueryData,
     };
 
     meross = new MerossCloud(options);

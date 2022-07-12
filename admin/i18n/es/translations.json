@@ -4,5 +4,7 @@
     "User": "Nombre de usuario",
     "electricityPollingInterval": "Intervalo de sondeo para valores de electricidad.",
     "electricityPollingIntervalInfo": "Asegúrese de que el intervalo de sondeo no sea demasiado corto porque Meross puede deshabilitar la funcionalidad en la nube de los dispositivos. Tener un valor menor que 15s es arriesgado.",
-    "noDirectLocalCommunication": "Sin comunicación local: utilice siempre la nube"
+    "noDirectLocalCommunication": "Sin comunicación local: utilice siempre la nube",
+    "onlyLocalCommunicationToQueryData": "Solo comunicación local para consultar datos",
+    "onlyLocalCommunicationToQueryDataInfo": "(solo relevante cuando se utiliza la comunicación local)"
 }

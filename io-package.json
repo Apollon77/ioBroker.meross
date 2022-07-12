@@ -1,189 +1,190 @@
 {
-  "common": {
-    "name": "meross",
-    "version": "1.12.2",
-    "news": {
-      "1.12.2": {
-        "en": "prevent crash case reported by Sentry",
-        "de": "verhindern Unfallfall gemeldet von Sentry",
-        "ru": "предотвратить случай аварии сообщается в Sentry",
-        "pt": "prevenir caso de acidente relatado por Sentry",
-        "nl": "vertaling:",
-        "fr": "prévenir les accidents signalés par Sentry",
-        "it": "prevenire il caso di crash segnalato da Sentry",
-        "es": "caso de emergencia reportado por Sentry",
-        "pl": "przypadek zapobiegania katastrofie",
-        "zh-cn": "防止Sentry所报告的事故"
-      },
-      "1.12.1": {
-        "en": "prevent crash case reported by Sentry",
-        "de": "verhindern Unfallfall gemeldet von Sentry",
-        "ru": "предотвратить случай аварии сообщается в Sentry",
-        "pt": "prevenir caso de acidente relatado por Sentry",
-        "nl": "vertaling:",
-        "fr": "prévenir les accidents signalés par Sentry",
-        "it": "prevenire il caso di crash segnalato da Sentry",
-        "es": "caso de emergencia reportado por Sentry",
-        "pl": "przypadek zapobiegania katastrofie",
-        "zh-cn": "防止Sentry所报告的事故"
-      },
-      "1.12.0": {
-        "en": "Add new state to allow controlling whether to connect locally first or not for each device (but global setting takes precedence if set there to never use local connection!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
-        "de": "Fügen Sie neuen Zustand hinzu, um zu steuern, ob lokal zuerst oder nicht für jedes Gerät zu verbinden (aber globale Einstellung nimmt Vorrang, wenn es gesetzt, um nie lokale Verbindung verwenden!)\nErkennen Sie Reconnection Probleme mit Meross Cloud und versuchen Sie, sie besser zu handhaben",
-        "ru": "Добавьте новое государство, чтобы позволить контролировать, подключается ли локально во-первых или не для каждого устройства (но глобальная настройка занимает приоритет, если установить там, чтобы никогда не использовать местное соединение!)\nОбнаружить проблемы повторного подключения к Meross Cloud и попытаться справиться с ними лучше",
-        "pt": "Adicionar novo estado para permitir controlar se conectar localmente primeiro ou não para cada dispositivo (mas configuração global tem precedência se definido lá para nunca usar conexão local!)\nDetectar problemas de reconexão para Meross Cloud e tentar lidar com eles melhor",
-        "nl": "Voeg nieuwe staat toe om de controle te laten over het verbinden van de eerste plaats of niet voor elk apparaat... maar de wereldwijde setting neemt voorrang op als ze daar nooit lokale verbinding gebruiken\nVerwijderingsproblemen aan Meross Cloud en probeer ze beter te behandelen",
-        "fr": "Ajouter un nouvel état pour permettre le contrôle de se connecter localement d'abord ou non pour chaque appareil (mais le réglage global a préséance si fixé là pour ne jamais utiliser de connexion locale!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
-        "it": "Aggiungi nuovo stato per consentire di controllare se collegare localmente prima o non per ogni dispositivo (ma l'impostazione globale ha la precedenza se impostato lì per non utilizzare mai la connessione locale!)\nRileva i problemi di riconnessione a Meross Cloud e cerca di gestirli meglio",
-        "es": "Añadir nuevo estado para permitir controlar si conectar localmente primero o no para cada dispositivo (pero el entorno global tiene precedencia si se establece allí para nunca utilizar la conexión local!)\nDetectar problemas de reconexión a Meross Cloud y tratar de manejarlos mejor",
-        "pl": "Nowy stan pozwala kontrolować, czy łączyć lokalnie pierwsze lub nie dla każdego urządzenia (ale globalne ustawienie jest precedensowe, jeśli nie będzie korzystać z połączenia)\nDetektyw przejmuje problem z Merossem i stara się ich lepiej wykorzystać",
-        "zh-cn": "增加新的国家,以便控制是否在当地首先或并非每个装置连接(但如果规定从未使用当地联系!)\n将问题重新连接到Meoss Cloud,并设法更好地处理这些问题"
-      },
-      "1.11.0": {
-        "en": "* (Apollon77) Add online status configuration to show online status in Admin UI\n* (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully",
-        "de": "* (Apollon77) Fügen Sie eine Online-Status-Konfiguration hinzu, um den Online-Status in der Admin-Benutzeroberfläche anzuzeigen\n* (Apollon77) Optimieren Sie die Geräteinitialisierung, um sicherzustellen, dass sie auch beendet wird, wenn nicht alle Geräte erfolgreich initialisiert wurden",
-        "ru": "* (Apollon77) Добавлена конфигурация онлайн-статуса для отображения онлайн-статуса в пользовательском интерфейсе администратора.\n* (Apollon77) Оптимизирована инициализация устройства, чтобы убедиться, что она завершается даже тогда, когда не все устройства успешно инициализированы.",
-        "pt": "* (Apollon77) Adicionar configuração de status online para mostrar o status online na interface do administrador\n* (Apollon77) Otimize a inicialização do dispositivo para garantir que ela termine também quando nem todos os dispositivos forem inicializados com sucesso",
-        "nl": "* (Apollon77) Online statusconfiguratie toevoegen om online status in Admin UI weer te geven\n* (Apollon77) Optimaliseer de apparaatinitialisatie om ervoor te zorgen dat deze ook wordt voltooid als niet alle apparaten met succes zijn geïnitialiseerd",
-        "fr": "* (Apollon77) Ajout de la configuration de l'état en ligne pour afficher l'état en ligne dans l'interface utilisateur d'administration\n* (Apollon77) Optimisez l'initialisation de l'appareil pour vous assurer qu'elle se termine également lorsque tous les appareils ne sont pas initialisés avec succès",
-        "it": "* (Apollon77) Aggiungi la configurazione dello stato online per mostrare lo stato online nell'interfaccia utente di amministrazione\n* (Apollon77) Ottimizza l'inizializzazione del dispositivo per assicurarti che finisca anche se non tutti i dispositivi vengono inizializzati correttamente",
-        "es": "* (Apollon77) Agregar configuración de estado en línea para mostrar el estado en línea en la interfaz de usuario de administración\n* (Apollon77) Optimizar la inicialización del dispositivo para asegurarse de que finalice también cuando no todos los dispositivos se inicialicen correctamente",
-        "pl": "* (Apollon77) Dodaj konfigurację statusu online, aby wyświetlić status online w interfejsie administratora\n* (Apollon77) Zoptymalizuj inicjalizację urządzenia, aby upewnić się, że kończy się ona również wtedy, gdy nie wszystkie urządzenia zostały pomyślnie zainicjowane",
-        "zh-cn": "* (Apollon77) 添加在线状态配置以在管理 UI 中显示在线状态\n* (Apollon77) 优化设备初始化，确保在并非所有设备都初始化成功的情况下也完成"
-      },
-      "1.10.5": {
-        "en": "Adjust to recent API changes from Meross services",
-        "de": "Passen Sie sich an die jüngsten API-Änderungen von Meross-Diensten an",
-        "ru": "Приспособиться к последним изменениям API от сервисов Meross",
-        "pt": "Ajuste às alterações recentes da API dos serviços Meross",
-        "nl": "Aanpassen aan recente API-wijzigingen van Meross-services",
-        "fr": "S'adapter aux modifications récentes de l'API des services Meross",
-        "it": "Adeguarsi alle recenti modifiche API dai servizi Meross",
-        "es": "Ajuste a los cambios recientes de API de los servicios de Meross",
-        "pl": "Dostosuj się do ostatnich zmian API z usług Meross",
-        "zh-cn": "根据 Meross 服务最近的 API 变化进行调整"
-      },
-      "1.10.4": {
-        "en": "Add battery value for ms100 devices in hub if supported",
-        "de": "Batteriewert für ms100-Geräte im Hub hinzufügen, falls unterstützt",
-        "ru": "Добавьте значение батареи для устройств ms100 в концентраторе, если поддерживается",
-        "pt": "Adicione o valor da bateria para dispositivos ms100 no hub, se suportado",
-        "nl": "Voeg batterijwaarde toe voor ms100-apparaten in hub, indien ondersteund",
-        "fr": "Ajouter la valeur de la batterie pour les appareils ms100 dans le hub si pris en charge",
-        "it": "Aggiungi il valore della batteria per i dispositivi ms100 nell'hub, se supportato",
-        "es": "Agregar valor de batería para dispositivos ms100 en el concentrador si es compatible",
-        "pl": "Dodaj wartość baterii dla urządzeń ms100 w hubie, jeśli jest obsługiwana",
-        "zh-cn": "如果支持，为集线器中的 ms100 设备添加电池值"
-      },
-      "1.10.3": {
-        "en": "Fix switch state for thermostats",
-        "de": "Schaltzustand für Thermostate fixieren",
-        "ru": "Исправить состояние переключателя для термостатов",
-        "pt": "Corrigir o estado do interruptor para termostatos",
-        "nl": "Schakelstatus voor thermostaten repareren",
-        "fr": "Correction de l'état du commutateur pour les thermostats",
-        "it": "Correzione dello stato dell'interruttore per i termostati",
-        "es": "Arreglar el estado del interruptor para los termostatos",
-        "pl": "Napraw stan przełącznika dla termostatów",
-        "zh-cn": "修复恒温器的开关状态"
-      }
+    "common": {
+        "name": "meross",
+        "version": "1.12.2",
+        "news": {
+            "1.12.2": {
+                "en": "prevent crash case reported by Sentry",
+                "de": "verhindern Unfallfall gemeldet von Sentry",
+                "ru": "предотвратить случай аварии сообщается в Sentry",
+                "pt": "prevenir caso de acidente relatado por Sentry",
+                "nl": "vertaling:",
+                "fr": "prévenir les accidents signalés par Sentry",
+                "it": "prevenire il caso di crash segnalato da Sentry",
+                "es": "caso de emergencia reportado por Sentry",
+                "pl": "przypadek zapobiegania katastrofie",
+                "zh-cn": "防止Sentry所报告的事故"
+            },
+            "1.12.1": {
+                "en": "prevent crash case reported by Sentry",
+                "de": "verhindern Unfallfall gemeldet von Sentry",
+                "ru": "предотвратить случай аварии сообщается в Sentry",
+                "pt": "prevenir caso de acidente relatado por Sentry",
+                "nl": "vertaling:",
+                "fr": "prévenir les accidents signalés par Sentry",
+                "it": "prevenire il caso di crash segnalato da Sentry",
+                "es": "caso de emergencia reportado por Sentry",
+                "pl": "przypadek zapobiegania katastrofie",
+                "zh-cn": "防止Sentry所报告的事故"
+            },
+            "1.12.0": {
+                "en": "Add new state to allow controlling whether to connect locally first or not for each device (but global setting takes precedence if set there to never use local connection!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
+                "de": "Fügen Sie neuen Zustand hinzu, um zu steuern, ob lokal zuerst oder nicht für jedes Gerät zu verbinden (aber globale Einstellung nimmt Vorrang, wenn es gesetzt, um nie lokale Verbindung verwenden!)\nErkennen Sie Reconnection Probleme mit Meross Cloud und versuchen Sie, sie besser zu handhaben",
+                "ru": "Добавьте новое государство, чтобы позволить контролировать, подключается ли локально во-первых или не для каждого устройства (но глобальная настройка занимает приоритет, если установить там, чтобы никогда не использовать местное соединение!)\nОбнаружить проблемы повторного подключения к Meross Cloud и попытаться справиться с ними лучше",
+                "pt": "Adicionar novo estado para permitir controlar se conectar localmente primeiro ou não para cada dispositivo (mas configuração global tem precedência se definido lá para nunca usar conexão local!)\nDetectar problemas de reconexão para Meross Cloud e tentar lidar com eles melhor",
+                "nl": "Voeg nieuwe staat toe om de controle te laten over het verbinden van de eerste plaats of niet voor elk apparaat... maar de wereldwijde setting neemt voorrang op als ze daar nooit lokale verbinding gebruiken\nVerwijderingsproblemen aan Meross Cloud en probeer ze beter te behandelen",
+                "fr": "Ajouter un nouvel état pour permettre le contrôle de se connecter localement d'abord ou non pour chaque appareil (mais le réglage global a préséance si fixé là pour ne jamais utiliser de connexion locale!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
+                "it": "Aggiungi nuovo stato per consentire di controllare se collegare localmente prima o non per ogni dispositivo (ma l'impostazione globale ha la precedenza se impostato lì per non utilizzare mai la connessione locale!)\nRileva i problemi di riconnessione a Meross Cloud e cerca di gestirli meglio",
+                "es": "Añadir nuevo estado para permitir controlar si conectar localmente primero o no para cada dispositivo (pero el entorno global tiene precedencia si se establece allí para nunca utilizar la conexión local!)\nDetectar problemas de reconexión a Meross Cloud y tratar de manejarlos mejor",
+                "pl": "Nowy stan pozwala kontrolować, czy łączyć lokalnie pierwsze lub nie dla każdego urządzenia (ale globalne ustawienie jest precedensowe, jeśli nie będzie korzystać z połączenia)\nDetektyw przejmuje problem z Merossem i stara się ich lepiej wykorzystać",
+                "zh-cn": "增加新的国家,以便控制是否在当地首先或并非每个装置连接(但如果规定从未使用当地联系!)\n将问题重新连接到Meoss Cloud,并设法更好地处理这些问题"
+            },
+            "1.11.0": {
+                "en": "* (Apollon77) Add online status configuration to show online status in Admin UI\n* (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully",
+                "de": "* (Apollon77) Fügen Sie eine Online-Status-Konfiguration hinzu, um den Online-Status in der Admin-Benutzeroberfläche anzuzeigen\n* (Apollon77) Optimieren Sie die Geräteinitialisierung, um sicherzustellen, dass sie auch beendet wird, wenn nicht alle Geräte erfolgreich initialisiert wurden",
+                "ru": "* (Apollon77) Добавлена конфигурация онлайн-статуса для отображения онлайн-статуса в пользовательском интерфейсе администратора.\n* (Apollon77) Оптимизирована инициализация устройства, чтобы убедиться, что она завершается даже тогда, когда не все устройства успешно инициализированы.",
+                "pt": "* (Apollon77) Adicionar configuração de status online para mostrar o status online na interface do administrador\n* (Apollon77) Otimize a inicialização do dispositivo para garantir que ela termine também quando nem todos os dispositivos forem inicializados com sucesso",
+                "nl": "* (Apollon77) Online statusconfiguratie toevoegen om online status in Admin UI weer te geven\n* (Apollon77) Optimaliseer de apparaatinitialisatie om ervoor te zorgen dat deze ook wordt voltooid als niet alle apparaten met succes zijn geïnitialiseerd",
+                "fr": "* (Apollon77) Ajout de la configuration de l'état en ligne pour afficher l'état en ligne dans l'interface utilisateur d'administration\n* (Apollon77) Optimisez l'initialisation de l'appareil pour vous assurer qu'elle se termine également lorsque tous les appareils ne sont pas initialisés avec succès",
+                "it": "* (Apollon77) Aggiungi la configurazione dello stato online per mostrare lo stato online nell'interfaccia utente di amministrazione\n* (Apollon77) Ottimizza l'inizializzazione del dispositivo per assicurarti che finisca anche se non tutti i dispositivi vengono inizializzati correttamente",
+                "es": "* (Apollon77) Agregar configuración de estado en línea para mostrar el estado en línea en la interfaz de usuario de administración\n* (Apollon77) Optimizar la inicialización del dispositivo para asegurarse de que finalice también cuando no todos los dispositivos se inicialicen correctamente",
+                "pl": "* (Apollon77) Dodaj konfigurację statusu online, aby wyświetlić status online w interfejsie administratora\n* (Apollon77) Zoptymalizuj inicjalizację urządzenia, aby upewnić się, że kończy się ona również wtedy, gdy nie wszystkie urządzenia zostały pomyślnie zainicjowane",
+                "zh-cn": "* (Apollon77) 添加在线状态配置以在管理 UI 中显示在线状态\n* (Apollon77) 优化设备初始化，确保在并非所有设备都初始化成功的情况下也完成"
+            },
+            "1.10.5": {
+                "en": "Adjust to recent API changes from Meross services",
+                "de": "Passen Sie sich an die jüngsten API-Änderungen von Meross-Diensten an",
+                "ru": "Приспособиться к последним изменениям API от сервисов Meross",
+                "pt": "Ajuste às alterações recentes da API dos serviços Meross",
+                "nl": "Aanpassen aan recente API-wijzigingen van Meross-services",
+                "fr": "S'adapter aux modifications récentes de l'API des services Meross",
+                "it": "Adeguarsi alle recenti modifiche API dai servizi Meross",
+                "es": "Ajuste a los cambios recientes de API de los servicios de Meross",
+                "pl": "Dostosuj się do ostatnich zmian API z usług Meross",
+                "zh-cn": "根据 Meross 服务最近的 API 变化进行调整"
+            },
+            "1.10.4": {
+                "en": "Add battery value for ms100 devices in hub if supported",
+                "de": "Batteriewert für ms100-Geräte im Hub hinzufügen, falls unterstützt",
+                "ru": "Добавьте значение батареи для устройств ms100 в концентраторе, если поддерживается",
+                "pt": "Adicione o valor da bateria para dispositivos ms100 no hub, se suportado",
+                "nl": "Voeg batterijwaarde toe voor ms100-apparaten in hub, indien ondersteund",
+                "fr": "Ajouter la valeur de la batterie pour les appareils ms100 dans le hub si pris en charge",
+                "it": "Aggiungi il valore della batteria per i dispositivi ms100 nell'hub, se supportato",
+                "es": "Agregar valor de batería para dispositivos ms100 en el concentrador si es compatible",
+                "pl": "Dodaj wartość baterii dla urządzeń ms100 w hubie, jeśli jest obsługiwana",
+                "zh-cn": "如果支持，为集线器中的 ms100 设备添加电池值"
+            },
+            "1.10.3": {
+                "en": "Fix switch state for thermostats",
+                "de": "Schaltzustand für Thermostate fixieren",
+                "ru": "Исправить состояние переключателя для термостатов",
+                "pt": "Corrigir o estado do interruptor para termostatos",
+                "nl": "Schakelstatus voor thermostaten repareren",
+                "fr": "Correction de l'état du commutateur pour les thermostats",
+                "it": "Correzione dello stato dell'interruttore per i termostati",
+                "es": "Arreglar el estado del interruptor para los termostatos",
+                "pl": "Napraw stan przełącznika dla termostatów",
+                "zh-cn": "修复恒温器的开关状态"
+            }
+        },
+        "title": "Meross Cloud",
+        "titleLang": {
+            "en": "Meross Cloud",
+            "de": "Meross Cloud",
+            "ru": "Meross Cloud",
+            "pt": "Meross Cloud",
+            "nl": "Meross Cloud",
+            "fr": "Meross Cloud",
+            "it": "Meross Cloud",
+            "es": "Meross Cloud",
+            "pl": "Meross Cloud",
+            "zh-cn": "美洛斯云"
+        },
+        "desc": {
+            "en": "support for Meross Wifi devices",
+            "de": "Unterstützung für Meross Wifi-Geräte",
+            "ru": "поддержка устройств Meross Wifi",
+            "pt": "suporte para dispositivos Wifi Meross",
+            "nl": "ondersteuning voor Meross Wifi-apparaten",
+            "fr": "support pour les appareils Meross Wifi",
+            "it": "supporto per i dispositivi Meross Wifi",
+            "es": "soporte para dispositivos wifi Meross",
+            "pl": "obsługa urządzeń Wi-Fi firmy Meross",
+            "zh-cn": "支持Meross Wifi设备"
+        },
+        "authors": [
+            "Apollon77 <ingo@fischer-ka.de>"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "icon": "meross.png",
+        "materialize": true,
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
+        "keywords": [
+            "Meross"
+        ],
+        "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
+        "loglevel": "info",
+        "type": "iot-systems",
+        "stopTimeout": 5000,
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "tier": 2,
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
+                "pathWhitelist": [
+                    "@apollon",
+                    "meross-cloud"
+                ]
+            }
+        }
     },
-    "title": "Meross Cloud",
-    "titleLang": {
-      "en": "Meross Cloud",
-      "de": "Meross Cloud",
-      "ru": "Meross Cloud",
-      "pt": "Meross Cloud",
-      "nl": "Meross Cloud",
-      "fr": "Meross Cloud",
-      "it": "Meross Cloud",
-      "es": "Meross Cloud",
-      "pl": "Meross Cloud",
-      "zh-cn": "美洛斯云"
-    },
-    "desc": {
-      "en": "support for Meross Wifi devices",
-      "de": "Unterstützung für Meross Wifi-Geräte",
-      "ru": "поддержка устройств Meross Wifi",
-      "pt": "suporte para dispositivos Wifi Meross",
-      "nl": "ondersteuning voor Meross Wifi-apparaten",
-      "fr": "support pour les appareils Meross Wifi",
-      "it": "supporto per i dispositivi Meross Wifi",
-      "es": "soporte para dispositivos wifi Meross",
-      "pl": "obsługa urządzeń Wi-Fi firmy Meross",
-      "zh-cn": "支持Meross Wifi设备"
-    },
-    "authors": [
-      "Apollon77 <ingo@fischer-ka.de>"
+    "encryptedNative": [
+        "password"
     ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "mode": "daemon",
-    "icon": "meross.png",
-    "materialize": true,
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
-    "keywords": [
-      "Meross"
+    "protectedNative": [
+        "password"
     ],
-    "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
-    "loglevel": "info",
-    "type": "iot-systems",
-    "stopTimeout": 5000,
-    "compact": true,
-    "connectionType": "cloud",
-    "dataSource": "push",
-    "tier": 2,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
-        "pathWhitelist": [
-          "@apollon",
-          "meross-cloud"
-        ]
-      }
-    }
-  },
-  "encryptedNative": [
-    "password"
-  ],
-  "protectedNative": [
-    "password"
-  ],
-  "native": {
-    "user": "",
-    "password": "",
-    "electricityPollingInterval": 30,
-    "electricityPollingIntervalReChecked": false,
-    "noDirectLocalCommunication": false
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
+    "native": {
+        "user": "",
+        "password": "",
+        "electricityPollingInterval": 30,
+        "electricityPollingIntervalReChecked": false,
+        "noDirectLocalCommunication": false,
+        "onlyLocalCommunicationToQueryData": true
     },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to Meross Cloud",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to Meross Cloud",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }
