@@ -701,6 +701,8 @@ function initDeviceObjects(deviceId, channels, data) {
                 name += ' MTS100v3';
             } else if (sub.ms100) {
                 name += ' MS100';
+            } else if (sub.smokeAlarm) {
+                name += ' SmokeAlarm';
             }
             objectHelper.setOrUpdateObject(`${deviceId}.${sub.id}`, {
                 type: 'channel',
@@ -725,35 +727,36 @@ function initDeviceObjects(deviceId, channels, data) {
 
             objs.push(common);
 
-            common = {};
-            common.type = 'boolean';
-            common.read = true;
-            common.write = true;
-            common.name = 'switch';
-            common.role = defineRole(common);
-            common.id = `${sub.id}.${common.name}`;
-            values[common.id] = !!sub.onoff;
+            if (sub.onoff !== undefined) {
+                common = {};
+                common.type = 'boolean';
+                common.read = true;
+                common.write = true;
+                common.name = 'switch';
+                common.role = defineRole(common);
+                common.id = `${sub.id}.${common.name}`;
+                values[common.id] = !!sub.onoff;
 
-            common.onChange = (value) => {
-                if (!knownDevices[deviceId].device) {
-                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
-                    return;
-                }
+                common.onChange = (value) => {
+                    if (!knownDevices[deviceId].device) {
+                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
+                        return;
+                    }
 
-                knownDevices[deviceId].device.controlHubToggleX(sub.id, (value ? 1 : 0), (err, res) => {
-                    adapter.log.debug(`Hub-ToggleX Response: err: ${err}, res: ${JSON.stringify(res)}`);
-                    adapter.log.debug(`${deviceId}.${sub.id}.switch: set value ${value}`);
+                    knownDevices[deviceId].device.controlHubToggleX(sub.id, (value ? 1 : 0), (err, res) => {
+                        adapter.log.debug(`Hub-ToggleX Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                        adapter.log.debug(`${deviceId}.${sub.id}.switch: set value ${value}`);
 
-                    knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
-                        if (res && res.all && res.all[0] && res.all[0].togglex) {
-                            res.all[0].togglex.id = sub.id;
-                            setValuesHubToggleX(deviceId, res.all[0]);
-                        }
+                        knownDevices[deviceId].device.getMts100All([sub.id], (err, res) => {
+                            if (res && res.all && res.all[0] && res.all[0].togglex) {
+                                res.all[0].togglex.id = sub.id;
+                                setValuesHubToggleX(deviceId, res.all[0]);
+                            }
+                        });
                     });
-                });
-            };
-
-            objs.push(common);
+                };
+                objs.push(common);
+            }
 
             if (sub.mts100 || sub.mts100v3 || sub.mts150) {
                 common = {};
@@ -970,6 +973,27 @@ function initDeviceObjects(deviceId, channels, data) {
                         }
                     });
                 }
+            } else if (sub.smokeAlarm) {
+                common = {};
+                common.type = 'number';
+                common.read = true;
+                common.write = false;
+                common.name = 'status';
+                common.states =  {170: 'OK', 23: 'TEST', 25: 'ALARM'}
+                common.role = defineRole(common);
+                common.id = `${sub.id}.${common.name}`;
+                values[common.id] = sub.smokeAlarm.status
+                objs.push(common);
+
+                common = {};
+                common.type = 'boolean';
+                common.read = true;
+                common.write = false;
+                common.name = 'alarm';
+                common.role = 'sensor.alarm.fire';
+                common.id = `${sub.id}.${common.name}`;
+                values[common.id] = sub.smokeAlarm.status === 25
+                objs.push(common);
             }
 
             if (knownDevices[deviceId].deviceAbilities && knownDevices[deviceId].deviceAbilities.ability['Appliance.Hub.Battery']) {
@@ -1842,6 +1866,19 @@ function setValuesThermostatMode(deviceId, payload) {
     }
 }
 
+function setValuesHubSmokeSensor(deviceId, payload) {
+    // {"smokeAlarm":[{"status":170,"id":"2800BF0A69B5"}]}
+    if (payload && payload.smokeAlarm) {
+        if (!Array.isArray(payload.smokeAlarm)) {
+            payload.smokeAlarm = [payload.smokeAlarm];
+        }
+        payload.smokeAlarm.forEach((val) => {
+            adapter.setState(`${deviceId}.${val.id}.status`, val.status, true);
+            adapter.setState(`${deviceId}.${val.id}.alarm`, val.status === 25, true);
+        });
+    }
+}
+
 function setValuesThermostatWindowOpened(deviceId, payload) {
     // ??
     if (payload && payload.windowOpened) {
@@ -2004,6 +2041,9 @@ function main() {
                     break;
                 case 'Appliance.Hub.Sensor.TempHum':
                     setValuesHubMts100TempHum(deviceId, payload);
+                    break;
+                case 'Appliance.Hub.Sensor.Smoke':
+                    setValuesHubSmokeSensor(deviceId, payload);
                     break;
                 case 'Appliance.Control.Thermostat.Mode':
                     setValuesThermostatMode(deviceId, payload);
