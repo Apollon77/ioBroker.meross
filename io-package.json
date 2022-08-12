@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.13.0",
+    "version": "1.14.0",
     "news": {
+      "1.14.0": {
+        "en": "Add Smoke Sensor",
+        "de": "Smoke Sensor hinzufügen",
+        "ru": "Добавить датчик дыма",
+        "pt": "Adicionar Sensor de fumaça",
+        "nl": "Voeg Smoke Sensor",
+        "fr": "Ajouter Senseur de fumée",
+        "it": "Aggiungere il sensore di fumo",
+        "es": "Agregar sensor de humo",
+        "pl": "Smoke Sensor (ang.)",
+        "zh-cn": "增 录"
+      },
       "1.13.0": {
         "en": "Add new option to prevent the Cloud communication fallback when the device is not available locally for data queries (enabled by default).",
         "de": "Fügen Sie eine neue Option hinzu, um den Fallback der Cloud-Kommunikation zu verhindern, wenn das Gerät nicht lokal für Datenabfragen verfügbar ist (standardmäßig aktiviert).",
@@ -74,18 +86,6 @@
         "es": "Ajuste a los cambios recientes de API de los servicios de Meross",
         "pl": "Dostosuj się do ostatnich zmian API z usług Meross",
         "zh-cn": "根据 Meross 服务最近的 API 变化进行调整"
-      },
-      "1.10.4": {
-        "en": "Add battery value for ms100 devices in hub if supported",
-        "de": "Batteriewert für ms100-Geräte im Hub hinzufügen, falls unterstützt",
-        "ru": "Добавьте значение батареи для устройств ms100 в концентраторе, если поддерживается",
-        "pt": "Adicione o valor da bateria para dispositivos ms100 no hub, se suportado",
-        "nl": "Voeg batterijwaarde toe voor ms100-apparaten in hub, indien ondersteund",
-        "fr": "Ajouter la valeur de la batterie pour les appareils ms100 dans le hub si pris en charge",
-        "it": "Aggiungi il valore della batteria per i dispositivi ms100 nell'hub, se supportato",
-        "es": "Agregar valor de batería para dispositivos ms100 en el concentrador si es compatible",
-        "pl": "Dodaj wartość baterii dla urządzeń ms100 w hubie, jeśli jest obsługiwana",
-        "zh-cn": "如果支持，为集线器中的 ms100 设备添加电池值"
       }
     },
     "title": "Meross Cloud",
