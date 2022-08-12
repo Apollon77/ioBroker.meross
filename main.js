@@ -982,7 +982,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.states =  {170: 'OK', 23: 'TEST', 25: 'ALARM'}
                 common.role = defineRole(common);
                 common.id = `${sub.id}.${common.name}`;
-                values[common.id] = sub.smokeAlarm.status
+                values[common.id] = sub.smokeAlarm.status;
                 objs.push(common);
 
                 common = {};
@@ -992,7 +992,17 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.name = 'alarm';
                 common.role = 'sensor.alarm.fire';
                 common.id = `${sub.id}.${common.name}`;
-                values[common.id] = sub.smokeAlarm.status === 25
+                values[common.id] = sub.smokeAlarm.status === 25;
+                objs.push(common);
+
+                common = {};
+                common.type = 'boolean';
+                common.read = true;
+                common.write = false;
+                common.name = 'interConn';
+                common.role = 'indicator';
+                common.id = `${sub.id}.${common.name}`;
+                values[common.id] = !!sub.smokeAlarm.interConn;
                 objs.push(common);
             }
 
@@ -1875,6 +1885,9 @@ function setValuesHubSmokeSensor(deviceId, payload) {
         payload.smokeAlarm.forEach((val) => {
             adapter.setState(`${deviceId}.${val.id}.status`, val.status, true);
             adapter.setState(`${deviceId}.${val.id}.alarm`, val.status === 25, true);
+            if (val.interConn !== undefined) {
+                adapter.setState(`${deviceId}.${val.id}.interConn`, !!val.interConn, true);
+            }
         });
     }
 }
