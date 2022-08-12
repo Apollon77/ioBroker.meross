@@ -1341,7 +1341,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             }
             knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] && !deviceAbilities.ability['Appliance.Hub.Sensor.Smoke']  && !deviceAbilities.ability['Appliance.Hub.ToggleX']) {
                 adapter.log.info(`Known abilities not supported by Device ${deviceId}: send next line from disk to developer`);
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -1350,7 +1350,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                 return;
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode']) {
+            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] || deviceAbilities.ability['Appliance.Hub.ToggleX']) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
