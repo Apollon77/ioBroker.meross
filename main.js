@@ -1542,7 +1542,39 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         });
                     }
                 });
+            }
 
+            if (deviceAbilities.ability['Appliance.Control.FilterMaintenance']) {
+                objAsyncCount++;
+                device.getFilterMaintenance((err, res) => {
+                    if (!err && res && res.filter) {
+                        res.filter.forEach(val => {
+                            const common = {};
+                            common.type = 'number';
+                            common.read = true;
+                            common.write = false;
+                            common.name = `${val.channel}-filter-life`;
+                            common.unit = '%';
+                            common.role = 'value';
+
+                            objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
+                                type: 'state',
+                                common
+                            }, val.life);
+                        });
+                    } else {
+                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Filter Maintenance data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Filter Maintenance data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        reInitDevice()
+                    }
+
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                            callback = null;
+                        });
+                    }
+                });
             }
 
             if (!objAsyncCount) {
@@ -1842,6 +1874,18 @@ function setValuesRollerShutterState(deviceId, payload) {
     }
 }
 
+function setValuesFilterMaintenance(deviceId, payload) {
+    // {"filter":[{"lmTime":1662013898,"life":100,"channel":0}]}
+    if (payload && payload.filter) {
+        if (!Array.isArray(payload.filter)) {
+            payload.filter = [payload.filter];
+        }
+        payload.filter.forEach((val) => {
+            adapter.setState(`${deviceId}.${val.channel}-filter-life`, val.life, true);
+        });
+    }
+}
+
 function setValuesRollerShutterPosition(deviceId, payload) {
     // {"position":[{"position":0,"channel":0}]}
     if (payload && payload.position) {
@@ -2063,6 +2107,9 @@ function main() {
                     break;
                 case 'Appliance.Control.Thermostat.WindowOpened':
                     setValuesThermostatWindowOpened(deviceId, payload);
+                    break;
+                case 'Appliance.Control.FilterMaintenance':
+                    setValuesFilterMaintenance(deviceId, payload);
                     break;
                 case 'Appliance.Hub.Sensor.WaterLeak':
                     if (payload && payload.waterLeak && payload.waterLeak.length) {
