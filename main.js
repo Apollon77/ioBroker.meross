@@ -1555,6 +1555,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             common.write = false;
                             common.name = `${val.channel}-filter-life`;
                             common.unit = '%';
+                            common.min = 0;
+                            common.max = 100;
                             common.role = 'value';
 
                             objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
@@ -1565,6 +1567,116 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                     } else {
                         !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Filter Maintenance data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                         knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Filter Maintenance data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        reInitDevice()
+                    }
+
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                            callback = null;
+                        });
+                    }
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.Control.PhysicalLock']) {
+                objAsyncCount++;
+                device.getPhysicalLockState((err, res) => {
+                    if (!err && res && res.lock) {
+                        res.lock.forEach(val => {
+                            const common = {};
+                            common.type = 'boolean';
+                            common.read = true;
+                            common.write = true;
+                            common.name = `${val.channel}-lock`;
+                            common.role = defineRole(common);
+
+                            const onChangeLockState = (value) => {
+                                if (!value) {
+                                    return;
+                                }
+                                if (!knownDevices[deviceId].device) {
+                                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
+                                    return;
+                                }
+
+                                knownDevices[deviceId].device.controlPhysicalLock(val.channel, !!value,(err, res) => {
+                                    adapter.log.debug(`Physical Lock State Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                });
+                            };
+
+                            objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
+                                type: 'state',
+                                common
+                            }, !!val.onoff, onChangeLockState);
+                        });
+                    } else {
+                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        reInitDevice()
+                    }
+
+                    if (!--objAsyncCount) {
+                        objectHelper.processObjectQueue(() => {
+                            callback && callback();
+                            callback = null;
+                        });
+                    }
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.Control.Fan']) {
+                objAsyncCount++;
+                device.getFanState((err, res) => {
+                    if (!err && res && res.fan) {
+                        res.fan.forEach(val => {
+                            const common = {};
+                            common.type = 'number';
+                            common.read = true;
+                            common.write = true;
+                            common.name = `${val.channel}-speed`;
+                            common.role = defineRole(common);
+                            common.min = 1;
+                            common.max = val.maxSpeed;
+                            if (val.maxSpeed === 4) {
+                                common.states = {
+                                    1: 'Sleep',
+                                    2: 'Low',
+                                    3: 'Medium',
+                                    4: 'High'
+                                };
+                            }
+
+                            const onChangeFanSpeed = (value) => {
+                                if (!value) {
+                                    return;
+                                }
+                                if (!knownDevices[deviceId].device) {
+                                    adapter.log.debug(`${deviceId} Device communication not initialized ...`);
+                                    return;
+                                }
+                                if (typeof value !== 'number') {
+                                    value = parseInt(value, 10);
+                                }
+
+                                if (isNaN(value) || value < 1 || value > val.maxSpeed) {
+                                    adapter.log.warn(`Invalid fan speed value ${value} for ${deviceId}! Needs to be between 1 and ${val.maxSpeed}`);
+                                    return;
+                                }
+
+                                knownDevices[deviceId].device.controlFan(val.channel, value, val.maxSpeed, (err, res) => {
+                                    adapter.log.debug(`Fan Speed Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                });
+                            };
+
+                            objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
+                                type: 'state',
+                                common
+                            }, val.speed, onChangeFanSpeed);
+                        });
+                    } else {
+                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Fan data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Fan data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                         reInitDevice()
                     }
 
@@ -1886,6 +1998,30 @@ function setValuesFilterMaintenance(deviceId, payload) {
     }
 }
 
+function setValuesPhysicalLock(deviceId, payload) {
+    // {"lock":[{"onoff":1,"channel":0}]}
+    if (payload && payload.lock) {
+        if (!Array.isArray(payload.lock)) {
+            payload.lock = [payload.lock];
+        }
+        payload.lock.forEach((val) => {
+            adapter.setState(`${deviceId}.${val.channel}-lock`, !!val.onoff, true);
+        });
+    }
+}
+
+function setValuesFan(deviceId, payload) {
+    // {"fan":[{"speed":1,"maxSpeed":4,"channel":0}]}
+    if (payload && payload.fan) {
+        if (!Array.isArray(payload.fan)) {
+            payload.fan = [payload.fan];
+        }
+        payload.fan.forEach((val) => {
+            adapter.setState(`${deviceId}.${val.channel}-speed`, val.speed, true);
+        });
+    }
+}
+
 function setValuesRollerShutterPosition(deviceId, payload) {
     // {"position":[{"position":0,"channel":0}]}
     if (payload && payload.position) {
@@ -2110,6 +2246,12 @@ function main() {
                     break;
                 case 'Appliance.Control.FilterMaintenance':
                     setValuesFilterMaintenance(deviceId, payload);
+                    break;
+                case 'Appliance.Control.PhysicalLock':
+                    setValuesPhysicalLock(deviceId, payload);
+                    break;
+                case 'Appliance.Control.Fan':
+                    setValuesFan(deviceId, payload);
                     break;
                 case 'Appliance.Hub.Sensor.WaterLeak':
                     if (payload && payload.waterLeak && payload.waterLeak.length) {

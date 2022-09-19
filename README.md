@@ -45,7 +45,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ## Changelog
 
 ### __WORK IN PROGRESS__
-* (Apollon77) Add support for FilterMaintenance data of MAP100 air purifier
+* (Apollon77) Add support for MAP100 air purifier
 
 ### 1.14.0 (2022-08-12)
 * (Apollon77) Add Smoke Sensor
