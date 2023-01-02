@@ -46,6 +46,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ### __WORK IN PROGRESS__
 * (Apollon77) Add support for MAP100 air purifier
+* (Apollon77) Add Energy Consumption details
 
 ### 1.14.0 (2022-08-12)
 * (Apollon77) Add Smoke Sensor
@@ -187,7 +188,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2018-2022 Apollon77 <iobroker@fischer-ka.de>
+Copyright (c) 2018-2023 Apollon77 <iobroker@fischer-ka.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

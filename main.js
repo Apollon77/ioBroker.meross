@@ -1360,7 +1360,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                 return;
             }
 
-            if (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] || deviceAbilities.ability['Appliance.Hub.ToggleX']) {
+            if (deviceAllData.all &&
+                (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] || deviceAbilities.ability['Appliance.Hub.ToggleX'])) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
@@ -1386,6 +1387,18 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             callback = null;
                         });
                     }
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.Control.Consumption']) {
+                device.getControlPowerConsumption((err, res) => {
+                    adapter.log.info(`${deviceId} Consumption: ${JSON.stringify(res)}`);
+                });
+            }
+
+            if (deviceAbilities.ability['Appliance.Control.ConsumptionX']) {
+                device.getControlPowerConsumptionX((err, res) => {
+                    adapter.log.info(`${deviceId} ConsumptionX: ${JSON.stringify(res)}`);
                 });
             }
 
@@ -1516,17 +1529,32 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             if (val.position !== undefined) {
                                 common.type = 'number';
                                 common.read = true;
-                                common.write = false;
+                                common.write = true;
                                 common.name = `${val.channel}-position`;
                                 common.role = 'value.blind';
                                 common.unit = '%';
                                 common.min = 0;
                                 common.max = 100;
 
+                                const onChangePosition = (value) => {
+                                    value = parseInt(value, 10);
+                                    if (isNaN(value) || value < 0 || value > 100) {
+                                        return;
+                                    }
+
+                                    if (!knownDevices[deviceId].device) {
+                                        adapter.log.debug(`${deviceId} Device communication not initialized ...`);
+                                        return;
+                                    }
+
+                                    knownDevices[deviceId].device.controlRollerShutterPosition(val.channel, value, (err, res) => {
+                                        adapter.log.debug(`RollerShutter State Response: err: ${err}, res: ${JSON.stringify(res)}`);
+                                    });
+                                };
                                 objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
                                     type: 'state',
                                     common
-                                }, val.position);
+                                }, val.position, onChangePosition);
                             }
                         });
                     } else {
@@ -1582,6 +1610,12 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             if (deviceAbilities.ability['Appliance.Control.PhysicalLock']) {
                 objAsyncCount++;
                 device.getPhysicalLockState((err, res) => {
+                    if (err || !res) {
+                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        res = {lock: [{onoff: null, channel: 0}]};
+                        // We simulate a value for now because getting it do not work
+                    }
                     if (!err && res && res.lock) {
                         res.lock.forEach(val => {
                             const common = {};
@@ -1608,7 +1642,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
                                 type: 'state',
                                 common
-                            }, !!val.onoff, onChangeLockState);
+                            }, undefined/*!!val.onoff*/, onChangeLockState);
                         });
                     } else {
                         !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
@@ -1628,6 +1662,12 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             if (deviceAbilities.ability['Appliance.Control.Fan']) {
                 objAsyncCount++;
                 device.getFanState((err, res) => {
+                    if (err || !res) {
+                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Fan data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Fan data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        res = {fan: [{speed: null, maxSpeed:4, channel:0 }]};
+                        // We simulate a value for now because getting it do not work
+                    }
                     if (!err && res && res.fan) {
                         res.fan.forEach(val => {
                             const common = {};
@@ -1672,7 +1712,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             objectHelper.setOrUpdateObject(`${deviceId}.${common.name}`, {
                                 type: 'state',
                                 common
-                            }, val.speed, onChangeFanSpeed);
+                            }, undefined/*val.speed*/, onChangeFanSpeed);
                         });
                     } else {
                         !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Fan data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
