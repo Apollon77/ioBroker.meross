@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.14.0",
+    "version": "1.14.1",
     "news": {
       "1.14.0": {
         "en": "Add Smoke Sensor",
