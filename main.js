@@ -1392,14 +1392,40 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
 
             if (deviceAbilities.ability['Appliance.Control.Consumption']) {
                 device.getControlPowerConsumption((err, res) => {
-                    adapter.log.info(`${deviceId} Consumption: ${JSON.stringify(res)}`);
+                    adapter.log.info(`${deviceId} Report to developer Consumption: ${JSON.stringify(res)}`);
                 });
             }
 
             if (deviceAbilities.ability['Appliance.Control.ConsumptionX']) {
-                device.getControlPowerConsumptionX((err, res) => {
-                    adapter.log.info(`${deviceId} ConsumptionX: ${JSON.stringify(res)}`);
-                });
+                objectHelper.setOrUpdateObject(`${deviceId}.consumption`, {
+                    type: 'channel',
+                    common: {
+                        name: 'Consumption',
+                    }
+                }, ['name']);
+
+                objectHelper.setOrUpdateObject(`${deviceId}.consumption.today`, {
+                    type: 'state',
+                    common: {
+                        name: 'Consumption Today',
+                        type: 'number',
+                        read: true,
+                        write: false,
+                        role: 'value.power.consumption',
+                    }
+                }, ['name']);
+
+                objectHelper.setOrUpdateObject(`${deviceId}.consumption.yesterday`, {
+                    type: 'state',
+                    common: {
+                        name: 'Consumption Yesterday',
+                        type: 'number',
+                        read: true,
+                        write: false,
+                        role: 'value.power.consumption',
+                    }
+                }, ['name']);
+                pollConsumptionX(deviceId, 30 + Math.floor(Math.random() * 30));
             }
 
             if (deviceAbilities.ability['Appliance.System.DNDMode']) {
@@ -1759,6 +1785,30 @@ function initDone() {
     }
 }
 
+function pollConsumptionX(deviceId, delay) {
+    if (!knownDevices[deviceId].deviceAbilities || !knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.ConsumptionX']) return;
+    if (!delay) {
+        delay = (adapter.config.consumptionPollingInterval || 30) * 60;
+    }
+    if (knownDevices[deviceId].consumptionXPollTimeout) {
+        adapter.log.debug(`${deviceId} ConsumptionX schedule cleared`);
+        clearTimeout(knownDevices[deviceId].consumptionXPollTimeout);
+        knownDevices[deviceId].consumptionXPollTimeout = null;
+    }
+    adapter.log.debug(`${deviceId} ConsumptionX scheduled in : ${delay}s`);
+    knownDevices[deviceId].consumptionXPollTimeout = setTimeout(() => {
+        knownDevices[deviceId].consumptionXPollTimeout = null;
+        adapter.log.debug(`${deviceId} ConsumptionX query executed now`);
+        knownDevices[deviceId].device.getControlPowerConsumptionX((err, res) => {
+            if (!err) {
+                adapter.log.debug(`${deviceId} ConsumptionX: ${JSON.stringify(res)}`);
+                setValuesConsumptionX(deviceId, res);
+            }
+            pollConsumptionX(deviceId);
+        });
+    }, delay * 1000);
+}
+
 function pollElectricity(deviceId, delay) {
     if (!knownDevices[deviceId].deviceAbilities || !knownDevices[deviceId].deviceAbilities.ability['Appliance.Control.Electricity']) return;
     if (!delay) delay = adapter.config.electricityPollingInterval || 30;
@@ -1773,7 +1823,7 @@ function pollElectricity(deviceId, delay) {
         adapter.log.debug(`${deviceId} Electricity query executed now`);
         knownDevices[deviceId].device.getControlElectricity((err, res) => {
             if (!err) {
-                //{"electricity":{"channel":0,"current":0,"voltage":2331,"power":0}}
+                //{"electricity":{"channel":0,"cut":0,"voltage":2331,"power":0}}
                 adapter.log.debug(`${deviceId} Electricity: ${JSON.stringify(res)}`);
                 setValuesElectricity(deviceId, res);
             }
@@ -1982,6 +2032,20 @@ function setValuesElectricity(deviceId, payload) {
     }
 }
 
+function setValuesConsumptionX(deviceId, payload) {
+    // {"consumptionx":[{"date":"2022-12-31","time":1672527480,"value":0},...}
+    if (payload && payload.consumptionx) {
+        const d = new Date();
+        const todayStr = `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+        d.setDate(d.getDate() - 1);
+        const yesterdayStr = `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+        const todayData = payload.consumptionx.find((val) => val.date === todayStr);
+        const yesterdayData = payload.consumptionx.find((val) => val.date === yesterdayStr);
+        adapter.setState(`${deviceId}.consumption.today`, todayData ? todayData.value / 1000 : 0, true);
+        adapter.setState(`${deviceId}.consumption.yesterday`, yesterdayData ? yesterdayData.value / 1000 : 0, true);
+    }
+}
+
 function setValuesDiffuserLight(deviceId, payload) {
     // {"type":"mod100","light":[{"rgb":16774912,"onoff":0,"mode":1,"luminance":71,"lmTime":1618222769,"channel":0}]}
     if (payload && payload.light) {
@@ -2142,8 +2206,14 @@ function main() {
     }
 
     adapter.config.electricityPollingInterval = parseInt(adapter.config.electricityPollingInterval, 10) || 30;
-    if ((!adapter.config.electricityPollingIntervalReChecked || adapter.config.noDirectLocalCommunication) && adapter.config.electricityPollingInterval < 30) {
+    if (isNaN(adapter.config.electricityPollingInterval) || adapter.config.electricityPollingInterval > 2147482 || ((!adapter.config.electricityPollingIntervalReChecked || adapter.config.noDirectLocalCommunication) && adapter.config.electricityPollingInterval < 30)) {
         adapter.config.electricityPollingInterval = 30;
+        adapter.log.info('Electricity polling interval is invalid. Set to 30 seconds');
+    }
+    adapter.config.consumptionPollingInterval = parseInt(adapter.config.consumptionPollingInterval, 10) || 30;
+    if (isNaN(adapter.config.consumptionPollingInterval) || adapter.config.consumptionPollingInterval > 35791 || adapter.config.consumptionPollingInterval < 10) {
+        adapter.config.consumptionPollingInterval = 30;
+        adapter.log.info('Consumption polling interval is invalid. Set to 30 minutes');
     }
     const options = {
         email: adapter.config.user,
@@ -2299,9 +2369,11 @@ function main() {
                         adapter.log.info('Please send full line from logfile on disk to developer');
                     }
                     break;
+                case 'Appliance.Control.ConsumptionX':
+                    setValuesConsumptionX(deviceId, payload);
+                    break;
                 case 'Appliance.Control.Upgrade':
                 case 'Appliance.System.Report':
-                case 'Appliance.Control.ConsumptionX':
                 case 'Appliance.Control.TimerX':
                 case 'Appliance.Hub.Mts100.ScheduleB':
                     break;

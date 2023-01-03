@@ -46,7 +46,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ### __WORK IN PROGRESS__
 * (Apollon77) Add support for MAP100 air purifier
-* (Apollon77) Add Energy Consumption details
+* (Apollon77) Add Energy Consumption states
 
 ### 1.14.0 (2022-08-12)
 * (Apollon77) Add Smoke Sensor

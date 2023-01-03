@@ -2,6 +2,8 @@
     "MerossInfo": "Questo adattatore si collega al Meross Cloud per controllare i tuoi dispositivi. Inserisci le credenziali di accesso al tuo account Meross Cloud.",
     "Password": "Parola d'ordine",
     "User": "Nome utente",
+    "consumptionPollingInterval": "Intervallo di polling per i valori di consumo",
+    "consumptionPollingIntervalInfo": "Assicurati che l'intervallo di polling non sia troppo breve perché Meross può disabilitare la funzionalità cloud dei tuoi dispositivi.",
     "electricityPollingInterval": "Intervallo di polling per i valori di elettricità",
     "electricityPollingIntervalInfo": "Assicurarsi che l'intervallo di polling non sia troppo breve poiché Meross può disabilitare la funzionalità cloud dei dispositivi. Avere un valore inferiore a 15 secondi è rischioso.",
     "noDirectLocalCommunication": "Nessuna comunicazione locale: usa sempre il Cloud",
