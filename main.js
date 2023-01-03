@@ -1427,6 +1427,18 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         role: 'value.power.consumption'
                     }
                 }, ['name']);
+
+                objectHelper.setOrUpdateObject(`${deviceId}.consumption.data`, {
+                    type: 'state',
+                    common: {
+                        name: 'Consumption Data',
+                        type: 'string',
+                        read: true,
+                        write: false,
+                        role: 'json'
+                    }
+                }, ['name']);
+
                 pollConsumptionX(deviceId, 30 + Math.floor(Math.random() * 30));
             }
 
@@ -2045,6 +2057,7 @@ function setValuesConsumptionX(deviceId, payload) {
         const yesterdayData = payload.consumptionx.find((val) => val.date === yesterdayStr);
         adapter.setState(`${deviceId}.consumption.today`, todayData ? todayData.value / 1000 : 0, true);
         adapter.setState(`${deviceId}.consumption.yesterday`, yesterdayData ? yesterdayData.value / 1000 : 0, true);
+        adapter.setState(`${deviceId}.consumption.data`, JSON.stringify(payload.consumptionx), true);
     }
 }
 
