@@ -1411,7 +1411,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         type: 'number',
                         read: true,
                         write: false,
-                        role: 'value.power.consumption',
+                        unit: 'kWh',
+                        role: 'value.power.consumption'
                     }
                 }, ['name']);
 
@@ -1422,7 +1423,8 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                         type: 'number',
                         read: true,
                         write: false,
-                        role: 'value.power.consumption',
+                        unit: 'kWh',
+                        role: 'value.power.consumption'
                     }
                 }, ['name']);
                 pollConsumptionX(deviceId, 30 + Math.floor(Math.random() * 30));
