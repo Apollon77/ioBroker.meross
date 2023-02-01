@@ -18,7 +18,7 @@
     "meross-cloud": "^2.4.0",
     "@apollon/iobroker-tools": "^0.2.1",
     "@iobroker/adapter-core": "^2.6.7",
-    "@sentry/node": "^7.28.1",
+    "@sentry/node": "^7.34.0",
     "@sentry/integrations": "^7.28.1",
     "source-map-support": "^0.5.21"
   },
