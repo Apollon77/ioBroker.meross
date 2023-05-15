@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.15.0",
+    "version": "1.15.1",
     "news": {
+      "1.15.1": {
+        "en": "Fix an issue when committing devices delayed",
+        "de": "Fix ein Problem, wenn die Übertragung von Geräten verzögert",
+        "ru": "Исправление проблемы при совершении устройств задерживается",
+        "pt": "Corrigir um problema ao cometer dispositivos retardados",
+        "nl": "Maak een probleem als het vertragen van apparaten",
+        "fr": "Correction d'un problème lors de l'exécution des dispositifs retardés",
+        "it": "Risolvere un problema quando si commettono dispositivi ritardati",
+        "es": "Arreglar un problema cuando se retrasan los dispositivos",
+        "pl": "W przypadku, gdy wprowadzone urządzenia opóźniały się opłaty",
+        "uk": "Виправлення проблеми при затриманні пристроїв",
+        "zh-cn": "在发生延迟装置时确定一个问题"
+      },
       "1.15.0": {
         "en": "Add support for MAP100 air purifier\nAdd Energy Consumption states",
         "de": "Unterstützung für MAP100 Luftreiniger hinzufügen\nEnergieverbrauch",
@@ -80,19 +93,6 @@
         "pl": "Nowy stan pozwala kontrolować, czy łączyć lokalnie pierwsze lub nie dla każdego urządzenia (ale globalne ustawienie jest precedensowe, jeśli nie będzie korzystać z połączenia)\nDetektyw przejmuje problem z Merossem i stara się ich lepiej wykorzystać",
         "zh-cn": "增加新的国家,以便控制是否在当地首先或并非每个装置连接(但如果规定从未使用当地联系!)\n将问题重新连接到Meoss Cloud,并设法更好地处理这些问题",
         "uk": "Додайте новий стан, щоб дозволити контролювати, підключатися спочатку локально чи ні для кожного пристрою (але глобальне налаштування має перевагу, якщо там встановлено, що ніколи не використовуватиме локальне підключення!)\nВиявляйте проблеми з повторним підключенням до Meross Cloud і намагайтеся їх краще вирішувати"
-      },
-      "1.11.0": {
-        "en": "* (Apollon77) Add online status configuration to show online status in Admin UI\n* (Apollon77) Optimize device initialization to make sure it finishes also whe not all devices are initialized successfully",
-        "de": "* (Apollon77) Fügen Sie eine Online-Status-Konfiguration hinzu, um den Online-Status in der Admin-Benutzeroberfläche anzuzeigen\n* (Apollon77) Optimieren Sie die Geräteinitialisierung, um sicherzustellen, dass sie auch beendet wird, wenn nicht alle Geräte erfolgreich initialisiert wurden",
-        "ru": "* (Apollon77) Добавлена конфигурация онлайн-статуса для отображения онлайн-статуса в пользовательском интерфейсе администратора.\n* (Apollon77) Оптимизирована инициализация устройства, чтобы убедиться, что она завершается даже тогда, когда не все устройства успешно инициализированы.",
-        "pt": "* (Apollon77) Adicionar configuração de status online para mostrar o status online na interface do administrador\n* (Apollon77) Otimize a inicialização do dispositivo para garantir que ela termine também quando nem todos os dispositivos forem inicializados com sucesso",
-        "nl": "* (Apollon77) Online statusconfiguratie toevoegen om online status in Admin UI weer te geven\n* (Apollon77) Optimaliseer de apparaatinitialisatie om ervoor te zorgen dat deze ook wordt voltooid als niet alle apparaten met succes zijn geïnitialiseerd",
-        "fr": "* (Apollon77) Ajout de la configuration de l'état en ligne pour afficher l'état en ligne dans l'interface utilisateur d'administration\n* (Apollon77) Optimisez l'initialisation de l'appareil pour vous assurer qu'elle se termine également lorsque tous les appareils ne sont pas initialisés avec succès",
-        "it": "* (Apollon77) Aggiungi la configurazione dello stato online per mostrare lo stato online nell'interfaccia utente di amministrazione\n* (Apollon77) Ottimizza l'inizializzazione del dispositivo per assicurarti che finisca anche se non tutti i dispositivi vengono inizializzati correttamente",
-        "es": "* (Apollon77) Agregar configuración de estado en línea para mostrar el estado en línea en la interfaz de usuario de administración\n* (Apollon77) Optimizar la inicialización del dispositivo para asegurarse de que finalice también cuando no todos los dispositivos se inicialicen correctamente",
-        "pl": "* (Apollon77) Dodaj konfigurację statusu online, aby wyświetlić status online w interfejsie administratora\n* (Apollon77) Zoptymalizuj inicjalizację urządzenia, aby upewnić się, że kończy się ona również wtedy, gdy nie wszystkie urządzenia zostały pomyślnie zainicjowane",
-        "zh-cn": "* (Apollon77) 添加在线状态配置以在管理 UI 中显示在线状态\n* (Apollon77) 优化设备初始化，确保在并非所有设备都初始化成功的情况下也完成",
-        "uk": "* (Apollon77) Додайте конфігурацію онлайн-статусу, щоб відображати онлайн-статус в інтерфейсі адміністратора\n* (Apollon77) Оптимізація ініціалізації пристрою, щоб переконатися, що вона завершується також, якщо не всі пристрої ініціалізовано успішно"
       }
     },
     "title": "Meross Cloud",
