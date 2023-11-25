@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.15.1",
+    "version": "1.16.0",
     "news": {
+      "1.16.0": {
+        "en": "IMPORTANT: Node.js 16.x or higher is required\nPrevented crash case reported by Sentry",
+        "de": "WICHTIG: Node.js 16.x oder höher ist erforderlich\nVerhinderter Unfallfall von Sentry gemeldet",
+        "ru": "ВАЖНО: Node.js 16.x или выше требуется\nПредотвращенный случай аварии сообщается в Sentry",
+        "pt": "IMPORTANTE: Node.js 16.x ou superior é necessário\nCaso de acidente impedido relatado por Sentry",
+        "nl": "Node is 16,x of hoger nodig\nVertaling:",
+        "fr": "IMPORTANT: Node.js 16.x ou supérieur est requis\nCas d ' accident signalé par Sentry",
+        "it": "IMPORTANTE: Node.js 16.x o superiore è richiesto\nPreventivo caso crash segnalato da Sentry",
+        "es": "IMPORTANTE: Node.js 16.x o superior es requerido\nCaso de accidente preventivo reportado por Sentry",
+        "pl": "IMPORTANT: Nodejs 16.x (ang.)\nPrzygotowania do wypadku Sentry",
+        "uk": "ВАЖЛИВО: Node.js 16.x або вище\nЗапобігла випадок аварії, що повідомляє Sentry",
+        "zh-cn": "IMPORTANT:Nodejs 16x or更高\nSentry所报告的预防性事故"
+      },
       "1.15.1": {
         "en": "Fix an issue when committing devices delayed",
         "de": "Fix ein Problem, wenn die Übertragung von Geräten verzögert",
@@ -80,19 +93,6 @@
         "pl": "przypadek zapobiegania katastrofie",
         "zh-cn": "防止Sentry所报告的事故",
         "uk": "запобігти випадку збою, про який повідомляє Sentry"
-      },
-      "1.12.0": {
-        "en": "Add new state to allow controlling whether to connect locally first or not for each device (but global setting takes precedence if set there to never use local connection!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
-        "de": "Fügen Sie neuen Zustand hinzu, um zu steuern, ob lokal zuerst oder nicht für jedes Gerät zu verbinden (aber globale Einstellung nimmt Vorrang, wenn es gesetzt, um nie lokale Verbindung verwenden!)\nErkennen Sie Reconnection Probleme mit Meross Cloud und versuchen Sie, sie besser zu handhaben",
-        "ru": "Добавьте новое государство, чтобы позволить контролировать, подключается ли локально во-первых или не для каждого устройства (но глобальная настройка занимает приоритет, если установить там, чтобы никогда не использовать местное соединение!)\nОбнаружить проблемы повторного подключения к Meross Cloud и попытаться справиться с ними лучше",
-        "pt": "Adicionar novo estado para permitir controlar se conectar localmente primeiro ou não para cada dispositivo (mas configuração global tem precedência se definido lá para nunca usar conexão local!)\nDetectar problemas de reconexão para Meross Cloud e tentar lidar com eles melhor",
-        "nl": "Voeg nieuwe staat toe om de controle te laten over het verbinden van de eerste plaats of niet voor elk apparaat... maar de wereldwijde setting neemt voorrang op als ze daar nooit lokale verbinding gebruiken\nVerwijderingsproblemen aan Meross Cloud en probeer ze beter te behandelen",
-        "fr": "Ajouter un nouvel état pour permettre le contrôle de se connecter localement d'abord ou non pour chaque appareil (mais le réglage global a préséance si fixé là pour ne jamais utiliser de connexion locale!)\nDetect reconnection issues to Meross Cloud and try to handle them better",
-        "it": "Aggiungi nuovo stato per consentire di controllare se collegare localmente prima o non per ogni dispositivo (ma l'impostazione globale ha la precedenza se impostato lì per non utilizzare mai la connessione locale!)\nRileva i problemi di riconnessione a Meross Cloud e cerca di gestirli meglio",
-        "es": "Añadir nuevo estado para permitir controlar si conectar localmente primero o no para cada dispositivo (pero el entorno global tiene precedencia si se establece allí para nunca utilizar la conexión local!)\nDetectar problemas de reconexión a Meross Cloud y tratar de manejarlos mejor",
-        "pl": "Nowy stan pozwala kontrolować, czy łączyć lokalnie pierwsze lub nie dla każdego urządzenia (ale globalne ustawienie jest precedensowe, jeśli nie będzie korzystać z połączenia)\nDetektyw przejmuje problem z Merossem i stara się ich lepiej wykorzystać",
-        "zh-cn": "增加新的国家,以便控制是否在当地首先或并非每个装置连接(但如果规定从未使用当地联系!)\n将问题重新连接到Meoss Cloud,并设法更好地处理这些问题",
-        "uk": "Додайте новий стан, щоб дозволити контролювати, підключатися спочатку локально чи ні для кожного пристрою (але глобальне налаштування має перевагу, якщо там встановлено, що ніколи не використовуватиме локальне підключення!)\nВиявляйте проблеми з повторним підключенням до Meross Cloud і намагайтеся їх краще вирішувати"
       }
     },
     "title": "Meross Cloud",
