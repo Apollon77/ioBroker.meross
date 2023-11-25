@@ -1650,12 +1650,6 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             if (deviceAbilities.ability['Appliance.Control.PhysicalLock']) {
                 objAsyncCount++;
                 device.getPhysicalLockState((err, res) => {
-                    if (err || !res) {
-                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
-                        knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
-                        res = {lock: [{onoff: null, channel: 0}]};
-                        // We simulate a value for now because getting it do not work
-                    }
                     if (!err && res && res.lock) {
                         res.lock.forEach(val => {
                             const common = {};
@@ -1685,7 +1679,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
                             }, undefined/*!!val.onoff*/, onChangeLockState);
                         });
                     } else {
-                        !knownDevices[deviceId].disabled && adapter.log.warn(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
+                        !knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                         knownDevices[deviceId].disabled && adapter.log.debug(`Can not get Physical Lock data for Device ${deviceId}: ${err} / ${JSON.stringify(res)}`);
                         reInitDevice()
                     }
@@ -2182,8 +2176,10 @@ function setValuesHubSmokeSensor(deviceId, payload) {
             payload.smokeAlarm = [payload.smokeAlarm];
         }
         payload.smokeAlarm.forEach((val) => {
-            adapter.setState(`${deviceId}.${val.id}.status`, val.status, true);
-            adapter.setState(`${deviceId}.${val.id}.alarm`, val.status === 25, true);
+            if (val.status !== undefined) {
+                adapter.setState(`${deviceId}.${val.id}.status`, val.status, true);
+                adapter.setState(`${deviceId}.${val.id}.alarm`, val.status === 25, true);
+            }
             if (val.interConn !== undefined) {
                 adapter.setState(`${deviceId}.${val.id}.interConn`, !!val.interConn, true);
             }

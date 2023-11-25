@@ -45,6 +45,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ## Changelog
 ### __WORK IN PROGRESS__
 * IMPORTANT: Node.js 16.x or higher is required
+* (Apollon77) Prevented crash case reported by Sentry
 
 ### 1.15.1 (2023-05-15)
 * (Apollon77) Fix an issue when committing devices delayed
