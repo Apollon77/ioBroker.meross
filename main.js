@@ -1032,7 +1032,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = 'value.temperature';
                 common.unit = '°C';
                 common.id = `${sub.id}.${common.name}`;
-                values[common.id] = sub.ms100.latestTemperature;
+                values[common.id] = sub.ms100.latestTemperature / 10;
 
                 objs.push(common);
 
@@ -1044,7 +1044,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = 'value.humidity';
                 common.unit = '%';
                 common.id = `${sub.id}.${common.name}`;
-                values[common.id] = sub.ms100.latestHumidity;
+                values[common.id] = sub.ms100.latestHumidity / 10;
 
                 objs.push(common);
 
@@ -1056,7 +1056,7 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = defineRole(common);
                 common.unit = 'V';
                 common.id = `${sub.id}.${common.name}`;
-                values[common.id] = sub.ms100.voltage;
+                values[common.id] = sub.ms100.voltage / 1000;
 
                 objs.push(common);
             }
