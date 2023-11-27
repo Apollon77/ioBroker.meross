@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "meross",
-    "version": "1.16.0",
+    "version": "1.16.1",
     "news": {
+      "1.16.1": {
+        "en": "Fixes initial Temperature/Humidity/Voltage values of MS100 sensors",
+        "de": "Behebt anfängliche Temperatur/Humidität/Voltagewerte von MS100 Sensoren",
+        "ru": "Исправляет начальную температуру / влажность / значения напряжения датчиков MS100",
+        "pt": "Corrige os valores iniciais de Temperatura/Humididade/Voltadura dos sensores MS100",
+        "nl": "De eerste temperatuur/Humidity/Voltage waarden van MS100 sensoren",
+        "fr": "Fixe les valeurs initiales de température/humidité/tension des capteurs MS100",
+        "it": "Corregge i valori iniziali di temperatura/umidità/Voltaggio dei sensori MS100",
+        "es": "Fija los valores iniciales de temperatura/humanidad/Voltaje de los sensores MS100",
+        "pl": "Fixs initial Temperature/Humidity/Voltage wartości MS100 sensorów",
+        "uk": "Виправлення початкової температури / вологості / напруги значень датчиків MS100",
+        "zh-cn": "初步鉴定/Humidity/MS100传感器的活性价值"
+      },
       "1.16.0": {
         "en": "IMPORTANT: Node.js 16.x or higher is required\nPrevented crash case reported by Sentry",
         "de": "WICHTIG: Node.js 16.x oder höher ist erforderlich\nVerhinderter Unfallfall von Sentry gemeldet",
@@ -69,19 +82,6 @@
         "uk": "Додайте нову опцію, щоб запобігти резервному використанню хмарного зв’язку, коли пристрій недоступний локально для запитів даних (увімкнено за умовчанням)."
       },
       "1.12.2": {
-        "en": "prevent crash case reported by Sentry",
-        "de": "verhindern Unfallfall gemeldet von Sentry",
-        "ru": "предотвратить случай аварии сообщается в Sentry",
-        "pt": "prevenir caso de acidente relatado por Sentry",
-        "nl": "vertaling:",
-        "fr": "prévenir les accidents signalés par Sentry",
-        "it": "prevenire il caso di crash segnalato da Sentry",
-        "es": "caso de emergencia reportado por Sentry",
-        "pl": "przypadek zapobiegania katastrofie",
-        "zh-cn": "防止Sentry所报告的事故",
-        "uk": "запобігти випадку збою, про який повідомляє Sentry"
-      },
-      "1.12.1": {
         "en": "prevent crash case reported by Sentry",
         "de": "verhindern Unfallfall gemeldet von Sentry",
         "ru": "предотвратить случай аварии сообщается в Sentry",
