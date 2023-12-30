@@ -5,7 +5,7 @@
     "consumptionPollingInterval": "Abfrageintervall für Verbrauchswerte",
     "consumptionPollingIntervalInfo": "Achten Sie darauf, dass das Polling-Intervall nicht zu kurz ist, da Meross die Cloud-Funktionalität Ihrer Geräte deaktivieren kann.",
     "electricityPollingInterval": "Abfrageintervall für Stromwerte",
-    "electricityPollingIntervalInfo": "Es sollte sichergestellt werden dass das Abfrageintervall nicht zu kurz ist, da Meross die Cloud-Funktionalität der Geräte deaktivieren kann. Ein kleinerer Wert als 15s ist riskant.",
+    "electricityPollingIntervalInfo": "Es sollte sichergestellt werden dass das Abfrageintervall nicht zu kurz ist, da Meross die Cloud-Funktionalität der Geräte deaktivieren kann. Ein kleinerer Wert als 30s ist riskant.",
     "mfaCode": "Aktueller MFA-Code",
     "mfaCodeInfo": "Optional. Geben Sie den aktuellen MFA-Code ein, falls aktiviert, und speichern Sie die Einstellungen schnell. Der Code ist nur 30 Sekunden lang gültig!",
     "noDirectLocalCommunication": "Keine lokale Kommunikation - immer Cloud nutzen",
