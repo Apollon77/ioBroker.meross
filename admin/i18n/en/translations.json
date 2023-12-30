@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "Make sure that the polling interval is not too short because Meross can disable the cloud functionality of your devices.",
     "electricityPollingInterval": "Polling interval for electricity values",
     "electricityPollingIntervalInfo": "Make sure that the polling interval is not too short because Meross can disable the cloud functionality of your devices. Having a smaller value then 30s is risky.",
+    "mfaCode": "Current MFA Code",
+    "mfaCodeInfo": "Optional. Enter current MFA code if enabled and save settings fast, code is only valid 30s!",
     "noDirectLocalCommunication": "No local communication - always use Cloud",
     "onlyLocalCommunicationToQueryData": "Only local communication to query data",
     "onlyLocalCommunicationToQueryDataInfo": "(only relevant when local communication is used)"

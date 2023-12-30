@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "Upewnij się, że interwał odpytywania nie jest zbyt krótki, ponieważ Meross może wyłączyć funkcjonalność chmury na twoich urządzeniach.",
     "electricityPollingInterval": "Interwał odpytywania dla wartości energii elektrycznej",
     "electricityPollingIntervalInfo": "Upewnij się, że interwał odpytywania nie jest zbyt krótki, ponieważ Meross może wyłączyć funkcje urządzeń w chmurze. Posiadanie wartości mniejszej niż 15 sekund jest ryzykowne.",
+    "mfaCode": "Aktualny kod MSZ",
+    "mfaCodeInfo": "Opcjonalny. Wprowadź aktualny kod MFA, jeśli jest włączony i szybko zapisz ustawienia, kod jest ważny tylko 30s!",
     "noDirectLocalCommunication": "Brak komunikacji lokalnej - zawsze używaj Cloud",
     "onlyLocalCommunicationToQueryData": "Tylko komunikacja lokalna do zapytań o dane",
     "onlyLocalCommunicationToQueryDataInfo": "(istotne tylko w przypadku korzystania z komunikacji lokalnej)"

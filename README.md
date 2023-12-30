@@ -25,16 +25,7 @@ One Adapter instance will show all devices from one Meross Cloud account and all
 
 ## Known working devices
 
-All devices should work from my current knowledge. But please check the logs or report any feature or new devices types that are not creating states (new device types needs to be added manually by me, so an isue is important).
-
-Reported working are at least:
-
-* mss425e
-* mss310
-* MSS620 EU/UK
-* MTS100, MTS100v3, MTS150, MTS200
-* MRS100
-* ... and more that are not yet listed :-) Just tell me when a device works which is not listed via a GitHub issue.
+All devices should work from my current knowledge. But please check the logs or report any feature or new devices types that are not creating states (new device types needs to be added manually by me, so an issue is important).
 
 ## How to report issues and feature requests
 
@@ -43,6 +34,11 @@ Please use GitHub issues for this.
 Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column Log level). Then please get the logfile from disk (subdirectory "log" in ioBroker installation directory and not from Admin because Admin cuts the lines). If you do not like providing it in GitHub issue you can also send it to me via email (iobroker@fischer-ka.de). Please add a reference to the relevant GitHub issue AND also describe what I see in the log at which time.
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (Apollon77) Adjust Signin API and add support for MFA
+* (Apollon77) Store login token and try to reuse it for reconnections, but also do not log out anymore
+* (Apollon77) Add support for DoorWindow Sensor MS200HK
+
 ### 1.16.1 (2023-11-27)
 * (Apollon77) Fixes initial Temperature/Humidity/Voltage values of MS100 sensors
 

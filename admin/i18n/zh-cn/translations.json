@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "确保轮询间隔不要太短，因为 Meross 可以禁用设备的云功能。",
     "electricityPollingInterval": "电量值的轮询间隔",
     "electricityPollingIntervalInfo": "确保轮询间隔不太短，因为Meross可以禁用设备的云功能。值小于15s会有风险。",
+    "mfaCode": "当前 MFA 代码",
+    "mfaCodeInfo": "选修的。如果启用，请输入当前的 MFA 代码并快速保存设置，代码仅有效 30 秒！",
     "noDirectLocalCommunication": "没有本地通信 - 始终使用云",
     "onlyLocalCommunicationToQueryData": "只有本地通信才能查询数据",
     "onlyLocalCommunicationToQueryDataInfo": "（仅在使用本地通信时相关）"

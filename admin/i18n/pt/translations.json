@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "Certifique-se de que o intervalo de pesquisa não seja muito curto porque o Meross pode desativar a funcionalidade de nuvem de seus dispositivos.",
     "electricityPollingInterval": "Intervalo de pesquisa para valores de eletricidade",
     "electricityPollingIntervalInfo": "Verifique se o intervalo de pesquisa não é muito curto porque o Meross pode desativar a funcionalidade de nuvem dos dispositivos. Ter um valor menor que 15s é arriscado.",
+    "mfaCode": "Código MFA atual",
+    "mfaCodeInfo": "Opcional. Insira o código MFA atual, se ativado, e salve as configurações rapidamente, o código é válido apenas por 30 segundos!",
     "noDirectLocalCommunication": "Sem comunicação local - sempre use a nuvem",
     "onlyLocalCommunicationToQueryData": "Apenas comunicação local para consultar dados",
     "onlyLocalCommunicationToQueryDataInfo": "(relevante apenas quando a comunicação local é usada)"

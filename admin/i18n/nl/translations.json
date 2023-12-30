@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "Zorg ervoor dat het polling-interval niet te kort is, want Meross kan de cloudfunctionaliteit van uw apparaten uitschakelen.",
     "electricityPollingInterval": "Polling-interval voor elektriciteitswaarden",
     "electricityPollingIntervalInfo": "Zorg ervoor dat het polling-interval niet te kort is, omdat Meross de cloudfunctionaliteit van de apparaten kan uitschakelen. Een kleinere waarde hebben dan 15s is riskant.",
+    "mfaCode": "Huidige MFA-code",
+    "mfaCodeInfo": "Optioneel. Voer de huidige MFA-code in indien ingeschakeld en sla de instellingen snel op, de code is slechts 30 seconden geldig!",
     "noDirectLocalCommunication": "Geen lokale communicatie - gebruik altijd Cloud",
     "onlyLocalCommunicationToQueryData": "Alleen lokale communicatie om gegevens op te vragen",
     "onlyLocalCommunicationToQueryDataInfo": "(alleen relevant bij gebruik van lokale communicatie)"

@@ -1,200 +1,210 @@
 {
-  "common": {
-    "name": "meross",
-    "version": "1.16.1",
-    "news": {
-      "1.16.1": {
-        "en": "Fixes initial Temperature/Humidity/Voltage values of MS100 sensors",
-        "de": "Behebt anfängliche Temperatur/Humidität/Voltagewerte von MS100 Sensoren",
-        "ru": "Исправляет начальную температуру / влажность / значения напряжения датчиков MS100",
-        "pt": "Corrige os valores iniciais de Temperatura/Humididade/Voltadura dos sensores MS100",
-        "nl": "De eerste temperatuur/Humidity/Voltage waarden van MS100 sensoren",
-        "fr": "Fixe les valeurs initiales de température/humidité/tension des capteurs MS100",
-        "it": "Corregge i valori iniziali di temperatura/umidità/Voltaggio dei sensori MS100",
-        "es": "Fija los valores iniciales de temperatura/humanidad/Voltaje de los sensores MS100",
-        "pl": "Fixs initial Temperature/Humidity/Voltage wartości MS100 sensorów",
-        "uk": "Виправлення початкової температури / вологості / напруги значень датчиків MS100",
-        "zh-cn": "初步鉴定/Humidity/MS100传感器的活性价值"
-      },
-      "1.16.0": {
-        "en": "IMPORTANT: Node.js 16.x or higher is required\nPrevented crash case reported by Sentry",
-        "de": "WICHTIG: Node.js 16.x oder höher ist erforderlich\nVerhinderter Unfallfall von Sentry gemeldet",
-        "ru": "ВАЖНО: Node.js 16.x или выше требуется\nПредотвращенный случай аварии сообщается в Sentry",
-        "pt": "IMPORTANTE: Node.js 16.x ou superior é necessário\nCaso de acidente impedido relatado por Sentry",
-        "nl": "Node is 16,x of hoger nodig\nVertaling:",
-        "fr": "IMPORTANT: Node.js 16.x ou supérieur est requis\nCas d ' accident signalé par Sentry",
-        "it": "IMPORTANTE: Node.js 16.x o superiore è richiesto\nPreventivo caso crash segnalato da Sentry",
-        "es": "IMPORTANTE: Node.js 16.x o superior es requerido\nCaso de accidente preventivo reportado por Sentry",
-        "pl": "IMPORTANT: Nodejs 16.x (ang.)\nPrzygotowania do wypadku Sentry",
-        "uk": "ВАЖЛИВО: Node.js 16.x або вище\nЗапобігла випадок аварії, що повідомляє Sentry",
-        "zh-cn": "IMPORTANT:Nodejs 16x or更高\nSentry所报告的预防性事故"
-      },
-      "1.15.1": {
-        "en": "Fix an issue when committing devices delayed",
-        "de": "Fix ein Problem, wenn die Übertragung von Geräten verzögert",
-        "ru": "Исправление проблемы при совершении устройств задерживается",
-        "pt": "Corrigir um problema ao cometer dispositivos retardados",
-        "nl": "Maak een probleem als het vertragen van apparaten",
-        "fr": "Correction d'un problème lors de l'exécution des dispositifs retardés",
-        "it": "Risolvere un problema quando si commettono dispositivi ritardati",
-        "es": "Arreglar un problema cuando se retrasan los dispositivos",
-        "pl": "W przypadku, gdy wprowadzone urządzenia opóźniały się opłaty",
-        "uk": "Виправлення проблеми при затриманні пристроїв",
-        "zh-cn": "在发生延迟装置时确定一个问题"
-      },
-      "1.15.0": {
-        "en": "Add support for MAP100 air purifier\nAdd Energy Consumption states",
-        "de": "Unterstützung für MAP100 Luftreiniger hinzufügen\nEnergieverbrauch",
-        "ru": "Добавить поддержку для очистки воздуха MAP100\nДобавить государства потребления энергии",
-        "pt": "Adicionar suporte para purificador de ar MAP100\nAdicionar estados de consumo de energia",
-        "nl": "Advies ondersteuning voor MAP100 luchtzucht\nAdd Energy Consumptie staat",
-        "fr": "Ajouter le support pour le purificateur d'air MAP100\nAdd Energy Consumption states",
-        "it": "Aggiungi supporto per il purificatore dell'aria MAP100\nAggiungere stati di consumo energetico",
-        "es": "Añadir soporte para purificador de aire MAP100\nAdd Energy Consumption states",
-        "pl": "Wsparcie dla czystek lotniczych MAP100\nAddd Energy Consumption (ang.)",
-        "uk": "Додати підтримку для очищення повітря MAP100\nДодати стани споживання енергії",
-        "zh-cn": "增加对MAP100空气purifier的支助\n增加能源消耗国"
-      },
-      "1.14.0": {
-        "en": "Add Smoke Sensor",
-        "de": "Smoke Sensor hinzufügen",
-        "ru": "Добавить датчик дыма",
-        "pt": "Adicionar Sensor de fumaça",
-        "nl": "Voeg Smoke Sensor",
-        "fr": "Ajouter Senseur de fumée",
-        "it": "Aggiungere il sensore di fumo",
-        "es": "Agregar sensor de humo",
-        "pl": "Smoke Sensor (ang.)",
-        "zh-cn": "增 录",
-        "uk": "Додайте датчик диму"
-      },
-      "1.13.0": {
-        "en": "Add new option to prevent the Cloud communication fallback when the device is not available locally for data queries (enabled by default).",
-        "de": "Fügen Sie eine neue Option hinzu, um den Fallback der Cloud-Kommunikation zu verhindern, wenn das Gerät nicht lokal für Datenabfragen verfügbar ist (standardmäßig aktiviert).",
-        "ru": "Добавьте новый вариант, чтобы предотвратить опадение облачного сообщения, когда устройство не доступно локально для запросов данных (включено по умолчанию.).",
-        "pt": "Adicione nova opção para evitar a recaída de comunicação da nuvem quando o dispositivo não estiver disponível localmente para consultas de dados (habilitada por padrão).",
-        "nl": "Een nieuwe optie om de Cloud-communicatie terug te voorkomen als het apparaat niet beschikbaar is voor data queries die door defect zijn.",
-        "fr": "Ajouter une nouvelle option pour empêcher le retour de communication Cloud lorsque l'appareil n'est pas disponible localement pour les requêtes de données (enable par défaut).",
-        "it": "Aggiungi una nuova opzione per evitare il failback della comunicazione Cloud quando il dispositivo non è disponibile localmente per le query di dati (abilitato per impostazione predefinita.).",
-        "es": "Agregue nueva opción para evitar el retroceso de comunicación de Cloud cuando el dispositivo no está disponible localmente para consultas de datos (se puede por defecto).",
-        "pl": "Nowa opcja, aby zapobiec upadkowi komunikacji w chmurze, kiedy urządzenie nie jest dostępne lokalnie dla zapytań danych (zdolnych domyślnie).",
-        "zh-cn": "在设备在当地无法提供数据查询(以违约为准)时,添加新的办法,防止Cloud的通信出现倒退。.",
-        "uk": "Додайте нову опцію, щоб запобігти резервному використанню хмарного зв’язку, коли пристрій недоступний локально для запитів даних (увімкнено за умовчанням)."
-      },
-      "1.12.2": {
-        "en": "prevent crash case reported by Sentry",
-        "de": "verhindern Unfallfall gemeldet von Sentry",
-        "ru": "предотвратить случай аварии сообщается в Sentry",
-        "pt": "prevenir caso de acidente relatado por Sentry",
-        "nl": "vertaling:",
-        "fr": "prévenir les accidents signalés par Sentry",
-        "it": "prevenire il caso di crash segnalato da Sentry",
-        "es": "caso de emergencia reportado por Sentry",
-        "pl": "przypadek zapobiegania katastrofie",
-        "zh-cn": "防止Sentry所报告的事故",
-        "uk": "запобігти випадку збою, про який повідомляє Sentry"
-      }
+    "common": {
+        "name": "meross",
+        "version": "1.16.1",
+        "news": {
+            "1.16.1": {
+                "en": "Fixes initial Temperature/Humidity/Voltage values of MS100 sensors",
+                "de": "Behebt anfängliche Temperatur/Humidität/Voltagewerte von MS100 Sensoren",
+                "ru": "Исправляет начальную температуру / влажность / значения напряжения датчиков MS100",
+                "pt": "Corrige os valores iniciais de Temperatura/Humididade/Voltadura dos sensores MS100",
+                "nl": "De eerste temperatuur/Humidity/Voltage waarden van MS100 sensoren",
+                "fr": "Fixe les valeurs initiales de température/humidité/tension des capteurs MS100",
+                "it": "Corregge i valori iniziali di temperatura/umidità/Voltaggio dei sensori MS100",
+                "es": "Fija los valores iniciales de temperatura/humanidad/Voltaje de los sensores MS100",
+                "pl": "Fixs initial Temperature/Humidity/Voltage wartości MS100 sensorów",
+                "uk": "Виправлення початкової температури / вологості / напруги значень датчиків MS100",
+                "zh-cn": "初步鉴定/Humidity/MS100传感器的活性价值"
+            },
+            "1.16.0": {
+                "en": "IMPORTANT: Node.js 16.x or higher is required\nPrevented crash case reported by Sentry",
+                "de": "WICHTIG: Node.js 16.x oder höher ist erforderlich\nVerhinderter Unfallfall von Sentry gemeldet",
+                "ru": "ВАЖНО: Node.js 16.x или выше требуется\nПредотвращенный случай аварии сообщается в Sentry",
+                "pt": "IMPORTANTE: Node.js 16.x ou superior é necessário\nCaso de acidente impedido relatado por Sentry",
+                "nl": "Node is 16,x of hoger nodig\nVertaling:",
+                "fr": "IMPORTANT: Node.js 16.x ou supérieur est requis\nCas d ' accident signalé par Sentry",
+                "it": "IMPORTANTE: Node.js 16.x o superiore è richiesto\nPreventivo caso crash segnalato da Sentry",
+                "es": "IMPORTANTE: Node.js 16.x o superior es requerido\nCaso de accidente preventivo reportado por Sentry",
+                "pl": "IMPORTANT: Nodejs 16.x (ang.)\nPrzygotowania do wypadku Sentry",
+                "uk": "ВАЖЛИВО: Node.js 16.x або вище\nЗапобігла випадок аварії, що повідомляє Sentry",
+                "zh-cn": "IMPORTANT:Nodejs 16x or更高\nSentry所报告的预防性事故"
+            },
+            "1.15.1": {
+                "en": "Fix an issue when committing devices delayed",
+                "de": "Fix ein Problem, wenn die Übertragung von Geräten verzögert",
+                "ru": "Исправление проблемы при совершении устройств задерживается",
+                "pt": "Corrigir um problema ao cometer dispositivos retardados",
+                "nl": "Maak een probleem als het vertragen van apparaten",
+                "fr": "Correction d'un problème lors de l'exécution des dispositifs retardés",
+                "it": "Risolvere un problema quando si commettono dispositivi ritardati",
+                "es": "Arreglar un problema cuando se retrasan los dispositivos",
+                "pl": "W przypadku, gdy wprowadzone urządzenia opóźniały się opłaty",
+                "uk": "Виправлення проблеми при затриманні пристроїв",
+                "zh-cn": "在发生延迟装置时确定一个问题"
+            },
+            "1.15.0": {
+                "en": "Add support for MAP100 air purifier\nAdd Energy Consumption states",
+                "de": "Unterstützung für MAP100 Luftreiniger hinzufügen\nEnergieverbrauch",
+                "ru": "Добавить поддержку для очистки воздуха MAP100\nДобавить государства потребления энергии",
+                "pt": "Adicionar suporte para purificador de ar MAP100\nAdicionar estados de consumo de energia",
+                "nl": "Advies ondersteuning voor MAP100 luchtzucht\nAdd Energy Consumptie staat",
+                "fr": "Ajouter le support pour le purificateur d'air MAP100\nAdd Energy Consumption states",
+                "it": "Aggiungi supporto per il purificatore dell'aria MAP100\nAggiungere stati di consumo energetico",
+                "es": "Añadir soporte para purificador de aire MAP100\nAdd Energy Consumption states",
+                "pl": "Wsparcie dla czystek lotniczych MAP100\nAddd Energy Consumption (ang.)",
+                "uk": "Додати підтримку для очищення повітря MAP100\nДодати стани споживання енергії",
+                "zh-cn": "增加对MAP100空气purifier的支助\n增加能源消耗国"
+            },
+            "1.14.0": {
+                "en": "Add Smoke Sensor",
+                "de": "Smoke Sensor hinzufügen",
+                "ru": "Добавить датчик дыма",
+                "pt": "Adicionar Sensor de fumaça",
+                "nl": "Voeg Smoke Sensor",
+                "fr": "Ajouter Senseur de fumée",
+                "it": "Aggiungere il sensore di fumo",
+                "es": "Agregar sensor de humo",
+                "pl": "Smoke Sensor (ang.)",
+                "zh-cn": "增 录",
+                "uk": "Додайте датчик диму"
+            },
+            "1.13.0": {
+                "en": "Add new option to prevent the Cloud communication fallback when the device is not available locally for data queries (enabled by default).",
+                "de": "Fügen Sie eine neue Option hinzu, um den Fallback der Cloud-Kommunikation zu verhindern, wenn das Gerät nicht lokal für Datenabfragen verfügbar ist (standardmäßig aktiviert).",
+                "ru": "Добавьте новый вариант, чтобы предотвратить опадение облачного сообщения, когда устройство не доступно локально для запросов данных (включено по умолчанию.).",
+                "pt": "Adicione nova opção para evitar a recaída de comunicação da nuvem quando o dispositivo não estiver disponível localmente para consultas de dados (habilitada por padrão).",
+                "nl": "Een nieuwe optie om de Cloud-communicatie terug te voorkomen als het apparaat niet beschikbaar is voor data queries die door defect zijn.",
+                "fr": "Ajouter une nouvelle option pour empêcher le retour de communication Cloud lorsque l'appareil n'est pas disponible localement pour les requêtes de données (enable par défaut).",
+                "it": "Aggiungi una nuova opzione per evitare il failback della comunicazione Cloud quando il dispositivo non è disponibile localmente per le query di dati (abilitato per impostazione predefinita.).",
+                "es": "Agregue nueva opción para evitar el retroceso de comunicación de Cloud cuando el dispositivo no está disponible localmente para consultas de datos (se puede por defecto).",
+                "pl": "Nowa opcja, aby zapobiec upadkowi komunikacji w chmurze, kiedy urządzenie nie jest dostępne lokalnie dla zapytań danych (zdolnych domyślnie).",
+                "zh-cn": "在设备在当地无法提供数据查询(以违约为准)时,添加新的办法,防止Cloud的通信出现倒退。.",
+                "uk": "Додайте нову опцію, щоб запобігти резервному використанню хмарного зв’язку, коли пристрій недоступний локально для запитів даних (увімкнено за умовчанням)."
+            },
+            "1.12.2": {
+                "en": "prevent crash case reported by Sentry",
+                "de": "verhindern Unfallfall gemeldet von Sentry",
+                "ru": "предотвратить случай аварии сообщается в Sentry",
+                "pt": "prevenir caso de acidente relatado por Sentry",
+                "nl": "vertaling:",
+                "fr": "prévenir les accidents signalés par Sentry",
+                "it": "prevenire il caso di crash segnalato da Sentry",
+                "es": "caso de emergencia reportado por Sentry",
+                "pl": "przypadek zapobiegania katastrofie",
+                "zh-cn": "防止Sentry所报告的事故",
+                "uk": "запобігти випадку збою, про який повідомляє Sentry"
+            }
+        },
+        "title": "Meross Cloud",
+        "titleLang": {
+            "en": "Meross Cloud",
+            "de": "Meross Cloud",
+            "ru": "Meross Cloud",
+            "pt": "Meross Cloud",
+            "nl": "Meross Cloud",
+            "fr": "Meross Cloud",
+            "it": "Meross Cloud",
+            "es": "Meross Cloud",
+            "pl": "Meross Cloud",
+            "zh-cn": "美洛斯云",
+            "uk": "Хмара Меросса"
+        },
+        "desc": {
+            "en": "support for Meross Wifi devices",
+            "de": "Unterstützung für Meross Wifi-Geräte",
+            "ru": "поддержка устройств Meross Wifi",
+            "pt": "suporte para dispositivos Wifi Meross",
+            "nl": "ondersteuning voor Meross Wifi-apparaten",
+            "fr": "support pour les appareils Meross Wifi",
+            "it": "supporto per i dispositivi Meross Wifi",
+            "es": "soporte para dispositivos wifi Meross",
+            "pl": "obsługa urządzeń Wi-Fi firmy Meross",
+            "zh-cn": "支持Meross Wifi设备",
+            "uk": "підтримка пристроїв Meross Wifi"
+        },
+        "authors": [
+            "Apollon77 <ingo@fischer-ka.de>"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "icon": "meross.png",
+        "materialize": true,
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
+        "keywords": [
+            "Meross"
+        ],
+        "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
+        "loglevel": "info",
+        "type": "iot-systems",
+        "stopTimeout": 5000,
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "tier": 2,
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
+                "pathWhitelist": [
+                    "@apollon",
+                    "meross-cloud"
+                ]
+            }
+        }
     },
-    "title": "Meross Cloud",
-    "titleLang": {
-      "en": "Meross Cloud",
-      "de": "Meross Cloud",
-      "ru": "Meross Cloud",
-      "pt": "Meross Cloud",
-      "nl": "Meross Cloud",
-      "fr": "Meross Cloud",
-      "it": "Meross Cloud",
-      "es": "Meross Cloud",
-      "pl": "Meross Cloud",
-      "zh-cn": "美洛斯云",
-      "uk": "Хмара Меросса"
-    },
-    "desc": {
-      "en": "support for Meross Wifi devices",
-      "de": "Unterstützung für Meross Wifi-Geräte",
-      "ru": "поддержка устройств Meross Wifi",
-      "pt": "suporte para dispositivos Wifi Meross",
-      "nl": "ondersteuning voor Meross Wifi-apparaten",
-      "fr": "support pour les appareils Meross Wifi",
-      "it": "supporto per i dispositivi Meross Wifi",
-      "es": "soporte para dispositivos wifi Meross",
-      "pl": "obsługa urządzeń Wi-Fi firmy Meross",
-      "zh-cn": "支持Meross Wifi设备",
-      "uk": "підтримка пристроїв Meross Wifi"
-    },
-    "authors": [
-      "Apollon77 <ingo@fischer-ka.de>"
+    "encryptedNative": [
+        "password"
     ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "mode": "daemon",
-    "icon": "meross.png",
-    "materialize": true,
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
-    "keywords": [
-      "Meross"
+    "protectedNative": [
+        "password"
     ],
-    "readme": "https://github.com/Apollon77/ioBroker.meross/blob/master/README.md",
-    "loglevel": "info",
-    "type": "iot-systems",
-    "stopTimeout": 5000,
-    "compact": true,
-    "connectionType": "cloud",
-    "dataSource": "push",
-    "tier": 2,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://4e753a8ae86d4ff89cb9ceda7c62855e@sentry.iobroker.net/4",
-        "pathWhitelist": [
-          "@apollon",
-          "meross-cloud"
-        ]
-      }
-    }
-  },
-  "encryptedNative": [
-    "password"
-  ],
-  "protectedNative": [
-    "password"
-  ],
-  "native": {
-    "user": "",
-    "password": "",
-    "electricityPollingInterval": 30,
-    "consumptionPollingInterval": 30,
-    "electricityPollingIntervalReChecked": false,
-    "noDirectLocalCommunication": false,
-    "onlyLocalCommunicationToQueryData": true
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
+    "native": {
+        "user": "",
+        "password": "",
+        "mfaCode": "",
+        "electricityPollingInterval": 30,
+        "consumptionPollingInterval": 30,
+        "electricityPollingIntervalReChecked": false,
+        "noDirectLocalCommunication": false,
+        "onlyLocalCommunicationToQueryData": true
     },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to Meross Cloud",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to Meross Cloud",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "_config",
+            "type": "config",
+            "common": {
+                "name": "Login Token data for Meross",
+                "expert": true
+            },
+            "native": {}
+        }
+    ]
 }

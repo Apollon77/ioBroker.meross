@@ -6,6 +6,8 @@
     "consumptionPollingIntervalInfo": "Asegúrese de que el intervalo de sondeo no sea demasiado corto porque Meross puede desactivar la funcionalidad de la nube de sus dispositivos.",
     "electricityPollingInterval": "Intervalo de sondeo para valores de electricidad.",
     "electricityPollingIntervalInfo": "Asegúrese de que el intervalo de sondeo no sea demasiado corto porque Meross puede deshabilitar la funcionalidad en la nube de los dispositivos. Tener un valor menor que 15s es arriesgado.",
+    "mfaCode": "Código MFA actual",
+    "mfaCodeInfo": "Opcional. Ingrese el código MFA actual si está habilitado y guarde la configuración rápidamente, ¡el código solo es válido durante 30 años!",
     "noDirectLocalCommunication": "Sin comunicación local: utilice siempre la nube",
     "onlyLocalCommunicationToQueryData": "Solo comunicación local para consultar datos",
     "onlyLocalCommunicationToQueryDataInfo": "(solo relevante cuando se utiliza la comunicación local)"

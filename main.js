@@ -12,6 +12,7 @@ let adapter;
 const objectHelper = require('@apollon/iobroker-tools').objectHelper; // Get common adapter utils
 const MerossCloud = require('meross-cloud');
 let meross;
+let tokenData = null;
 
 const knownDevices = {};
 let connected = null;
@@ -170,9 +171,6 @@ function startAdapter(options) {
         try {
             setConnected(false);
             stopAll();
-            meross && meross.logout(() => {
-                setTimeout(callback, 3000);
-            })
         } catch (e) {
             callback();
         }
@@ -197,7 +195,23 @@ function startAdapter(options) {
                         adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
                     }
                 }
-                main();
+                adapter.getObject('_config', (err, obj) => {
+                    if (err) {
+                        adapter.setObject('_config', {
+                            type: 'config',
+                            common: {
+                                name: 'Login Token data for Meross',
+                                'expert': true
+                            },
+                            native: {}
+                        }, () => main());
+                    } else {
+                        if (obj.native && obj.native.tokenData && obj.native.tokenData.token) {
+                            tokenData = obj.native.tokenData;
+                        }
+                        main();
+                    }
+                })
             });
         }
 
@@ -703,6 +717,8 @@ function initDeviceObjects(deviceId, channels, data) {
                 name += ' MS100';
             } else if (sub.smokeAlarm) {
                 name += ' SmokeAlarm';
+            } else if (sub.doorWindow) {
+                name += ' Door/Window';
             }
             objectHelper.setOrUpdateObject(`${deviceId}.${sub.id}`, {
                 type: 'channel',
@@ -1003,6 +1019,16 @@ function initDeviceObjects(deviceId, channels, data) {
                 common.role = 'indicator';
                 common.id = `${sub.id}.${common.name}`;
                 values[common.id] = !!sub.smokeAlarm.interConn;
+                objs.push(common);
+            } else if (sub.doorWindow) {
+                common = {};
+                common.type = 'boolean';
+                common.read = true;
+                common.write = false;
+                common.name = 'status';
+                common.role = 'sensor.window';
+                common.id = `${sub.id}.${common.name}`;
+                values[common.id] = !!sub.doorWindow.status; // 1=open, 0=closed
                 objs.push(common);
             }
 
@@ -1351,7 +1377,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             }
             knownDevices[deviceId].deviceAbilities = deviceAbilities;
 
-            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] && !deviceAbilities.ability['Appliance.Hub.Sensor.Smoke']  && !deviceAbilities.ability['Appliance.Hub.ToggleX']) {
+            if (!deviceAbilities.ability['Appliance.Control.ToggleX'] && !deviceAbilities.ability['Appliance.Control.Toggle'] && !deviceAbilities.ability['Appliance.Control.Electricity'] && !deviceAbilities.ability['Appliance.GarageDoor.State'] && !deviceAbilities.ability['Appliance.Control.Light'] && !deviceAbilities.ability['Appliance.Digest.Hub'] && !deviceAbilities.ability['Appliance.Control.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] && !deviceAbilities.ability['Appliance.Control.Diffuser.Light'] && !deviceAbilities.ability['Appliance.RollerShutter.State'] && !deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] && !deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] && !deviceAbilities.ability['Appliance.Hub.Sensor.DoorWindow'] && !deviceAbilities.ability['Appliance.Hub.ToggleX']) {
                 adapter.log.info(`Known abilities not supported by Device ${deviceId}: send next line from disk to developer`);
                 adapter.log.info(JSON.stringify(deviceAbilities));
                 objectHelper.processObjectQueue(() => {
@@ -1361,7 +1387,7 @@ function initDeviceData(deviceId, deviceDef, device, deviceAllData, callback) {
             }
 
             if (deviceAllData.all &&
-                (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] || deviceAbilities.ability['Appliance.Hub.ToggleX'])) {
+                (deviceAbilities.ability['Appliance.Control.ToggleX'] || deviceAbilities.ability['Appliance.Control.Toggle'] || deviceAbilities.ability['Appliance.GarageDoor.State'] || deviceAbilities.ability['Appliance.Control.Light'] || deviceAbilities.ability['Appliance.Digest.Hub'] || deviceAbilities.ability['Appliance.Control.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Spray'] || deviceAbilities.ability['Appliance.Control.Diffuser.Light'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Control.Thermostat.Mode'] || deviceAbilities.ability['Appliance.Hub.Sensor.Smoke'] || deviceAbilities.ability['Appliance.Hub.Sensor.DoorWindow'] || deviceAbilities.ability['Appliance.Hub.ToggleX'])) {
                 initDeviceObjects(deviceId, deviceDef.channels, deviceAllData.all.digest || deviceAllData.all.control);
             }
 
@@ -2187,6 +2213,20 @@ function setValuesHubSmokeSensor(deviceId, payload) {
     }
 }
 
+function setValuesHubDoorWindowSensor(deviceId, payload) {
+    // {"smokeAlarm":[{"status":170,"id":"2800BF0A69B5"}]}
+    if (payload && payload.doorWindow) {
+        if (!Array.isArray(payload.doorWindow)) {
+            payload.doorWindow = [payload.doorWindow];
+        }
+        payload.doorWindow.forEach((val) => {
+            if (val.status !== undefined) {
+                adapter.setState(`${deviceId}.${val.id}.status`, !!val.status, true);
+            }
+        });
+    }
+}
+
 function setValuesThermostatWindowOpened(deviceId, payload) {
     // ??
     if (payload && payload.windowOpened) {
@@ -2229,6 +2269,8 @@ function main() {
     const options = {
         email: adapter.config.user,
         password: adapter.config.password,
+        mfaCode: adapter.config.mfaCode || undefined,
+        tokenData: tokenData || undefined,
         logger: adapter.log.debug,
         localHttpFirst: !adapter.config.noDirectLocalCommunication,
         onlyLocalForGet: adapter.config.onlyLocalCommunicationToQueryData,
@@ -2359,6 +2401,9 @@ function main() {
                 case 'Appliance.Hub.Sensor.Smoke':
                     setValuesHubSmokeSensor(deviceId, payload);
                     break;
+                case 'Appliance.Hub.Sensor.DoorWindow':
+                    setValuesHubDoorWindowSensor(deviceId, payload);
+                    break;
                 case 'Appliance.Control.Thermostat.Mode':
                     setValuesThermostatMode(deviceId, payload);
                     break;
@@ -2417,6 +2462,13 @@ function main() {
             return;
         }
         deviceCount += count;
+        const tokenData = meross.getTokenData();
+        adapter.log.info(`Meross connected - ${count} devices initialized, Tokendata stored.`);
+        adapter.extendObject('_config', {
+            native: {
+                tokenData
+            }
+        });
     });
 }
 
