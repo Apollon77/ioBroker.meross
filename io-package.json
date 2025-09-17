@@ -137,6 +137,10 @@
     "icon": "meross.png",
     "materialize": true,
     "enabled": true,
+    "jsonConfig": true,
+    "adminUI": {
+      "config": "json"
+    },
     "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
     "keywords": [
       "Meross"
