@@ -35,110 +35,6 @@ const roleValues = {
     'targetTemp': {scale: -1, role: 'level.temperature'}
 };
 
-let Sentry;
-let SentryIntegrations;
-function initSentry(callback) {
-    if (!adapter.ioPack.common || !adapter.ioPack.common.plugins || !adapter.ioPack.common.plugins.sentry) {
-        return callback && callback();
-    }
-    const sentryConfig = adapter.ioPack.common.plugins.sentry;
-    if (!sentryConfig.dsn) {
-        adapter.log.warn('Invalid Sentry definition, no dsn provided. Disable error reporting');
-        return callback && callback();
-    }
-    // Require needed tooling
-    Sentry = require('@sentry/node');
-    SentryIntegrations = require('@sentry/integrations');
-    // By installing source map support, we get the original source
-    // locations in error messages
-    require('source-map-support').install();
-
-    let sentryPathWhitelist = [];
-    if (sentryConfig.pathWhitelist && Array.isArray(sentryConfig.pathWhitelist)) {
-        sentryPathWhitelist = sentryConfig.pathWhitelist;
-    }
-    if (adapter.pack.name && !sentryPathWhitelist.includes(adapter.pack.name)) {
-        sentryPathWhitelist.push(adapter.pack.name);
-    }
-    let sentryErrorBlacklist = [];
-    if (sentryConfig.errorBlacklist && Array.isArray(sentryConfig.errorBlacklist)) {
-        sentryErrorBlacklist = sentryConfig.errorBlacklist;
-    }
-    if (!sentryErrorBlacklist.includes('SyntaxError')) {
-        sentryErrorBlacklist.push('SyntaxError');
-    }
-
-    Sentry.init({
-        release: `${adapter.pack.name}@${adapter.pack.version}`,
-        dsn: sentryConfig.dsn,
-        integrations: [
-            new SentryIntegrations.Dedupe()
-        ]
-    });
-    Sentry.configureScope(scope => {
-        scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
-        if (adapter.common.installedFrom) {
-            scope.setTag('installedFrom', adapter.common.installedFrom);
-        }
-        else {
-            scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
-        }
-        scope.addEventProcessor(function(event, hint) {
-            // Try to filter out some events
-            if (event.exception && event.exception.values && event.exception.values[0]) {
-                const eventData = event.exception.values[0];
-                // if error type is one from blacklist we ignore this error
-                if (eventData.type && sentryErrorBlacklist.includes(eventData.type)) {
-                    return null;
-                }
-                if (eventData.stacktrace && eventData.stacktrace.frames && Array.isArray(eventData.stacktrace.frames) && eventData.stacktrace.frames.length) {
-                    // if last exception frame is from an nodejs internal method we ignore this error
-                    if (eventData.stacktrace.frames[eventData.stacktrace.frames.length - 1].filename && (eventData.stacktrace.frames[eventData.stacktrace.frames.length - 1].filename.startsWith('internal/') || eventData.stacktrace.frames[eventData.stacktrace.frames.length - 1].filename.startsWith('Module.'))) {
-                        return null;
-                    }
-                    // Check if any entry is whitelisted from pathWhitelist
-                    const whitelisted = eventData.stacktrace.frames.find(frame => {
-                        if (frame.function && frame.function.startsWith('Module.')) {
-                            return false;
-                        }
-                        if (frame.filename && frame.filename.startsWith('internal/')) {
-                            return false;
-                        }
-                        if (frame.filename && !sentryPathWhitelist.find(path => path && path.length && frame.filename.includes(path))) {
-                            return false;
-                        }
-                        return true;
-                    });
-                    if (!whitelisted) {
-                        return null;
-                    }
-                }
-            }
-
-            return event;
-        });
-
-        adapter.getForeignObject('system.config', (err, obj) => {
-            if (obj && obj.common && obj.common.diag !== 'none') {
-                adapter.getForeignObject('system.meta.uuid', (err, obj) => {
-                    // create uuid
-                    if (!err  && obj) {
-                        Sentry.configureScope(scope => {
-                            scope.setUser({
-                                id: obj.native.uuid
-                            });
-                        });
-                    }
-                    callback && callback();
-                });
-            }
-            else {
-                callback && callback();
-            }
-        });
-    });
-}
-
 function decrypt(key, value) {
     let result = '';
     for (let i = 0; i < value.length; ++i) {
@@ -184,43 +80,34 @@ function startAdapter(options) {
     });
 
     adapter.on('ready', () => {
-        function prepareMain() {
-            adapter.getForeignObject('system.config', (err, obj) => {
-                if (!adapter.supportsFeature || !adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
-                    if (obj && obj.native && obj.native.secret) {
-                        //noinspection JSUnresolvedVariable
-                        adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
-                    } else {
-                        //noinspection JSUnresolvedVariable
-                        adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
-                    }
+        adapter.getForeignObject('system.config', (err, obj) => {
+            if (!adapter.supportsFeature || !adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+                if (obj && obj.native && obj.native.secret) {
+                    //noinspection JSUnresolvedVariable
+                    adapter.config.password = decrypt(obj.native.secret, adapter.config.password);
+                } else {
+                    //noinspection JSUnresolvedVariable
+                    adapter.config.password = decrypt('Zgfr56gFe87jJOM', adapter.config.password);
                 }
-                adapter.getObject('_config', (err, obj) => {
-                    if (err) {
-                        adapter.setObject('_config', {
-                            type: 'config',
-                            common: {
-                                name: 'Login Token data for Meross',
-                                'expert': true
-                            },
-                            native: {}
-                        }, () => main());
-                    } else {
-                        if (obj.native && obj.native.tokenData && obj.native.tokenData.token) {
-                            tokenData = obj.native.tokenData;
-                        }
-                        main();
+            }
+            adapter.getObject('_config', (err, obj) => {
+                if (err) {
+                    adapter.setObject('_config', {
+                        type: 'config',
+                        common: {
+                            name: 'Login Token data for Meross',
+                            'expert': true
+                        },
+                        native: {}
+                    }, () => main());
+                } else {
+                    if (obj.native && obj.native.tokenData && obj.native.tokenData.token) {
+                        tokenData = obj.native.tokenData;
                     }
-                })
-            });
-        }
-
-        if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
-            prepareMain();
-        }
-        else {
-            initSentry(prepareMain);
-        }
+                    main();
+                }
+            })
+        });
     });
 
     return adapter;

@@ -15,26 +15,24 @@
     }
   ],
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
-    "meross-cloud": "^3.1.1",
+    "meross-cloud": "^3.1.2",
     "@apollon/iobroker-tools": "^0.2.1",
-    "@iobroker/adapter-core": "^3.0.4",
-    "@sentry/node": "^7.91.0",
-    "@sentry/integrations": "^7.91.0",
+    "@iobroker/adapter-core": "^3.3.2",
     "source-map-support": "^0.5.21"
   },
   "description": "meross cloud adapter for ioBroker",
   "devDependencies": {
-    "@alcalzone/release-script": "^3.7.0",
-    "@alcalzone/release-script-plugin-iobroker": "^3.7.0",
+    "@alcalzone/release-script": "^3.8.0",
+    "@alcalzone/release-script-plugin-iobroker": "^3.7.2",
     "@alcalzone/release-script-plugin-license": "^3.7.0",
-    "@iobroker/adapter-dev": "^1.2.0",
-    "chai": "^5.0.0",
-    "mocha": "^10.2.0",
-    "@iobroker/dev-server": "^0.7.1",
-    "@iobroker/testing": "^4.1.0"
+    "@iobroker/adapter-dev": "^1.4.0",
+    "chai": "^4.5.0",
+    "mocha": "^11.7.2",
+    "@iobroker/dev-server": "^0.7.8",
+    "@iobroker/testing": "^5.1.1"
   },
   "optionalDependencies": {},
   "homepage": "https://github.com/Apollon77/ioBroker.meross",

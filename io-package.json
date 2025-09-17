@@ -2,6 +2,9 @@
   "common": {
     "name": "meross",
     "version": "1.17.0",
+    "blockedVersions": [
+      "<1.17.0"
+    ],
     "news": {
       "1.17.0": {
         "en": "Adjust Signin API and add support for MFA\nStore login token and try to reuse it for reconnections, but also do not log out anymore\nAdd support for DoorWindow Sensor MS200HK",
@@ -125,7 +128,10 @@
     "authors": [
       "Apollon77 <ingo@fischer-ka.de>"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "platform": "Javascript/Node.js",
     "mode": "daemon",
     "icon": "meross.png",
