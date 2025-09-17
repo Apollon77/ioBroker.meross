@@ -1,5 +1,5 @@
 {
-    "MerossInfo": "Dieser Adapter stellt eine Verbindung zur Meross-Cloud her, um die Geräte zu steuern. Bitte geben Sie die Anmeldeinformationen für Ihr Meross Cloud-Konto ein.",
+    "MerossInfo": "Dieser Adapter stellt eine Verbindung zur Meross-Cloud her, um die Geräte zu steuern. Bitte die Anmeldeinformationen für Ihr Meross Cloud-Konto eingeben.",
     "Password": "Passwort",
     "User": "Benutzername",
     "consumptionPollingInterval": "Abfrageintervall für Verbrauchswerte",
