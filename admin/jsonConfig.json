@@ -1,0 +1,100 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "infoText": {
+      "type": "staticText",
+      "text": "MerossInfo",
+      "style": {
+        "fontSize": 16,
+        "fontWeight": "bold"
+      },
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 12,
+      "lg": 12,
+      "xl": 12
+    },
+    "user": {
+      "type": "text",
+      "label": "User",
+      "placeholder": "Username",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "password": {
+      "type": "password",
+      "label": "Password",
+      "placeholder": "Password",
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "mfaCode": {
+      "type": "text",
+      "label": "mfaCode",
+      "help": "mfaCodeInfo",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "noDirectLocalCommunication": {
+      "type": "checkbox",
+      "label": "noDirectLocalCommunication",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "onlyLocalCommunicationToQueryData": {
+      "type": "checkbox",
+      "label": "onlyLocalCommunicationToQueryData",
+      "help": "onlyLocalCommunicationToQueryDataInfo",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "electricityPollingInterval": {
+      "type": "number",
+      "label": "electricityPollingInterval",
+      "help": "electricityPollingIntervalInfo",
+      "min": 30,
+      "suffix": "sec",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    },
+    "consumptionPollingInterval": {
+      "type": "number",
+      "label": "consumptionPollingInterval",
+      "help": "consumptionPollingIntervalInfo",
+      "min": 10,
+      "max": 35791,
+      "suffix": "min",
+      "newLine": true,
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
+    }
+  }
+}
