@@ -201,6 +201,8 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ### 0.1.0 (2018.11.14)
 * (Apollon77) First release to support ToggleX devices
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 The MIT License (MIT)
 
