@@ -42,6 +42,10 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
+
+### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+
 ### __WORK IN PROGRESS__
 * IMPORTANT: The minimum Node.js version is now 18.x or higher
 
