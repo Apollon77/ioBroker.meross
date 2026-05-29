@@ -135,7 +135,6 @@
     "platform": "Javascript/Node.js",
     "mode": "daemon",
     "icon": "meross.png",
-    "materialize": true,
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.meross/master/admin/meross.png",
     "keywords": [
@@ -151,7 +150,7 @@
     "tier": 2,
     "dependencies": [
       {
-        "js-controller": ">=2.0.0"
+        "js-controller": ">=6.0.11"
       }
     ],
     "plugins": {
@@ -162,6 +161,9 @@
           "meross-cloud"
         ]
       }
+    },
+    "adminUI": {
+      "config": "materialize"
     }
   },
   "encryptedNative": [
